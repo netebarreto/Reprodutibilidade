@@ -1,0 +1,30 @@
+Level;iCode;iName;Direction;Weight;Unit;Target;Denominator;Parent;Type
+1;IPA;Investimento em políticas de adaptação;1;1;UNDEF;1;UNDEF;Level2;Indicator
+1;IFGF;Índice Firjan de Gestão Fiscal;1;1;UNDEF;1;UNDEF;Level2;Indicator
+1;IFDM;Índice Firjan de Desenvolvimento Municipal - Emprego e renda;1;1;UNDEF;1;UNDEF;Level2;Indicator
+1;PIBA;PIB por área (densidade urbano);1;1;UNDEF;1;UNDEF;Level2;Indicator
+1;PCR;Programa Cidades Resilientes;1;1;UNDEF;1;UNDEF;Level2;Indicator
+1;IAGRD;Instituições que atuam em gestão de risco de desastres;1;1;UNDEF;1;UNDEF;Level2;Indicator
+1;GRLP;Gestão de resíduos e limpeza pública;1;1;UNDEF;1;UNDEF;Level2;Indicator
+1;IGOUARDEI;Instrumentos de gestão de ocupação urbana em áreas de risco de desastres de enchentes ou inundações;1;1;UNDEF;1;UNDEF;Level2;Indicator
+1;ARRDEI;Ações para redução de risco de desastres de enchentes ou inundações;1;1;UNDEF;1;UNDEF;Level2;Indicator
+1;SAADEI;Sistemas de alerta antecipado  para desastres de enchentes ou inundações;1;1;UNDEF;1;UNDEF;Level2;Indicator
+1;PCDEI;Plano de contingência para desastres de enchentes ou inundações;1;1;UNDEF;1;UNDEF;Level2;Indicator
+1;CLZEOS;Condição da legislação de zoneamento e uso e ocupação do solo;1;1;UNDEF;1;UNDEF;Level2;Indicator
+1;GMA;Governança - Meio Ambiente;1;1;UNDEF;1;UNDEF;Level2;Indicator
+1;GH;Governança - Habitação;1;1;UNDEF;1;UNDEF;Level2;Indicator
+1;GT;Governança - Transporte;1;1;UNDEF;1;UNDEF;Level2;Indicator
+1;ES10H;Estabelecimentos de Saúde por 1000 habitantes;1;1;UNDEF;1;UNDEF;Level2;Indicator
+1;NIAPMSB;Nível de implementação e articulação do plano municipal de saneamento básico;1;1;UNDEF;1;UNDEF;Level2;Indicator
+1;PDLP;População com dificuldade de locomoção;1;1;UNDEF;1;UNDEF;Level2;Indicator
+1;JEMC19I;Jovens sem ensino médio concluído até os 19 anos de idade;1;1;UNDEF;1;UNDEF;Level2;Indicator
+1;RMNAMP;Renda municipal não apropriada pelos 20% mais pobres (%);1;1;UNDEF;1;UNDEF;Level2;Indicator
+1;NDISI;Número de domicílios inadequados ou semi-inadequados;1;1;UNDEF;1;UNDEF;Level2;Indicator
+1;FM;Falta de mobilidade;1;1;UNDEF;1;UNDEF;Level2;Indicator
+1;IC;Inacessibilidade às cidades;1;1;UNDEF;1;UNDEF;Level2;Indicator
+1;NFASB;Nivel de falta de acesso ao saneamento básico;1;1;UNDEF;1;UNDEF;Level2;Indicator
+1;IMAP;Inexistência de manejo de águas pluviais;1;1;UNDEF;1;UNDEF;Level2;Indicator
+1;DAR;Domicílios em áreas de risco;1;1;UNDEF;1;UNDEF;Level2;Indicator
+1;DPAU;Densidade da população em áreas urbanizadas;1;1;UNDEF;1;UNDEF;Level2;Indicator
+1;P2020;Presente 2020;1;1;UNDEF;1;UNDEF;Level2;Indicator
+2;Level2;Teste para Level 2;1;1;NA;;;NA;Aggregate
