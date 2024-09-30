@@ -36,4 +36,8 @@ ARQUIVOS:
 #### Arquivos gerados manualmente baseados no arquivo: 
   * Planilha de funções - Valores - desastres_inundação - 13-12-23_revisao6 p script.xlsx
 
-##### Testando "Winsorization" 23-09-2024 
+##### "Winsorization" 23-09-2024 
+  ** Incluisão de uma coluna no iMeta _ [Score_ADP] _ 
+  * Score_ADP = 1; Coluna do tipo Score - Não Aplicar Winsorization 
+  * Score_ADP = 0; Coluna Numérica - Aplicar o  Winsorization 
+  * Score_ADP = -1; Coluna do tipo Cluster (Urbano/Não Urbano), fazer avaliação depois
