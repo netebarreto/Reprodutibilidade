@@ -53,7 +53,7 @@ iMeta_in <- read.csv("DATASET/IMeta_RH_INDBRT.csv",sep=";",dec=".",header=TRUE,f
 
 iMeta_adapta <- data.frame(iMeta_in, stringsAsFactors = default.stringsAsFactors())
 
-check_iMeta(iMeta_adapta)
+COINr::check_iMeta(iMeta_adapta)
 
 ###### 
 
@@ -71,21 +71,43 @@ iData_input$uCode = UCode
         ### Nomes das Colunas a serem removidas 
         col_remove <- c("uName" , "Geocódigo", "UF", "Região", "Cluster")
    
-    iData_adapta <- iData_input[,!(iData_ncol %in% col_remove)]   
+    iData_bruto <- iData_input[,!(iData_ncol %in% col_remove)]   
    
-check_iData(iData_adapta)
+COINr::check_iData(iData_bruto)
 
-## Modificação 23/09/2023
+
 ######  "Winsorization" ##### 
 
-# EM DESENVOLVIMENTO 
-# VERIFICAR PARAMETROS DE AJUSTE 
+func_tt <- function(Y){
+                  X = as.numeric(Y)
+                  bx_stat <- boxplot.stats(X)
+                  L_inf <-  min(bx_stat$stats)
+                  L_sup <-  max(bx_stat$stats)
+                  outl =boxplot.stats(X)$out 
+                  X1a = ifelse(outl>L_sup,L_sup,outl)
+                  X1c = ifelse(outl<L_inf,L_inf,outl)
+                  X1b = X
+                  X1b[match(outl, X)]=ifelse(outl<L_inf,L_inf,outl)
+                  X1b[match(outl, X)]=ifelse(outl>L_sup,L_sup,outl)
+                  return(X1b)}
+
+
+iData_winsor <- iData_bruto
+nn <- which(iMeta_adapta$Score_ADP == 0)+1
+iData_winsor[,nn] = apply(iData_bruto[,nn], 2, func_tt)
+
+RES<-300 ; SIZE=450 ; ARG2 = 1.2
+for(i in 2:ncol(iData_winsor)) { 
+		png(paste0("OUTPUT/",colnames(iData_bruto)[i],".png"),width=9*SIZE,height=5.5*SIZE,type='windows',res=RES,pointsize=16)
+		par(mar=c(5,4,1,0), mai=c(1.5,1.2,1.0,0.2),xpd=TRUE)
+		boxplot(data.frame(Bruto=as.numeric(iData_bruto[,i]),Winsor=iData_winsor[,i]),main=colnames(iData_bruto)[i])
+
+		dev.off()
+}
+
+
+X3= COINr::winsorise(iData_bruto[,2],skew_thresh = skewness(iData_bruto[,2]), kurt_thresh = 3.5 )
+
+
 
 ##### 
-ADAPTA_coin <- COINr::new_coin(iData = iData_adapta, iMeta = iMeta_adapta)
-
-coin <- COINr::qNormalise(ADAPTA_coin, dset = "Raw", f_n = "n_minmax")
-
-coin <- COINr::Aggregate(coin, dset = "Normalised", f_ag = "a_amean")
-
-# ####### 
