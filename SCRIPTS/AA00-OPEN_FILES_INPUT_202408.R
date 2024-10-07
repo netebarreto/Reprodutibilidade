@@ -78,36 +78,47 @@ COINr::check_iData(iData_bruto)
 
 ######  "Winsorization" ##### 
 
-func_tt <- function(Y){
-                  X = as.numeric(Y)
-                  bx_stat <- boxplot.stats(X)
-                  L_inf <-  min(bx_stat$stats)
-                  L_sup <-  max(bx_stat$stats)
-                  outl =boxplot.stats(X)$out 
-                  X1a = ifelse(outl>L_sup,L_sup,outl)
-                  X1c = ifelse(outl<L_inf,L_inf,outl)
-                  X1b = X
-                  X1b[match(outl, X)]=ifelse(outl<L_inf,L_inf,outl)
-                  X1b[match(outl, X)]=ifelse(outl>L_sup,L_sup,outl)
-                  return(X1b)}
-
+func_tt <- function(Y)
+            {   X = as.numeric(Y)
+                (bx_stat <- boxplot.stats(X))
+                (L_inf <-  min(bx_stat$stats))
+                (L_sup <-  max(bx_stat$stats))
+                (outl =boxplot.stats(X)$out) 
+                X1b = X
+                X1b[which(X>L_sup)]=L_sup
+                X1b[which(X<L_inf)]=L_inf
+                return(X1b)
+            }
 
 iData_winsor <- iData_bruto
 nn <- which(iMeta_adapta$Score_ADP == 0)+1
 iData_winsor[,nn] = apply(iData_bruto[,nn], 2, func_tt)
 
-RES<-300 ; SIZE=450 ; ARG2 = 1.2
-for(i in 2:ncol(iData_winsor)) { 
-		png(paste0("OUTPUT/",colnames(iData_bruto)[i],".png"),width=9*SIZE,height=5.5*SIZE,type='windows',res=RES,pointsize=16)
-		par(mar=c(5,4,1,0), mai=c(1.5,1.2,1.0,0.2),xpd=TRUE)
-		boxplot(data.frame(Bruto=as.numeric(iData_bruto[,i]),Winsor=iData_winsor[,i]),main=colnames(iData_bruto)[i])
+### Verifica se o diretório que será salvo as figuras já existe, 
+### caso negativo cria o local 
 
+local1 = "RESPOSTAS/FIGURAS/IS/"
+ifelse(dir.exists(local1),print("Diretório já existe"),dir.create(local1,recursive=TRUE))
+
+RES<-300 ; SIZE=450 ; ARG2 = 1.2
+for(i in 2:(nrow(iMeta_adapta)-1)) { 
+    if(i %in% nn) {
+		png(paste0(local1,formatC((i-1),width=2,flag=0),"-",colnames(iData_bruto)[i],".png"),width=9*SIZE,height=5.5*SIZE,type='windows',res=RES,pointsize=16)
+		par(mar=c(5,4,1,0), mai=c(1.5,1.2,1.0,0.2),xpd=TRUE)
+        bx_dados=data.frame(Bruto=as.numeric(iData_bruto[,i]),Winsorization=iData_winsor[,i])
+        outp = (length(boxplot.stats(bx_dados[,1])$out)/length(bx_dados[,1]))*100
+		boxplot(bx_dados,main=strwrap(paste0(formatC((i-1),width=2,flag=0)," - ",iMeta_adapta$iCode[(i-1)],": ",iMeta_adapta$iName[(i-1)]), width = 50),las=1,ylim=c(0.95*min(bx_dados$Bruto,na.rm=T),1.05*max(bx_dados$Bruto,na.rm=T)),cex.main=1.5)
+        mtext(paste0("Percentual de Outliers = ",format(outp,digits=2,nsmall=2),"%"),3,line=-1.2,at=0.85,col=2,cex=1.3,font=2)
 		dev.off()
+    }
+    else {
+		png(paste0(local1,formatC((i-1),width=2,flag=0),"-",colnames(iData_bruto)[i],".png"),width=9*SIZE,height=5.5*SIZE,type='windows',res=RES,pointsize=16)
+		par(mar=c(5,4,1,0), mai=c(1.5,1.2,1.0,0.2),xpd=TRUE)
+        bx_dados=data.frame(Bruto=as.numeric(iData_bruto[,i]))
+		boxplot(bx_dados,main=strwrap(paste0(formatC((i-1),width=2,flag=0)," - ",iMeta_adapta$iCode[(i-1)],": ",iMeta_adapta$iName[(i-1)]), width = 50),las=1,ylim=c(0.95*min(bx_dados$Bruto,na.rm=T),1.05*max(bx_dados$Bruto,na.rm=T)),cex.main=1.5)
+        mtext("Indicador tipo Score ou Cluster ",3,line=-1.2,at=0.85,col=2,cex=1.3,font=2)
+		dev.off()
+    }
 }
 
 
-X3= COINr::winsorise(iData_bruto[,2],skew_thresh = skewness(iData_bruto[,2]), kurt_thresh = 3.5 )
-
-
-
-##### 
