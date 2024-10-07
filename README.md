@@ -15,11 +15,7 @@ OBJETIVOS ESPECÍFICOS
 BOLSISTA  
 * Nete Barreto - Bolsista PCI-DA/INPE-DIIAV - naurinete.barreto@gmail.com
 
-DATAS: 
-* 20/07/2024
-* 30/08/2024 
-* 15/09/2024
-* 20/09/2024
+DATAS INICIO: _20/07/2024_
 
 Informações Basicas: 
 - Versão do R:
@@ -36,8 +32,16 @@ ARQUIVOS:
 #### Arquivos gerados manualmente baseados no arquivo: 
   * Planilha de funções - Valores - desastres_inundação - 13-12-23_revisao6 p script.xlsx
 
-##### "Winsorization" 23-09-2024 
-  ** Incluisão de uma coluna no iMeta _ [Score_ADP] _ 
+#### "Winsorization" 
+  **Incluisão de uma coluna _[Score_ADP]_ no iMeta**
   * Score_ADP = 1; Coluna do tipo Score - Não Aplicar Winsorization 
   * Score_ADP = 0; Coluna Numérica - Aplicar o  Winsorization 
   * Score_ADP = -1; Coluna do tipo Cluster (Urbano/Não Urbano), fazer avaliação depois
+
+  **Contador dos Indicadores Simples** 
+  * Inclusão de uma coluna de contador simples no arquivo iMeta.csv
+
+  **Títulos das figuras e Nomes dos Arquivos**
+    * Nome do Arquivo : 01-iCODE.png
+    * Modificação do título das figuras 
+    * inclusão do percentual de outlines
