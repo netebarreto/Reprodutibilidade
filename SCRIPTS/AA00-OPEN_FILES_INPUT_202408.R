@@ -116,7 +116,7 @@ for(i in 2:(nrow(iMeta_adapta)-1)) {
 		par(mar=c(5,4,1,0), mai=c(1.5,1.2,1.0,0.2),xpd=TRUE)
         bx_dados=data.frame(Bruto=as.numeric(iData_bruto[,i]))
 		boxplot(bx_dados,main=strwrap(paste0(formatC((i-1),width=2,flag=0)," - ",iMeta_adapta$iCode[(i-1)],": ",iMeta_adapta$iName[(i-1)]), width = 50),las=1,ylim=c(0.95*min(bx_dados$Bruto,na.rm=T),1.05*max(bx_dados$Bruto,na.rm=T)),cex.main=1.5)
-        mtext("Indicador tipo Score ou Cluster ",3,line=-1.2,at=0.85,col=2,cex=1.3,font=2)
+        mtext("Indicador tipo Score ou Cluster (Winsorization - Não se aplica)",3,line=-1.2,at=0.85,col=2,cex=1.3,font=2)
 		dev.off()
     }
 }
