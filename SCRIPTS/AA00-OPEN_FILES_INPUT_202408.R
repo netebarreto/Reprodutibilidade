@@ -94,31 +94,21 @@ iData_winsor <- iData_bruto
 nn <- which(iMeta_adapta$Score_ADP == 0)+1
 iData_winsor[,nn] = apply(iData_bruto[,nn], 2, func_tt)
 
-### Verifica se o diretório que será salvo as figuras já existe, 
-### caso negativo cria o local 
 
-local1 = "RESPOSTAS/FIGURAS/IS/"
-ifelse(dir.exists(local1),print("Diretório já existe"),dir.create(local1,recursive=TRUE))
+######  "Box Cox" ##### 
+ # Considerando o critério do "COIN Tool User Guide" página 23 box 4 #
+ # aplica-se o boxCox quando ambas as condições abaixo são satisfeitas : 
+                    # Distorção >= 2.5  e  Custose >= 3.5 
 
-RES<-300 ; SIZE=450 ; ARG2 = 1.2
-for(i in 2:(nrow(iMeta_adapta)-1)) { 
-    if(i %in% nn) {
-		png(paste0(local1,formatC((i-1),width=2,flag=0),"-",colnames(iData_bruto)[i],".png"),width=9*SIZE,height=5.5*SIZE,type='windows',res=RES,pointsize=16)
-		par(mar=c(5,4,1,0), mai=c(1.5,1.2,1.0,0.2),xpd=TRUE)
-        bx_dados=data.frame(Bruto=as.numeric(iData_bruto[,i]),Winsorization=iData_winsor[,i])
-        outp = (length(boxplot.stats(bx_dados[,1])$out)/length(bx_dados[,1]))*100
-		boxplot(bx_dados,main=strwrap(paste0(formatC((i-1),width=2,flag=0)," - ",iMeta_adapta$iCode[(i-1)],": ",iMeta_adapta$iName[(i-1)]), width = 50),las=1,ylim=c(0.95*min(bx_dados$Bruto,na.rm=T),1.05*max(bx_dados$Bruto,na.rm=T)),cex.main=1.5)
-        mtext(paste0("Percentual de Outliers = ",format(outp,digits=2,nsmall=2),"%"),3,line=-1.2,at=0.85,col=2,cex=1.3,font=2)
-		dev.off()
-    }
-    else {
-		png(paste0(local1,formatC((i-1),width=2,flag=0),"-",colnames(iData_bruto)[i],".png"),width=9*SIZE,height=5.5*SIZE,type='windows',res=RES,pointsize=16)
-		par(mar=c(5,4,1,0), mai=c(1.5,1.2,1.0,0.2),xpd=TRUE)
-        bx_dados=data.frame(Bruto=as.numeric(iData_bruto[,i]))
-		boxplot(bx_dados,main=strwrap(paste0(formatC((i-1),width=2,flag=0)," - ",iMeta_adapta$iCode[(i-1)],": ",iMeta_adapta$iName[(i-1)]), width = 50),las=1,ylim=c(0.95*min(bx_dados$Bruto,na.rm=T),1.05*max(bx_dados$Bruto,na.rm=T)),cex.main=1.5)
-        mtext("Indicador tipo Score ou Cluster (Winsorization - Não se aplica)",3,line=-1.2,at=0.85,col=2,cex=1.3,font=2)
-		dev.off()
-    }
-}
+distorcao <- apply(iData_winsor[,-1],2,COINr::skew,na.rm=TRUE)                     
+curtose <- apply(iData_winsor[,-1],2,COINr::kurt,na.rm=TRUE)                     
+
+
+iMeta_adapta$BoxCox = c(ifelse(distorcao>=2 & curtose>=3.5, 1, 0),NA)
+
+
+
+
+
 
 
