@@ -1,6 +1,5 @@
-ADPBoxCox <- function(iData)
+ADPBoxCox <- function(dados,classe,cluster,nome)
 {
-
         sfunc_bxcx <- function(Y) 
                 {
                 Ysna = Y[-which(is.na(Y))]
@@ -11,15 +10,58 @@ ADPBoxCox <- function(iData)
                 Yres[which(is.na(Y))] = NA
                 Yres[-which(is.na(Y))] = Ybcx
                 return(Yres)
-                } 
-data_value <- iData[,-c(1:6)]
-meta_bxcx <- data.frame(BoxCox = NA, 
-                          Distorcao = apply(data_value,2,COINr::skew,na.rm=TRUE),
-                          Curtose = apply(data_value,2,COINr::kurt,na.rm=TRUE))                     
-meta_bxcx$BoxCox = ifelse(distorcao>=2 & curtose>=3.5, 1, 0)
-nbcx = which(meta_bxcx$BoxCox == 1) 
-data_bcx <- iData
-if(length(nbcx)>0 ) { data_bcx[,nbcx]<-apply(iData[,nbcx],2,sfunc_bxcx)} 
+                }
+   if(classe == "Numérico") 
+        {
+        meta_bxcx <- data.frame(Nome=nome,
+                          Classe="Numérico",
+                          BoxCox = NA, 
+                          Distorcao = COINr::skew(dados,na.rm=TRUE),
+                          Curtose = COINr::kurt(dados,na.rm=TRUE)) 
+        meta_bxcx$BoxCox = ifelse(as.numeric(meta_bxcx$Distorcao)>=2 & as.numeric(meta_bxcx$Curtose)>=3.5, 1, 0)
+        {if (meta_bxcx$BoxCox == 1) 
+         { data_bcx <-sfunc_bxcx(dados) }
+        else(meta_bxcx$BoxCox == 0) 
+        {data_bcx <-dados} }
+        } 
+   else  if(classe == "Cluster") 
+        { data_bcx = dados
+        meta_bxcx1 <- data.frame(Nome=nome,
+                          Classe="Grupo 1",                
+                BoxCox = NA, 
+                          Distorcao = COINr::skew(dados[cluster==1],na.rm=TRUE),
+                          Curtose = COINr::kurt(dados[cluster==1],na.rm=TRUE))
+        
+        meta_bxcx2 <- data.frame(Nome=nome,
+                          Classe="Grupo 2",
+                BoxCox = NA, 
+                          Distorcao = COINr::skew(dados[cluster==2],na.rm=TRUE),
+                          Curtose = COINr::kurt(dados[cluster==2],na.rm=TRUE))                   
+        meta_bxcx1$BoxCox = ifelse(as.numeric(meta_bxcx1$Distorcao)>=2 & as.numeric(meta_bxcx1$Curtose)>=3.5, 1, 0)
+
+        meta_bxcx2$BoxCox = ifelse(as.numeric(meta_bxcx2$Distorcao)>=2 & as.numeric(meta_bxcx2$Curtose)>=3.5, 1, 0)
+        meta_bxcx = rbind(meta_bxcx1,meta_bxcx2)
+
+       {if (meta_bxcx1$BoxCox == 1) 
+        {data_bcx[dados[cluster==1]] <-sfunc_bxcx(dados[dados[cluster==1,]])} 
+        else(meta_bxcx1$BoxCox == 0) 
+        {data_bcx[dados[cluster==1]] <-dados[dados[cluster==1]]}}
+
+        {if (meta_bxcx2$BoxCox == 1) 
+        {data_bcx[dados[cluster==2]] <-sfunc_bxcx(dados[dados[cluster==2]])} 
+        else(meta_bxcx2$BoxCox == 0) 
+        {data_bcx[dados[cluster==2]] <-dados[dados[cluster==2]]} }
+        } 
+
+        else
+       {meta_bxcx <- data.frame(Nome=nome,
+                          Classe="Score",
+                          BoxCox = NA, 
+                          Distorcao = NA,
+                          Curtose = NA) 
+        meta_bxcx$BoxCox = NA
+        data_bcx <- dados}
+
 result <- list(iMeta = meta_bxcx,
                iData = data_bcx)
 return(result)}
