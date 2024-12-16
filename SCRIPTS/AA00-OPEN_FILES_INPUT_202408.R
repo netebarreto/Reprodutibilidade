@@ -51,20 +51,16 @@ iData_bruto <-  openxlsx::read.xlsx(inxlsx, sheet = "Dados_RH_INDBRT")
 ###### 
 
 source("SCRIPTS/FUNCTION/ADPResumo.r")
-resumo1 = res_bruto(x1=iData_bruto[,-c(1:4)], y1 = iMeta_adapta$Classe,z1=iData_bruto[,4],b1=colnames(iData_bruto[,-c(1:4)]))
-
+resumo_brutos = ADPResumo(dbruto=iData_bruto, 
+                           classe = iMeta_adapta$Classe,
+                           m_cluster=iData_bruto[,4],
+                           nome_col=colnames(iData_bruto))
 
 ######  "Winsorization" ##### 
 
 source("SCRIPTS/FUNCTION/ADPwinsorise.r")
-iData_winsor = ADPwinsorise(iData_bruto,iMeta_adapta)
 
 
-######## Box Cox ###########
+(iData_winsor = ADPwinsorise(iData_bruto,iMeta_adapta))
 
-source("SCRIPTS/FUNCTION/ADPBoxCox.r")
-
-iData_boxcox = ADPBoxCox(dados=iData_winsor$Winsorise[,5],classe = iMeta_adapta$Classe[1],cluster=iData_winsor$Winsorise[,4],nome=colnames(iData_winsor$Winsorise)[5])
-
-res1 = mapply(ADPBoxCox,dados=iData_winsor$Winsorise[,-c(1:4)],classe = iMeta_adapta$Classe,cluster=iData_winsor$Winsorise[,4],nome=colnames(iData_winsor$Winsorise[,-c(1:4)]))
-
+############### 
