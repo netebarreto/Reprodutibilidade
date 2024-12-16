@@ -28,7 +28,7 @@ sum_start <- function(x,y=NULL,z,b)
                                       Max=round(fnum2[5],2))
                             resumo <- rbind(resumo1,resumo2)          
                                       }
-                            else
+                            else if(y == "Score")
                             {resumo<-cbind(iName=b,
                                       Classe="Score",
                                       Min=NA,
@@ -36,12 +36,27 @@ sum_start <- function(x,y=NULL,z,b)
                                       Mediana=NA,
                                       quartil3=NA,
                                       Max=NA)}
+                                 else if (y == "Descricao")
+                                      {resumo<-cbind(iName=b,
+                                      Classe="Descricao",
+                                      Min=NA,
+                                      quartil1=NA,
+                                      Mediana=NA,
+                                      quartil3=NA,
+                                      Max=NA)}
                 return(resumo)}                             
 
-res_bruto<-function(x1,y1,z1,b1)
-                {
-                   res1 = mapply(sum_start,x=as.data.frame(x1), y = y1,z=as.data.frame(z1),b=b1)
+ADPResumo<-function(dbruto,classe,m_cluster,nome_col)
+                { 
+                   res1 = mapply(sum_start,x=as.data.frame(dbruto), y = classe,z=as.data.frame(m_cluster),b=nome_col)
                    res2 = do.call(rbind,lapply(res1, function(x) x))
+                  res3 = tibble::as_tibble(res2)
 
-                   return(res2)
+                  res3 <- dplyr::mutate(res3,
+                        Min = as.numeric(Min),
+                        Quartil1 = as.numeric(quartil1),
+                        Mediana = as.numeric(Mediana),
+                        Quartil3 = as.numeric(quartil3),
+                        Max = as.numeric(Max))
+                   return(res3)
                 }
