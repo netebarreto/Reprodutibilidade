@@ -63,4 +63,36 @@ source("SCRIPTS/FUNCTION/ADPwinsorise.r")
 
 (iData_winsor = ADPwinsorise(iData_bruto,iMeta_adapta))
 
-############### 
+
+######## Box Cox ###########
+
+source("SCRIPTS/FUNCTION/ADPBoxCox.r")
+
+iData_boxcox = ADPBoxCox(dados=iData_winsor$Winsorise[,5],classe = iMeta_adapta$Classe[5],cluster=iData_winsor$Winsorise[,4],nome=colnames(iData_winsor$Winsorise)[5])
+
+res1$iMeta = NULL
+res1$iData = NULL 
+
+for(i in 5:NCOL(iData_winsor$Winsorise)) 
+{
+iData_boxcox = ADPBoxCox(dados=iData_winsor$Winsorise[,i],classe = iMeta_adapta$Classe[i-4],cluster=iData_winsor$Winsorise[,4],nome=colnames(iData_winsor$Winsorise)[i])
+
+res1$iMeta = rbind(res1$iMeta,iData_boxcox$iMeta) 
+res1$iData = cbind(res1$iData,iData_boxcox$iData) 
+
+print(i)
+}
+
+res_bruto<-function(x1,y1,z1,b1)
+                {
+                   res1 = mapply(ADPBoxCox,dados=as.data.frame(x1), classe = y1,cluster=as.data.frame(z1),nome=b1)
+                   res2 = do.call(rbind,lapply(res1, function(x) x))
+
+                   return(res2)
+                }
+
+
+                
+res1 = res_bruto(x1=iData_winsor$Winsorise[,5:6],y1 = iMeta_adapta$Classe[1:2],z1=iData_winsor$Winsorise[,4],b1=colnames(iData_winsor$Winsorise[,c(5:6)]))
+
+
