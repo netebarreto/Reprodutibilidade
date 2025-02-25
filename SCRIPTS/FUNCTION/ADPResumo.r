@@ -1,62 +1,133 @@
-#### CRIAÇÃO DOS RESUMOS SEM WINSORISAÇÃO ##### 
-sum_start <- function(x,y=NULL,z,b) 
-                { if(y == "Numérico") 
-                      {fnum = fivenum(x) 
-                      resumo<-cbind(iName=b,
-                                      Classe="Numérico",
-                                      Min=fnum[1],
-                                      quartil1=fnum[2],
-                                      Mediana=fnum[3],
-                                      quartil3=fnum[4],
-                                      Max=fnum[5])}
-                    else  if(y == "Cluster")
-                            {fnum1 = fivenum(x[z==1]) 
-                            resumo1<-cbind(iName=b,
-                                      Classe="Grupo 1",
-                                      Min=round(fnum1[1],2),
-                                      quartil1=round(fnum1[2],2),
-                                      Mediana=round(fnum1[3],2),
-                                      quartil3=round(fnum1[4],2),
-                                      Max=round(fnum1[5],2))
-                            fnum2 = fivenum(x[z==2]) 
-                            resumo2<-cbind(iName=b,
-                                      Classe="Grupo 2",
-                                      Min=round(fnum2[1],2),
-                                      quartil1=round(fnum2[2],2),
-                                      Mediana=round(fnum2[3],2),
-                                      quartil3=round(fnum2[4],2),
-                                      Max=round(fnum2[5],2))
-                            resumo <- rbind(resumo1,resumo2)          
-                                      }
-                            else if(y == "Score")
-                            {resumo<-cbind(iName=b,
-                                      Classe="Score",
-                                      Min=NA,
-                                      quartil1=NA,
-                                      Mediana=NA,
-                                      quartil3=NA,
-                                      Max=NA)}
-                                 else if (y == "Descricao")
-                                      {resumo<-cbind(iName=b,
-                                      Classe="Descricao",
-                                      Min=NA,
-                                      quartil1=NA,
-                                      Mediana=NA,
-                                      quartil3=NA,
-                                      Max=NA)}
-                return(resumo)}                             
 
-ADPResumo<-function(dbruto,classe,m_cluster,nome_col)
-                { 
-                   res1 = mapply(sum_start,x=as.data.frame(dbruto), y = classe,z=as.data.frame(m_cluster),b=nome_col)
-                   res2 = do.call(rbind,lapply(res1, function(x) x))
-                  res3 = tibble::as_tibble(res2)
+library(dplyr)
+library(tidyr)
 
-                  res3 <- dplyr::mutate(res3,
-                        Min = as.numeric(Min),
-                        Quartil1 = as.numeric(quartil1),
-                        Mediana = as.numeric(Mediana),
-                        Quartil3 = as.numeric(quartil3),
-                        Max = as.numeric(Max))
-                   return(res3)
-                }
+# Função para criar resumos estatísticos
+criar_resumo <- function(data, class_type, cluster = NULL, name) {
+  
+  #percentual de outlines
+
+  # Contagem de NAs
+  na_count <- sum(is.na(data))
+  na_percent <- round(na_count / length(data) * 100, 2)
+  
+  # Contagem de valores únicos
+  unique_count <- length(unique(data[!is.na(data)]))
+  unique_percent <- round(unique_count / length(data[!is.na(data)]) * 100, 2)
+  
+  if (class_type == "Numérico") {
+    fnum <- boxplot.stats(data)$stats
+    per_out <- round(length(boxplot.stats(data)$out)/length(data) * 100, 2)
+    summary <- tidyr::tibble(
+      iName = name,
+      Classe = "Numérico",
+      Min = fnum[1],
+      quartil1 = fnum[2],
+      Mediana = fnum[3],
+      quartil3 = fnum[4],
+      Max = fnum[5],
+      Outliers_Per = per_out,
+      NAs = na_count,
+      Percentual_NAs = na_percent,
+      Valores_Unicos = unique_count,
+      Percentual_Unicos = unique_percent
+    )
+  } else if (class_type == "Cluster") {
+    if (is.null(cluster)) {
+      stop("Cluster information must be provided for 'Cluster' class type.")
+    }
+    
+    # Resumo para cada grupo de cluster
+    cluster_summary <- lapply(unique(cluster), function(cl) {
+      cluster_data <- data[cluster == cl & !is.na(data)]
+      fnum <- boxplot.stats(data)$stats
+      per_out <- round(length(boxplot.stats(data[cluster == cl])$out)/length(data[cluster == cl]) * 100, 2)
+      tidyr::tibble(
+        iName = name,
+        Classe = paste("Grupo", cl),
+        Min = round(fnum[1], 2),
+        quartil1 = round(fnum[2], 2),
+        Mediana = round(fnum[3], 2),
+        quartil3 = round(fnum[4], 2),
+        Max = round(fnum[5], 2),
+        Outliers_Per = per_out,
+        NAs = sum(is.na(data[cluster == cl])),
+        Percentual_NAs = round(sum(is.na(data[cluster == cl])) / length(data[cluster == cl]) * 100, 2),
+        Valores_Unicos = length(unique(cluster_data)),
+        Percentual_Unicos = round(length(unique(cluster_data)) / length(cluster_data) * 100, 2)
+      )
+    }) %>% dplyr::bind_rows()
+    
+    # Resumo para o conjunto completo
+    full_summary <- tidyr::tibble(
+      iName = name,
+      Classe = "Conjunto Completo",
+      Min = round(min(data, na.rm = TRUE), 2),
+      quartil1 = round(quantile(data, 0.25, na.rm = TRUE), 2),
+      Mediana = round(median(data, na.rm = TRUE), 2),
+      quartil3 = round(quantile(data, 0.75, na.rm = TRUE), 2),
+      Max = round(max(data, na.rm = TRUE), 2),
+      Outliers_Per = round(length(boxplot.stats(data)$out)/length(data) * 100, 2),
+      NAs = na_count,
+      Percentual_NAs = na_percent,
+      Valores_Unicos = unique_count,
+      Percentual_Unicos = unique_percent
+    )
+    
+    # Combinar resumos
+    summary <- dplyr::bind_rows(full_summary, cluster_summary)
+  } else {
+    summary <- tidyr::tibble(
+      iName = name,
+      Classe = "Score",
+      Min = NA,
+      quartil1 = NA,
+      Mediana = NA,
+      quartil3 = NA,
+      Max = NA,
+      Outliers_Per = NA,
+      NAs = NA,
+      Percentual_NAs = NA,
+      Valores_Unicos = NA,
+      Percentual_Unicos = NA
+    )
+  }
+  
+  return(summary)
+}
+
+# Função principal para gerar resumos brutos
+ADPresumo <- function(data, class_types, clusters, names) {
+  if (ncol(data) != length(class_types) || ncol(data) != length(names)) {
+    stop("Number of columns in data must match the length of class_types and names.")
+  }
+  
+  resumo <- lapply(seq_along(names), function(i) {
+    criar_resumo(data[[i]], class_types[i], clusters, names[i])
+  })
+  
+  resumo_combinado <- dplyr::bind_rows(resumo)
+  
+  # Substituir NA por -
+  resumo_combinado <- resumo_combinado %>%
+    dplyr::mutate(across(everything(), ~ ifelse(is.na(.), "-", .)))
+
+
+res_basico <- as.data.frame(t(resumo_combinado)[2:8,]) 
+colnames(res_basico) <- resumo_combinado$iName
+
+resumo_na<-resumo_combinado[,c(1,9:12)]
+resumo_na$Recomendacao = NA
+resumo_na$Recomendacao = ifelse(resumo_combinado$Percentual_Unicos=="-","-",ifelse(resumo_combinado$Percentual_Unicos<=1,
+                              "Tratar como Score",
+                              ifelse((resumo_combinado$Percentual_Unicos>1 & resumo_combinado$Percentual_Unicos<=10),
+                                 "Não Efetuar Analise de outliers",
+                                       "Prosseguir")))
+
+result_resumo <- list(resumo_total = resumo_combinado,
+                      resumo_basico = res_basico,
+                      resumo_na = resumo_na)
+  
+  return(result_resumo)
+}
+
