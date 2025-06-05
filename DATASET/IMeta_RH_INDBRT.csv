@@ -26,5 +26,5 @@ N;Level;iCode;iName;Score_ADP;Direction;Weight;Unit;Target;Denominator;Parent;Ty
 25;1;IMAP;Inexistência de manejo de águas pluviais;-1;1;1;UNDEF;1;UNDEF;Level2;Indicator
 26;1;DAR;Domicílios em áreas de risco;0;1;1;UNDEF;1;UNDEF;Level2;Indicator
 27;1;DPAU;Densidade da população em áreas urbanizadas;0;1;1;UNDEF;1;UNDEF;Level2;Indicator
-28;1;P2020;Presente 2020;;1;1;UNDEF;1;UNDEF;Level2;Indicator
+28;1;P2020;Presente 2020;0;1;1;UNDEF;1;UNDEF;Level2;Indicator
 29;2;Level2;Teste para Level 2;;1;1;NA;;;NA;Aggregate

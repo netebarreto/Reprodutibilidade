@@ -21,7 +21,6 @@ rm(list=ls())
 
 f1<-function(){shell("cls")}
 
-
 ### 
 
 # Path_p --> Variavel que determina a localização do Diretorio principal das Pastas e Arquivos 
@@ -46,77 +45,54 @@ winsorise_plan    <- openxlsx::read.xlsx(xlsx_file, sheet = "Winsorization")
 
 #### Leitura das Tabelas e Verificação ##### 
 
-### Arquivo em .csv separado por (;) e decimal (.) 
-    ####        No caso das colunas de string, celulas em branco devem ter NA
-    ####        Nas colunas numéricas não há necessidade. 
-####
-
-iMeta_in <- read.csv("DATASET/IMeta_RH_INDBRT.csv",sep=";",dec=".",header=TRUE,fileEncoding="latin1")
-
-iMeta_adapta <- data.frame(iMeta_in, stringsAsFactors = default.stringsAsFactors())
-
+inxlsx <- openxlsx::loadWorkbook(file = "DATASET/Base_inicial_RH_INDBRT.xlsx")
+iMeta_adapta   <- openxlsx::read.xlsx(inxlsx, sheet = "Metadados")
+iData_bruto <-  openxlsx::read.xlsx(inxlsx, sheet = "Dados_RH_INDBRT")
 ###### 
 
-iData_bruto <- as.data.frame(read.csv("DATASET/IData_RH_INDBRT.csv",sep=";",dec=",",header=TRUE))
-
-UCode<-paste0(iData_bruto$UF,iData_bruto$Geocódigo)
-iData_bruto$uCode = UCode
-
+source("SCRIPTS/FUNCTION/ADPResumo.r")
+resumo_brutos = ADPResumo(dbruto=iData_bruto, 
+                           classe = iMeta_adapta$Classe,
+                           m_cluster=iData_bruto[,4],
+                           nome_col=colnames(iData_bruto))
 
 ######  "Winsorization" ##### 
 
 source("SCRIPTS/FUNCTION/ADPwinsorise.r")
-iData_winsor = ADPwinsorise(iData_bruto,iMeta_adapta)
+
+
+(iData_winsor = ADPwinsorise(iData_bruto,iMeta_adapta))
 
 
 ######## Box Cox ###########
 
 source("SCRIPTS/FUNCTION/ADPBoxCox.r")
-iData_boxcox = ADPBoxCox(iData_winsor$Winsorise)
 
-iMeta_adapta$BoxCox=c(iData_boxcox$iMeta$BoxCox,NA)
+iData_boxcox = ADPBoxCox(dados=iData_winsor$Winsorise[,5],classe = iMeta_adapta$Classe[5],cluster=iData_winsor$Winsorise[,4],nome=colnames(iData_winsor$Winsorise)[5])
 
-######## Normalização ###########
-source("SCRIPTS/FUNCTION/ADPNormalise.r")
-iData_boxcox = ADPNormalise(iData_boxcox$iData)
+res1$iMeta = NULL
+res1$iData = NULL 
+
+for(i in 5:NCOL(iData_winsor$Winsorise)) 
+{
+iData_boxcox = ADPBoxCox(dados=iData_winsor$Winsorise[,i],classe = iMeta_adapta$Classe[i-4],cluster=iData_winsor$Winsorise[,4],nome=colnames(iData_winsor$Winsorise)[i])
+
+res1$iMeta = rbind(res1$iMeta,iData_boxcox$iMeta) 
+res1$iData = cbind(res1$iData,iData_boxcox$iData) 
+
+print(i)
+}
+
+res_bruto<-function(x1,y1,z1,b1)
+                {
+                   res1 = mapply(ADPBoxCox,dados=as.data.frame(x1), classe = y1,cluster=as.data.frame(z1),nome=b1)
+                   res2 = do.call(rbind,lapply(res1, function(x) x))
+
+                   return(res2)
+                }
 
 
-
-### Gerando as figuras de comparação 
-
-winsorise_plan <- as.data.frame(winsorise_plan[6:5575,-c(34:37)])
-colnames(winsorise_plan) <- c(colnames(iData_input)[c(3:1)][-2],colnames(iData_input)[-c(1:3)]) 
-
-winsorise_plan[,-c(1:5)] <- lapply(winsorise_plan[,-c(1:5)], as.numeric) 
-
-compare_winsor<-data.frame(mapply("-",iData_winsor[,nn],winsorise_plan[,-c(2:5)][,nn]))
+                
+res1 = res_bruto(x1=iData_winsor$Winsorise[,5:6],y1 = iMeta_adapta$Classe[1:2],z1=iData_winsor$Winsorise[,4],b1=colnames(iData_winsor$Winsorise[,c(5:6)]))
 
 
-RES<-300 ; SIZE=450 ; ARG2 = 1.2 ; psize = 16
-namefile = "RESPOSTAS/FIGURAS/COMPARE_WINSORISE.png"
-png(namefile,width=6.5*SIZE,height=9*SIZE,type='windows',res=RES,pointsize=psize)
-par(mar=c(1,1,1,0), mai=c(1,1.5,1,0.2),xpd=TRUE)
-titulo = strwrap("Diferença entre a funçao winsorization e o winsorization aplicado no excell",50)
-boxplot(compare_winsor,horizontal=TRUE,las=1,main=titulo)
-dev.off()
-
-######### Gerando Mapas de Comparação da Diferença entre os calculos 
-
-shp_mun<-sf::st_transform(sf::st_read('DATASET/SHP/BR_Municipios_2022.shp'),crs=4326)
-shp_uf<-sf::st_transform(sf::st_read('DATASET/SHP/BR_UF_2022.shp'),crs=4326)
-
-SHP_0 <- base::merge(shp_mun,cbind(Geocódigo=winsorise_plan[,1],compare_winsor) , by.x = "CD_MUN", by.y = "Geocódigo")
-
-nome_col = "DAR"
-nome_ind = iMeta_adapta$iName[which(iMeta_adapta$iCode==nome_col)]
-maps_compare = ggplot2::ggplot(data = SHP_0) +
-  ggplot2::geom_sf(ggplot2::aes(fill = !!rlang::sym(nome_col)),color=NA)+
-  ggplot2::scale_fill_distiller(palette ="Reds", direction = -1,n.breaks = 10,
-  guide = ggplot2::guide_colourbar(barwidth = 0.4, barheight = 25,title.position = "top"))+
-  ggplot2::geom_sf(data = shp_uf,fill = NA, colour = "#7f7f7f", size=0.5)+
-  ggplot2::ggtitle(paste0("Comparação entre os calculos de Winsorization (Função - Excel)) \n Indicador: ",nome_ind," - ",nome_col))+
-  ggplot2::theme(legend.title=ggplot2::element_text(size=12), 
-        legend.text=ggplot2::element_text(size=10))
-
-maps_compare   
-  
