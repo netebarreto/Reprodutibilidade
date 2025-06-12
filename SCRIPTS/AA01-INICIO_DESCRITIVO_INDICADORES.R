@@ -15,19 +15,9 @@
 #           COINr_1.1.14
 #           lubridate_1.9.3  
 #           openxlsx_4.2.6.1
-#     
+#           bestNormalize_1.9.1 (2025-05-28)     
 ###########################################################################
 
-rm(list=ls())
-### Função que Limpa o terminal #### 
-
-
-### 
-f1<-function(){shell("cls")}
-
-# Path_p --> Variavel que determina a localização do Diretorio principal das Pastas e Arquivos 
-
-Path_p <- "c:/Users/Nete/Documents/NETE_PROJETOS/AB01-PROJETOS_INSTITUCIONAIS/INPE/ADAPTABRASIL/GIT_ADAPTA/reprodutibilidade"
 
 ### No Diretório dos Arquivos contém 4 pasta : 
 #                SCRIPT      - Rotinas e Funções 
@@ -36,37 +26,39 @@ Path_p <- "c:/Users/Nete/Documents/NETE_PROJETOS/AB01-PROJETOS_INSTITUCIONAIS/IN
 #                DESCRITORES - Arquivos com Descrições   
 
 ## Modifica o diretório de trabalho do R para o diretório principal
-setwd(Path_p)
-
 
 #### LEITURA DOS DADOS ADAPTADOS PARA A ROTINA  ##### 
 # Duas planilhas de dados, a primeira com metadados e a segunda com os dados brutos 
 
-inxlsx <- openxlsx::loadWorkbook(file = "DATASET/Base_inicial_SA_Acesso.xlsx")
-iMeta_adapta   <- openxlsx::read.xlsx(inxlsx, sheet = "Metadados")
-iData_bruto <-  openxlsx::read.xlsx(inxlsx, sheet = "Dados_RA_Acesso")
-
 #### CRIAÇÃO DOS RESUMOS SEM WINSORISAÇÃO ##### 
 #### Faz o Calculo das Estatísticas Descritivas, percentual de NA e Valores Unicos 
 
+rm(list=ls())
+### Função que Limpa o terminal #### 
+### 
+f1<-function(){shell("cls")}
+
+# Path_p --> Variavel que determina a localização do Diretorio principal das Pastas e Arquivos 
+
+Path_p <- "c:/Users/Nete/Documents/NETE_PROJETOS/AB01-PROJETOS_INSTITUCIONAIS/INPE/ADAPTABRASIL/GIT_ADAPTA/reprodutibilidade"
+
+setwd(Path_p)
+
 source("SCRIPTS/FUNCTION/F01_ADPResumo.r")
-
-iMeta_N7=subset(iMeta_adapta,Nivel==7)
-iData_ref = iData_bruto[,c(1:4)]
-iData_N7 = iData_bruto[,-c(1:4)]
-
-resumo_bruto <- ADPresumo(iData_N7, iMeta_N7$Classe, iData_ref[,4], colnames(iData_N7))
-
-######  "Winsorization" ##### 
-### Aplica o Winsorization, pelos critérios do AdapaTa 
-
 source("SCRIPTS/FUNCTION/F02_ADPwinsorise.r")
-iData_winsor = ADPwinsorise(iData=iData_N7,iMeta=iMeta_N7,iRef=iData_ref[,4])
+source("SCRIPTS/FUNCTION/F03_ADPBoxCox.r")
+source("SCRIPTS/FUNCTION/F04_ADPNormalise.r")
+source("SCRIPTS/FUNCTION/F07_ADP_GeraExcell.r")
+
+
+result = Tratamento(input="DATASET/Base_inicial_SA_Acesso.xlsx",
+           iMeta = "Metadados",
+           iData = "Dados_RA_Acesso")
+
 
 ## # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #    
 #
-## # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
-
+## # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #  
 
 f1()
 # ### 
@@ -84,61 +76,27 @@ library(magrittr)
 source("SCRIPTS/FUNCTION/F06_ADPCriar_pptx_E01.R")
 source("SCRIPTS/FUNCTION/F05_ADPGraficos.R")
 
-infile <- "TEMPLATE/ADAPTA_RESUMO.pptx"
-
-outfile2 = create_pptx(template=infile,
-            meta_dados = iMeta_adapta, 
-            setor_estrategico="Segurança Alimentar",
-            sigla="SA",
-            subsetor="ACESSO")
-
+#################################################### 
 ####################################################
-slides_result(
-  caminho_shp_mun = "DATASET/SHP/BR_Municipios_2022.shp",
-  caminho_shp_uf = "DATASET/SHP/BR_UF_2022.shp",
-  resumo_bruto = resumo_bruto,
-  iMeta_adapta = iMeta_N7,
-  iData_N7 = iData_N7,
-  iData_ref = iData_ref,
-  RES=TRUE,
-  WIN=TRUE,
-  BXC=NULL,
-  iDataWIN = iData_winsor,
-  local_output = outfile2)
+slides_resultT(
+  template          = "TEMPLATE/ADAPTA_RESUMO.pptx",
+  meta_dados        = iMeta_adapta, 
+  setor_estrategico = "Segurança Alimentar",
+  sigla             = "SA",
+  subsetor          = "ACESSO",
+  caminho_shp_mun   = "DATASET/SHP/BR_Municipios_2022.shp",
+  caminho_shp_uf    = "DATASET/SHP/BR_UF_2022.shp",
+  ind               = NCOL(idata_N7),
+  RESU              = TRUE,
+  WINZ              = TRUE,
+  BXCX              = TRUE,
+  NORM              = TRUE,
+  resumo            = result$Resumo,
+  meta_adapta       = result$iMeta,
+  reference         = result$Ref,
+  databruto         = result$DadosB,
+  datawinz          = result$Data_Win,
+  databxcx          = result$Data_Bxc,
+  datanorm          = result$Data_Normal)
 
-
-######## Box Cox ###########
-
-source("SCRIPTS/FUNCTION/F03_ADPBoxCox.r")
-
-classe = iMeta_N7$Classe[1]
-cluster=iData_ref[,4]
-nome=colnames(iData_N7)[1]
-
-dados=iData_winsor$iData[,1]
-dados1=iData_N7[,1]
-
-        meta_bxcx <- data.frame(Nome=nome,
-                          Classe="Numérico",
-                          BoxCox = NA, 
-                          Distorcao = COINr::skew(dados,na.rm=TRUE),
-                          Curtose = COINr::kurt(dados,na.rm=TRUE)) 
-        meta_bxcx$BoxCox = ifelse(as.numeric(meta_bxcx$Distorcao)>=2 & as.numeric(meta_bxcx$Curtose)>=3.5, 1, 0)
-
-       meta_bxcx1 <- data.frame(Nome=nome,
-                          Classe="Numérico",
-                          BoxCox = NA, 
-                          Distorcao = COINr::skew(dados1,na.rm=TRUE),
-                          Curtose = COINr::kurt(dados1,na.rm=TRUE)) 
-        meta_bxcx1$BoxCox = ifelse(as.numeric(meta_bxcx1$Distorcao)>=2 & as.numeric(meta_bxcx1$Curtose)>=3.5, 1, 0)
-
-data_bcx <-data.frame(Teste_CW=sfunc_bxcx(dados))
-data_bcx1 <-data.frame(Teste_SW=sfunc_bxcx(dados1))
-
-source("SCRIPTS/FUNCTION/F04_ADPNormalise.r")
-data_Nbcx <-data.frame(Teste_CW=sfunc_norm(dados))
-data_Nbcx1 <-data.frame(Teste_SW=sfunc_norm(dados1))
-
-
-
-
+#################################################### ########## 
