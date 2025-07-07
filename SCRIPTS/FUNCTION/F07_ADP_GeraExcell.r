@@ -11,13 +11,14 @@ Tratamento <- function(input="INPUT.xlsx",
 imeta_N7 = subset(iMeta_adapta,Nivel==7)
 data_ref = iData_bruto[,c(1:4)]
 idata_N7 = round(iData_bruto[,-c(1:4)],2)
+colnames(idata_N7) <- colnames(iData_bruto[,-c(1:4)])
 resumo <- ADPresumo(idata_N7, imeta_N7$Classe, data_ref[,4], colnames(idata_N7))
 
 data_winsor <- ADPwinsorise(iData=idata_N7,iMeta=imeta_N7,iRef=data_ref[,4])
 
 data_bxcx <- ADPBoxCox(data_winsor$iData,idata_N7,imeta_N7$Classe,data_ref[,4],
                       colnames(idata_N7),metodo="forecast")
-data_normal <- ADPNormalise(data_bxcx$data,colnames(idata_N7))
+data_normal <- ADPNormalise(data_bxcx$data)
 
     xlsx_res <- openxlsx::createWorkbook()
     openxlsx::addWorksheet(xlsx_res, "Descritivo")
