@@ -1,3 +1,4 @@
+
 ###################################################################
 #
 #
@@ -7,7 +8,7 @@
 # ppt <- on_slide(ppt, index = 1)
 
 create_pptx <- function(template="infile.pptx",
-                        meta_dados = metadados,  
+                        meta_dados = meta_adapta,  
                         setor_estrategico="Setor Estrategico",
                         sigla="SE",
                         subsetor=NULL) 
@@ -30,7 +31,7 @@ create_pptx <- function(template="infile.pptx",
                       slide_01(caixa = caixa_ref,
                                subtitulo = sub_title,
                                ppt_in=ppt)
-                      slide_02(meta_dados, 
+                      slide_02(meta_dados = meta_dados, 
                                subtitulo = sub_title, 
                                ppt_in = ppt) 
                       print(ppt, target = outfile) 
@@ -60,7 +61,7 @@ slide_01 <- function(subtitulo = "Tabela Gerada no R",
                             alignment = "l" )) }
 
 
-slide_02 <- function(meta_dados, 
+slide_02 <- function(meta_dados=meta_dados, 
                      subtitulo = sub_title, 
                      ppt_in = ppt) 
                      {
@@ -446,7 +447,7 @@ slides_resultP <- function(
 
 slides_resultT <- function(
   template          = "infile.pptx",
-  meta_dados        = metadados,  
+#  meta_dados        = metadados,  
   setor_estrategico = "Setor Estrategico",
   sigla             = "SE",
   subsetor          = NULL,  
@@ -467,7 +468,7 @@ slides_resultT <- function(
                     {
 
   local_output = create_pptx(template=template,
-                              meta_dados = meta_dados,  
+                              meta_dados = meta_adapta,  
                               setor_estrategico=setor_estrategico,
                               sigla=sigla,
                               subsetor=subsetor) 

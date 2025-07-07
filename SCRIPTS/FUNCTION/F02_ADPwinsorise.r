@@ -1,3 +1,4 @@
+
 wins_par <- function(Y,a,b) 
               {   
               # Funçao calcula os limites de Winsorization
