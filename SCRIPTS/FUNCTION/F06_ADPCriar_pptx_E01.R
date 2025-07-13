@@ -68,7 +68,7 @@ slide_02 <- function(meta_dados=meta_dados,
   gerar_diagrama_setor(
         data = meta_dados,
         setor_e = subtitulo,
-        output_file = "diagrama.png",
+        output_file = "TEMP_FILES/diagrama.png",
         width = 1600,
         height = 1000
         )
@@ -77,7 +77,7 @@ slide_02 <- function(meta_dados=meta_dados,
     add_slide(layout = "Title and Content", master = "Office Theme") %>%
     ph_with("Indicadores e Indices", location = ph_location_type("title")) %>%
     ph_with(
-      external_img("diagrama.png", width =31.6 , height = 14,unit="cm"),  # Tamanho exibido no slide
+      external_img("TEMP_FILES/diagrama.png", width =31.6 , height = 14,unit="cm"),  # Tamanho exibido no slide
       location = ph_location(left = 0.5, top = 0.75),use_loc_size = FALSE )
   # Salvar o arquivo no caminho especificado
 
@@ -466,7 +466,7 @@ slides_resultT <- function(
   databxcx          = datab,
   datanorm          = datan)
                     {
-
+  dir.create("TEMP_FILES")
   local_output = create_pptx(template=template,
                               meta_dados = meta_adapta,  
                               setor_estrategico=setor_estrategico,
@@ -475,18 +475,17 @@ slides_resultT <- function(
   # Carrega os shapefiles e projeta para WGS 84
   shp_mun <- sf::st_transform(sf::st_read(caminho_shp_mun,quiet=TRUE), crs = 4326)
   shp_uf  <- sf::st_transform(sf::st_read(caminho_shp_uf,quiet=TRUE), crs = 4326)
-  
+
   res_basico <- resumo$resumo_basico
 
   K <- ifelse(!is.null(ind),ind,NCOL(res_basico))
 
-  for (i in 1:K) {   #ncol(res_basico)) {
+  for (i in 1:K) {   
     tab.descricao <- meta_adapta[which(meta_adapta$Code == colnames(res_basico)[i]), -7]
     
     tab_stats <- tibble::tibble(
-      Resumo = rownames(resumo[[2]]),
-      Descritivo = resumo[[2]][, i]
-    )
+                Resumo = rownames(resumo[[2]]),
+                Descritivo = resumo[[2]][, i] )
     colnames(tab_stats)[1] <- "Resumo Estatístico"
     
     tab_NAs <- resumo$resumo_na[i, -1]
@@ -494,30 +493,18 @@ slides_resultT <- function(
     icode <- tab.descricao$Code
     iclasse <- tab_stats$Descritivo[1]
     
-    title_slide <- ifelse(iclasse == "Grupo 1",
-                          paste0(tab.descricao$Nome, " - ", icode, " (GRUPO 1)"),
-                          ifelse(iclasse == "Grupo 2",
-                                 paste0(tab.descricao$Nome, " - ", icode, " (GRUPO 2)"),
-                                 ifelse(iclasse == "Conjunto Completo",
-                                        paste0(tab.descricao$Nome, " - ", icode, " (GERAL)"),
-                                        paste0(tab.descricao$Nome, " - ", tab.descricao$Code))))
+    title_slide <- paste0(tab.descricao$Nome, " - ", tab.descricao$Code)
     
     idata <- as.data.frame(databruto[[icode]])
     colnames(idata) <- icode
-    
-    if (iclasse == "Grupo 1") {
-      idata[reference$CLUSTER != 1, ] <- NA
-    }
-    if (iclasse == "Grupo 2") {
-      idata[reference$CLUSTER != 2, ] <- NA
-    }
-    
+   
     Titulo_map <- paste0(c("Indicador Bruto: ",
                            "Indicador Winsorization: ",
                            "Indicador BoxCox: ",
                            "Indicador Normalizado: "), icode)
+
     criar_grafico(idata, 
-                  nome_arquivo = "gra_descricao.png", 
+                  nome_arquivo = "TEMP_FILES/gra_descricao.png", 
                   largura = 24, altura = 12, 
                   nvalores = icode,
                   fsize = 50)
@@ -526,7 +513,7 @@ slides_resultT <- function(
                Titulo = Titulo_map[1],
                shp_mun = shp_mun,
                shp_uf = shp_uf,
-               nome_arquivo = "map_bruto.png", 
+               nome_arquivo = "TEMP_FILES/map_bruto.png", 
                largura = 20, altura = 24, fsize = 36)
 
     if(RESU) 
@@ -536,8 +523,8 @@ slides_resultT <- function(
                        tabela3 = tab_NAs,
                        titulo = title_slide,
                       caminho_arquivo = local_output,
-                       caminho_imagem = "gra_descricao.png",
-                       caminho_map = "map_bruto.png") 
+                       caminho_imagem = "TEMP_FILES/gra_descricao.png",
+                       caminho_map = "TEMP_FILES/map_bruto.png") 
     }
 
     if(WINZ) 
@@ -557,13 +544,13 @@ slides_resultT <- function(
                 Titulo = Titulo_map[2],
                 shp_mun = shp_mun,
                 shp_uf = shp_uf,
-                nome_arquivo = "map_Wins.png", 
+                nome_arquivo = "TEMP_FILES/map_Wins.png", 
                 largura = 20, altura = 24, fsize = 36)
           iwinsor$Aplicacao = ifelse(iwinsor$Aplicacao == "A","Winsorization aplicado nos limites inferior e superior",ifelse(iwinsor$Aplicacao == "S","Winsorization aplicado no limite superior","Winsorization aplicado no limite inferior"))
           slides_generico(tabela1 = iwinsor,
                     titulo = title_slide,
                     caminho_arquivo = local_output,
-                    caminho_map = "map_Wins.png") 
+                    caminho_map = "TEMP_FILES/map_Wins.png") 
         }
       }
 
@@ -584,28 +571,29 @@ slides_resultT <- function(
                 Titulo = Titulo_map[3],
                 shp_mun = shp_mun,
                 shp_uf = shp_uf,
-                nome_arquivo = "map_Boxcox.png", 
+                nome_arquivo = "TEMP_FILES/map_Boxcox.png", 
                 largura = 20, altura = 24, fsize = 36)
           ibxcx$BoxCox = "BoxCox aplicado"
           slides_generico(tabela1 = ibxcx,
                     titulo = title_slide,
                     caminho_arquivo = local_output,
-                    caminho_map = "map_Boxcox.png") 
+                    caminho_map = "TEMP_FILES/map_Boxcox.png") 
         }
       }
 
     if(NORM) 
      {    ibxcx_data <- data.frame(databxcx$data[[icode]])
-          norma_data <- data.frame(valores = na.exclude(datanorm[[icode]]))
-          norma_data1 <- data.frame(datanorm[[icode]])          
+          XX <- as.data.frame(datanorm)
+          norma_data <- data.frame(valores = na.exclude(XX[[icode]]))
+          norma_data1 <- data.frame(XX[[icode]])          
           colnames(norma_data1) <- colnames(norma_data) <- icode
 
           #   # Criar um data frame com os dados
-          datacombinado <- na.exclude(data.frame(datanorm[[icode]], databruto[[icode]]))
+          datacombinado <- na.exclude(data.frame(XX[[icode]], databruto[[icode]]))
           colnames(datacombinado) <- c("Normalizado","N_Normalizado")
 
           grafico_final(df1 = datacombinado,df = norma_data, 
-            nome_arquivo = "grafico_final.png", 
+            nome_arquivo = "TEMP_FILES/grafico_final.png", 
             largura = 20, 
             altura = 10, 
             dpi = 100,
@@ -616,16 +604,18 @@ slides_resultT <- function(
                 Titulo = Titulo_map[4],
                 shp_mun = shp_mun,
                 shp_uf = shp_uf,
-                nome_arquivo = "map_Norma.png", 
+                nome_arquivo = "TEMP_FILES/map_Norma.png", 
                 largura = 20, altura = 24, fsize = 36)
 
           slides_normal(dtabxcx = ibxcx_data,
                     titulo = title_slide,
                     caminho_arquivo = local_output,
-                    caminho_grafico = "grafico_final.png",
-                    caminho_map = "map_Norma.png") 
+                    caminho_grafico = "TEMP_FILES/grafico_final.png",
+                    caminho_map = "TEMP_FILES/map_Norma.png") 
         }
-    print(paste0(i, "  de  ", ncol(res_basico)))
+   print(paste0(i, "  de  ", ncol(res_basico)))
           
-  }
+   }
+  unlink("TEMP_FILES", recursive = TRUE)
 }
+
