@@ -1,7 +1,10 @@
 
 Tratamento <- function(input="INPUT.xlsx",
                        iMeta = "Plan_Metadados",
-                       iData  = "Plan_Dados")
+                       iData  = "Plan_Dados",
+                       method_boxcox = "forecast",
+                       sigla="SE",
+                       subsetor=NULL)
 {
   inxlsx       <- openxlsx::loadWorkbook(file = input)
   iMeta_adapta <- openxlsx::read.xlsx(inxlsx, sheet = iMeta)
@@ -17,7 +20,7 @@ resumo <- ADPresumo(idata_N7, imeta_N7$Classe, data_ref[,4], colnames(idata_N7))
 data_winsor <- ADPwinsorise(iData=idata_N7,iMeta=imeta_N7,iRef=data_ref[,4])
 
 data_bxcx <- ADPBoxCox(data_winsor$iData,idata_N7,imeta_N7$Classe,data_ref[,4],
-                      colnames(idata_N7),metodo="forecast")
+                      colnames(idata_N7),metodo=method_boxcox)
 data_normal <- ADPNormalise(data_bxcx$data)
 
     xlsx_res <- openxlsx::createWorkbook()
@@ -45,12 +48,20 @@ data_normal <- ADPNormalise(data_bxcx$data)
     openxlsx::writeData(xlsx_dados,"BoxCox",dadosbxc, startCol = 1,  startRow = 1)
 
     openxlsx::addWorksheet(xlsx_dados, "Normalizado")
-    dadosnorm = data.frame(data_ref[,-4],data_normal)
+    dadosnorm = data.frame(data_ref[,-4],data_normal$iData)
     openxlsx::writeData(xlsx_dados,"Normalizado",dadosnorm, startCol = 1,  startRow = 1)
+##### Gerando nome do arquivo excel #####
+      if(!is.null(subsetor)) {
+        outfilex1 <- paste0("OUTPUT/ANALISE_DESCRITIVA_",sigla,subsetor,"_",format(Sys.time(),"%Y-%m-%d_%Hh%Mm"),".xlsx")
+        
+        outfilex2 <- paste0("OUTPUT/DADOS_TRATADOS_",sigla,subsetor,"_",format(Sys.time(),"%Y-%m-%d_%Hh%Mm"),".xlsx")}
+      else {
+        outfilex1 <- paste0("OUTPUT/ANALISE_DESCRITIVA_",sigla,"_",format(Sys.time(),"%Y-%m-%d_%Hh%Mm"),".xlsx")
+        outfilex2 <- paste0("OUTPUT/DADOS_TRATADOS_",sigla,"_",format(Sys.time(),"%Y-%m-%d_%Hh%Mm"),".xlsx")}
 
-    openxlsx::saveWorkbook(xlsx_res,"Analise_Descritiva.xlsx",overwrite = TRUE)
-    openxlsx::saveWorkbook(xlsx_dados,"Dados_Tratados.xlsx",overwrite = TRUE)
-
+    openxlsx::saveWorkbook(xlsx_res,outfilex1,overwrite = TRUE)
+    openxlsx::saveWorkbook(xlsx_dados,outfilex2,overwrite = TRUE)
+    print("Arquivo Excel Gerado")
     output_result <- list(Ref = data_ref,
     Resumo = resumo,
     iMeta = imeta_N7,
