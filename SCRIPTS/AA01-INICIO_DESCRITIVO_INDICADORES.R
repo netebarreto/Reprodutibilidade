@@ -97,7 +97,7 @@ slides_resultT(
   setor_estrategico = "Segurança Alimentar",
   sigla             = "SA",
   subsetor          = "ACESSO",
-  caminho_shp_mun   = "DATASET/SHP/BR_Municipios_2022.shp",
+  caminho_shp_mun   = "DATASET/SHP/BR_Municipios_2022_gr.shp",
   caminho_shp_uf    = "DATASET/SHP/BR_UF_2022.shp",
   ind               = NULL,#NCOL(result$DadosB),
   RESU              = TRUE,
