@@ -466,7 +466,7 @@ slides_resultT <- function(
   databxcx          = datab,
   datanorm          = datan)
                     {
-  dir.create("TEMP_FILES")
+  if(!file.exists("TESTE1")) dir.create("TESTE1")
   local_output = create_pptx(template=template,
                               meta_dados = meta_adapta,  
                               setor_estrategico=setor_estrategico,
@@ -620,27 +620,3 @@ slides_resultT <- function(
 }
 
 ########################################
-
-
-create_pptx_E02 <- function(template="infile.pptx",
-                        meta_dados = meta_adapta,  
-                        setor_estrategico="Setor Estrategico",
-                        sigla="SE",
-                        subsetor=NULL) 
-                        {
-                          if(!is.null(subsetor)) {
-                            outfile <- paste0("OUTPUT/REL_",sigla,subsetor,"_",format(Sys.time(),"%d-%m-%Y_%Hh%Mm"),".pptx")
-                            sub_title=paste0(setor_estrategico,"-",subsetor)}
-                          else {
-                            outfile <- paste0("OUTPUT/REL_",sigla,"_",format(Sys.time(),"%d-%m-%Y_%Hh%Mm"),".pptx")
-                            sub_title=setor_estrategico}
-
-                      file.copy(template,outfile)
-                        
-                      stopifnot(file.exists(outfile))
-                      ppt <- officer::read_pptx(outfile)
-                      ppt <- officer::on_slide(ppt, index = 1)
-
-                      print(ppt, target = outfile) 
-                      return(outfile)         
-                      }
