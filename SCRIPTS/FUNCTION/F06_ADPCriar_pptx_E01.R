@@ -466,7 +466,7 @@ slides_resultT <- function(
   databxcx          = datab,
   datanorm          = datan)
                     {
-  dir.create("TEMP_FILES")
+  if(!file.exists("TESTE1")) dir.create("TESTE1")
   local_output = create_pptx(template=template,
                               meta_dados = meta_adapta,  
                               setor_estrategico=setor_estrategico,
@@ -619,3 +619,4 @@ slides_resultT <- function(
   unlink("TEMP_FILES", recursive = TRUE)
 }
 
+########################################
