@@ -130,8 +130,18 @@ slides_resultT(
 # Resumo        -  Data.frame com o resumo das metricas calculadas e 
 #                  uma coluna com o nome de Sugestão_Remoção 
 
- normal=result$Data_Normal$iData
- source("SCRIPTS/FUNCTION/F08_ADPCORREL.r")
+source("SCRIPTS/FUNCTION/F08_ADPCORREL.r")
 
+result_cor <- correl_ind(result$Data_Normal$iData)
 
+FigContNA(result_cor$Contagem_NA,nfile="FIGs/Contagem_NA_ISimples.png")
 
+FigCorrelPlot(result_cor$Correl,tipo="Total",nfile="FIGs/Correlação_Total.png")
+
+FigCorrelPlot(result_cor$pcorrel,tipo="Parcial",nfile="FIGs/Correlação_Parcial.png")
+
+FigVIF(result_cor$VIF,nfile="FIGs/VIF_ISimples.png")
+
+plotAlphaCronbach(result_cor$AlphaCrobach$alpha_df, 
+                  result_cor$AlphaCrobach$alpha_total,
+                  nfile="FIGs/AlphaCrobach_ISimples.png")
