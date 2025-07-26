@@ -61,7 +61,7 @@ data_normal <- ADPNormalise(data_bxcx$data)
 
     openxlsx::saveWorkbook(xlsx_res,outfilex1,overwrite = TRUE)
     openxlsx::saveWorkbook(xlsx_dados,outfilex2,overwrite = TRUE)
-    print("Arquivo Excel Gerado")
+    cat("\n Arquivos .xlsx Gerados \n ",outfilex1,"\n ",outfilex2,"\n")
     output_result <- list(Ref = data_ref,
     Resumo = resumo,
     iMeta = imeta_N7,
