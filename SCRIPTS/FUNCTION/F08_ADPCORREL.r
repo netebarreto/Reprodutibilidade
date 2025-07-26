@@ -108,6 +108,7 @@ return(result_cor)
 
 FigContNA = function(Y,nfile = "TESTE.png")
 {
+   if(!file.exists("FIGs")) dir.create("FIGs")
 data.fr <- data.frame(Categorias =names(Y)  , 
                       Value = Y)
 
@@ -138,7 +139,9 @@ cat("\n       Figura de Contagem de NA's Gerada\n")
 # cor_pos[cor_pos < 0] <- 0
 
 FigCorrelPlot <- function(Y,tipo="Total",nfile = "output.png")
-{ png(nfile,width = 2000, height = 2000,res = 300,bg="white")
+{ 
+  if(!file.exists("FIGs")) dir.create("FIGs")
+  png(nfile,width = 2000, height = 2000,res = 300,bg="white")
 
 lado = ifelse(tipo=="Total", "lower","upper")
 corrplot::corrplot(Y,
@@ -161,6 +164,7 @@ cat("\n       Figura de Correlação (",tipo,") Gerada.\n")
 FigVIF = function(Y,nfile = "TESTE.png")
 {
 # Preparar dados
+if(!file.exists("FIGs")) dir.create("FIGs")
 vif_df <- data.frame(Variavel=Y[,1],VIF=Y[,2])
 
 plot = ggplot2::ggplot(vif_df, aes(x = Variavel, y = VIF)) +
@@ -192,7 +196,7 @@ cat("\n    Figura VIF \n ",nfile,"\n ")
 
 
 plotAlphaCronbach <- function(alpha_df, alpha_total,nfile = "output.png") {
-  
+  if(!file.exists("FIGs")) dir.create("FIGs")
   # Detectar quais foram invertidos
   alpha_df$Invertido <- grepl("-", alpha_df$Indicador)
   alpha_df$Indicador <- gsub("-", "", alpha_df$Indicador)
