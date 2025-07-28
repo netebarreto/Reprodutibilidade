@@ -466,7 +466,7 @@ slides_resultT <- function(
   databxcx          = datab,
   datanorm          = datan)
                     {
-  if(!file.exists("TESTE1")) dir.create("TESTE1")
+  if(!file.exists("TEMP_FILES")) dir.create("TEMP_FILES")
   local_output = create_pptx(template=template,
                               meta_dados = meta_adapta,  
                               setor_estrategico=setor_estrategico,
