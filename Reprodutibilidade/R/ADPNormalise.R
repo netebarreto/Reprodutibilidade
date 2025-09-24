@@ -31,7 +31,7 @@ sfunc_norm <- function(Y) {
   return(Y_res)
 }
 
-#' @title Normalizar dados para o intervalo [0, 1]
+#' @title Normalizar dados para o intervalo \code{[0 , 1]}
 #'
 #' @description
 #' Aplica a normalizacao min-max para cada coluna numerica de um data.frame ou matriz.

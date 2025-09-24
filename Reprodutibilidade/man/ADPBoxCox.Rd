@@ -47,11 +47,18 @@ entao a transformacao e aplicada.
 # Exemplo ficticio (assumindo que sfunc_bxcx ja exista)
 set.seed(123)
 dados <- data.frame(
-  x1 = c(rnorm(10), 100),  # variavel distorcida
-  x2 = rnorm(11)           # variavel normal
-)
+  x1 = c(rnorm(10), 100),# variavel distorcida
+  x2 = rnorm(11))        # variavel normal
+
 classe <- c("Numerico", "Numerico")
+
 nomes <- c("x1", "x2")
-ADPBoxCox(dadoswin = dados, dados = dados, classe = classe, cluster = NULL, nome = nomes, metodo = "forecast")
+
+ADPBoxCox(dadoswin = dados, 
+          dados = dados, 
+          classe = classe,
+          cluster = NULL,
+          nome = nomes,
+          metodo = "forecast")
 
 }

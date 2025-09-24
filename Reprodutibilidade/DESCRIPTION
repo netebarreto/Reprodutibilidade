@@ -2,7 +2,7 @@ Package: reprodutibilidade
 Title: Funções Indicadores Simples ADAPTABRASIL
 Version: 0.0.0.9000
 Authors@R: 
-    person("Nete", "Barreto", , "naurinete.barreto@inpe.br", role = c("aut", "cre"))
+    person("AdaptaBrasil", "INPE", , "adaptabrasil@inpe.br", role = c("aut", "cre"))
 Description: Pacote Desenvolvido para utilização no desenvolvimento dos indicadores simples do Projeto ADAPTABRASIL 2025.
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -11,6 +11,7 @@ RoxygenNote: 7.3.2
 Depends: 
     R (>= 3.5),
 LazyData: true
+LazyDataCompression: xz
 BuildCheck: timestamp
 Imports:
     COINr,

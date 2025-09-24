@@ -10,11 +10,11 @@ criar_resumo(dataset, class_type, cluster = NULL, name)
 \arguments{
 \item{dataset}{Um data frame contendo os dados (colunas numericas).}
 
-\item{class_types}{Um vetor com os tipos de classe para cada coluna (ex: "Numerico", "Cluster", "Score")."}
+\item{class_type}{Um vetor com os tipos de classe para cada coluna (ex: "Numerico", "Cluster", "Score")."}
 
-\item{clusters}{Um vetor com os grupos de cluster (obrigatorio se usar tipo "Cluster")."}
+\item{cluster}{Um vetor com os grupos de cluster (obrigatorio se usar tipo "Cluster")."}
 
-\item{names}{Vetor com os nomes descritivos de cada coluna de \code{dataset}.}
+\item{name}{Vetor com os nomes descritivos de cada coluna de \code{dataset}.}
 }
 \value{
 Um tibble (tabela moderna do R, semelhante a um data.frame) com os resumos estatisticos completos para cada variavel.

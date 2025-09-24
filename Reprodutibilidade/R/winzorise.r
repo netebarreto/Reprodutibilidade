@@ -6,11 +6,11 @@
     #' com suporte para indicadores do tipo cluster.
     #',
     #' @param indice Um vetor contendo os dados .
-    #' @param classe classe do indicador (ex: "Numerico", "Cluster", "Score")."
-    #' @param nome Vetor com os nomes descritivos de cada coluna de `data`.
+    #' @param a classe do indicador (ex: "Numerico", "Cluster", "Score")."
+    #' @param b Vetor com os nomes descritivos de cada coluna de `data`.
 #' 
 #' @export
-wins_par <- function(indice,classe,nome) 
+wins_par <- function(indice,a=NULL,b=NULL) 
               {   
               # Funcao calcula os limites de Winsorization
               # Y = iData[,i] 
@@ -36,8 +36,8 @@ wins_par <- function(indice,classe,nome)
 
                 n.na <- length(which(is.na(X)))
 
-                resumo<-data.frame(iName=nome,
-                              Classe=classe,
+                resumo<-data.frame(iName=b,
+                              Classe=a,
                               Aplicacao=Awin,
                               LINF=round(L_inf,2),
                               LSUP=round(L_sup,2),

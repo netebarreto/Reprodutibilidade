@@ -40,17 +40,17 @@
 #' 
 #' par(mfrow=c(1,3)) ; par(mar=c(5,5,6,1))
 #' 
-#' plot(index,bxcx.fcs,
+#' plot(c(1:length(dados)),bxcx.fcs,
 #'      main = "Transformacao BoxCox \n via pacote Forecast",
 #'      cex.axis=1.5,las=1,ylab="Transformada BoxCox",
 #'      xlab="Reference", cex.lab=1.8,cex.main=2) 
 #' 
-#' plot(index,bxcx.coin,
+#' plot(c(1:length(dados)),bxcx.coin,
 #'      main = "Transformacao BoxCox \n via pacote COINr",
 #'      cex.axis=1.5,las=1,ylab="Transformada BoxCox",
 #'      xlab="Reference",cex.lab=1.8,cex.main=2) 
 #' 
-#' plot(index,bxcx.yjn,
+#' plot(c(1:length(dados)),bxcx.yjn,
 #'      main = "Transformacao BoxCox \n via pacote bestNormalize::Yeojohnson",
 #'      cex.axis=1.5,las=1,ylab="Transformada BoxCox",
 #'      xlab="Reference",cex.lab=1.8,cex.main=2)
@@ -112,12 +112,19 @@ sfunc_bxcx <- function(Y,metodo)
 #' # Exemplo ficticio (assumindo que sfunc_bxcx ja exista)
 #' set.seed(123)
 #' dados <- data.frame(
-#'   x1 = c(rnorm(10), 100),  # variavel distorcida
-#'   x2 = rnorm(11)           # variavel normal
-#' )
+#'   x1 = c(rnorm(10), 100),# variavel distorcida
+#'   x2 = rnorm(11))        # variavel normal
+#'
 #' classe <- c("Numerico", "Numerico")
+#' 
 #' nomes <- c("x1", "x2")
-#' ADPBoxCox(dadoswin = dados, dados = dados, classe = classe, cluster = NULL, nome = nomes, metodo = "forecast")
+#' 
+#' ADPBoxCox(dadoswin = dados, 
+#'           dados = dados, 
+#'           classe = classe,
+#'           cluster = NULL,
+#'           nome = nomes,
+#'           metodo = "forecast")
 #'
 #' @export
 ADPBoxCox <- function(dadoswin,dados,classe,cluster,nome,metodo)

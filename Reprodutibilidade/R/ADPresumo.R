@@ -6,9 +6,9 @@
     #' com suporte para indicadores do tipo cluster.
     #',
     #' @param dataset Um data frame contendo os dados (colunas numericas).
-    #' @param class_types Um vetor com os tipos de classe para cada coluna (ex: "Numerico", "Cluster", "Score")."
-    #' @param clusters Um vetor com os grupos de cluster (obrigatorio se usar tipo "Cluster")."
-    #' @param names Vetor com os nomes descritivos de cada coluna de `dataset`.
+    #' @param class_type Um vetor com os tipos de classe para cada coluna (ex: "Numerico", "Cluster", "Score")."
+    #' @param cluster Um vetor com os grupos de cluster (obrigatorio se usar tipo "Cluster")."
+    #' @param name Vetor com os nomes descritivos de cada coluna de `dataset`.
     #'
     #' @return Um tibble (tabela moderna do R, semelhante a um data.frame) com os resumos estatisticos completos para cada variavel.
     #' \describe{
@@ -20,6 +20,7 @@
 #'       \item{Outliers_Per}{Percentual de outliers do indicador/indice}
 #'       \item{NAs}{Total de valores ausentes (NAs)}
 #'       \item{Valores_Unicos}{Total de valores unicos}}
+#' @importFrom rlang .data       
 #'
 #' @examples
 #' # Criando um data frame de exemplo

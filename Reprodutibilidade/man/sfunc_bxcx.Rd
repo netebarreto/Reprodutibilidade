@@ -50,17 +50,17 @@ bxcx.yjn <- sfunc_bxcx(dados, "yeojohnson")
 
 par(mfrow=c(1,3)) ; par(mar=c(5,5,6,1))
 
-plot(index,bxcx.fcs,
+plot(c(1:length(dados)),bxcx.fcs,
      main = "Transformacao BoxCox \n via pacote Forecast",
      cex.axis=1.5,las=1,ylab="Transformada BoxCox",
      xlab="Reference", cex.lab=1.8,cex.main=2) 
 
-plot(index,bxcx.coin,
+plot(c(1:length(dados)),bxcx.coin,
      main = "Transformacao BoxCox \n via pacote COINr",
      cex.axis=1.5,las=1,ylab="Transformada BoxCox",
      xlab="Reference",cex.lab=1.8,cex.main=2) 
 
-plot(index,bxcx.yjn,
+plot(c(1:length(dados)),bxcx.yjn,
      main = "Transformacao BoxCox \n via pacote bestNormalize::Yeojohnson",
      cex.axis=1.5,las=1,ylab="Transformada BoxCox",
      xlab="Reference",cex.lab=1.8,cex.main=2)

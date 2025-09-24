@@ -5,14 +5,14 @@
 \title{Gerar resumo sobre os limites do Winsorize de unico indicador.
 ,}
 \usage{
-wins_par(indice, classe, nome)
+wins_par(indice, a = NULL, b = NULL)
 }
 \arguments{
 \item{indice}{Um vetor contendo os dados .}
 
-\item{classe}{classe do indicador (ex: "Numerico", "Cluster", "Score")."}
+\item{a}{classe do indicador (ex: "Numerico", "Cluster", "Score")."}
 
-\item{nome}{Vetor com os nomes descritivos de cada coluna de \code{data}.}
+\item{b}{Vetor com os nomes descritivos de cada coluna de \code{data}.}
 }
 \description{
 Esta funcao gera os limites inferiores e superiores para a aplicacao do winzorise num indicador especifico,

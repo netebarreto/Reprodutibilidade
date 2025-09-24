@@ -393,7 +393,7 @@ nvalores=nvalores,
 fsize=16) { 
 
 # Crie o grafico
-scatplot  <- ggplot2::ggplot(df1, ggplot2::aes(x = Normalizado, y = N_Normalizado)) +
+scatplot  <- ggplot2::ggplot(df1, ggplot2::aes(x = df1$Normalizado, y = df1$N_Normalizado)) +
   ggplot2::geom_point(color="blue") +
   ggplot2::labs(title = paste("Grafico de Dispersao -",nvalores), x = "Dados Normalizados", y = "Dados Brutos")+
   ggplot2::theme_minimal() +

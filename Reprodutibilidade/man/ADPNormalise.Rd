@@ -2,7 +2,7 @@
 % Please edit documentation in R/ADPNormalise.R
 \name{ADPNormalise}
 \alias{ADPNormalise}
-\title{Normalizar dados para o intervalo \link{0, 1}}
+\title{Normalizar dados para o intervalo \code{[0 , 1]}}
 \usage{
 ADPNormalise(iData)
 }
