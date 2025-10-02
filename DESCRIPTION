@@ -26,9 +26,11 @@ Imports:
     DiagrammeR,
     DiagrammeRsvg,
     gridExtra,
+    officer,
     rsvg,
     stats
 Suggests:
     knitr,
     rmarkdown, quarto
 VignetteBuilder: knitr
+
