@@ -41,7 +41,7 @@ Você pode instalar a versão de desenvolvimento diretamente do GitHub:
 install.packages("devtools")
 
 # Instalar o pacote reprodutibilidade do GitHub
-devtools::install_github("SEU_USUARIO/reprodutibilidade")
+# devtools::install_github("/reprodutibilidade")
 ```
 > <div class="custom-block">
   <strong>Funcionalidades Principais:</strong>
