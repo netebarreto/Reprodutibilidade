@@ -28,7 +28,7 @@ Pacote em R para análise estatística e reprodutibilidade dos indicadores simpl
 - geração de gráficos e mapas,
 - cálculos de correlação total, parcial e outras metricas,
 - Criação de Arquivos Excell com resultados
-- Criação de Apresentação em Powrpoint 
+- Criação de Apresentação em Powerpoint 
 
 ---
 
@@ -41,7 +41,7 @@ Você pode instalar a versão de desenvolvimento diretamente do GitHub:
 install.packages("devtools")
 
 # Instalar o pacote reprodutibilidade do GitHub
-# devtools::install_github("/reprodutibilidade")
+devtools::install_github("AdaptaBrasil/reprodutibilidade")
 ```
 > <div class="custom-block">
   <strong>Funcionalidades Principais:</strong>
