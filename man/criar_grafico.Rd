@@ -2,7 +2,7 @@
 % Please edit documentation in R/ADPGraficos.R
 \name{criar_grafico}
 \alias{criar_grafico}
-\title{Criar Gráfico Combinado (Histograma + Boxplot)}
+\title{Criar Grafico Combinado (Histograma + Boxplot)}
 \usage{
 criar_grafico(
   dados,
@@ -15,36 +15,36 @@ criar_grafico(
 )
 }
 \arguments{
-\item{dados}{Vetor numérico com os valores a serem analisados.}
+\item{dados}{Vetor numerico com os valores a serem analisados.}
 
-\item{nome_arquivo}{Nome do arquivo de saída (formato PNG).
+\item{nome_arquivo}{Nome do arquivo de saida (formato PNG).
 Default: "grafico_combinado.png".}
 
 \item{largura}{Largura da imagem em polegadas. Default: 10.}
 
 \item{altura}{Altura da imagem em polegadas. Default: 5.}
 
-\item{dpi}{Resolução (pontos por polegada). Default: 25.}
+\item{dpi}{Resolucao (pontos por polegada). Default: 25.}
 
-\item{nvalores}{Nome da variável (string) a ser usada no gráfico
-e nos rótulos. Default: "DD1".}
+\item{nvalores}{Nome da variavel (string) a ser usada no grafico
+e nos rotulos. Default: "DD1".}
 
-\item{fsize}{Tamanho base da fonte nos eixos e títulos. Default: 16.}
+\item{fsize}{Tamanho base da fonte nos eixos e titulos. Default: 16.}
 }
 \value{
-Nenhum objeto é retornado. Um arquivo PNG é salvo no diretório de trabalho.
+Nenhum objeto e retornado. Um arquivo PNG e salvo no diretorio de trabalho.
 }
 \description{
-Esta função gera e salva em arquivo um gráfico composto por:
-(i) um histograma com curva de distribuição normal ajustada; e
+Esta funcao gera e salva em arquivo um grafico composto por:
+(i) um histograma com curva de distribuicao normal ajustada; e
 (ii) um boxplot dos mesmos dados.
-Os gráficos são apresentados lado a lado em um único layout.
+Os graficos sao apresentados lado a lado em um unico layout.
 }
 \details{
 \itemize{
-\item O histograma inclui uma linha correspondente à distribuição normal
-ajustada aos dados (média e desvio-padrão).
-\item O boxplot apresenta a dispersão dos mesmos valores, sem rótulos no eixo X.
+\item O histograma inclui uma linha correspondente a distribuicao normal
+ajustada aos dados (media e desvio-padrao).
+\item O boxplot apresenta a dispersao dos mesmos valores, sem rotulos no eixo X.
 }
 }
 \examples{

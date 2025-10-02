@@ -1,23 +1,23 @@
-#' @title Normalização Min-Max
+#' @title Normalizacao Min-Max
 #'
 #' @description
-#' Normaliza um vetor numérico usando o método Min-Max, 
+#' Normaliza um vetor numerico usando o metodo Min-Max, 
 #' transformando seus valores para o intervalo \[0, 1\].
 #'
-#' @param Y Vetor numérico a ser normalizado.
+#' @param Y Vetor numerico a ser normalizado.
 #'
 #' @details
-#' - Valores \code{NA} são ignorados nos cálculos de mínimo e máximo, mas preservados na saída.
-#' - Fórmula utilizada:
+#' - Valores \code{NA} sao ignorados nos calculos de minimo e maximo, mas preservados na saida.
+#' - Formula utilizada:
 #'   \deqn{Y_{norm} = \frac{Y - \min(Y)}{\max(Y) - \min(Y)}}
 #'
-#' @return Vetor numérico normalizado no intervalo \[0, 1\], preservando as posições originais de \code{NA}.
+#' @return Vetor numerico normalizado no intervalo \[0, 1\], preservando as posicoes originais de \code{NA}.
 #'
 #' @examples
 #' # Vetor de exemplo
 #' dados <- c(10, 20, 30, NA, 40)
 #'
-#' # Normalização Min-Max
+#' # Normalizacao Min-Max
 #' sfunc_norm(dados)
 #'
 #' @export
@@ -27,27 +27,27 @@ sfunc_norm <- function(Y) {
   X_min <- min(X, na.rm = TRUE)
   
   Y_res <- (X - X_min) / (X_max - X_min)
-  message("\n Normalização Aplicada \n")
+  message("\n Normalizacao Aplicada \n")
   return(Y_res)
 }
 
-#' @title Normalizar dados para o intervalo [0, 1]
+#' @title Normalizar dados para o intervalo \code{[0 , 1]}
 #'
 #' @description
-#' Aplica a normalização min-max para cada coluna numérica de um data.frame ou matriz.
+#' Aplica a normalizacao min-max para cada coluna numerica de um data.frame ou matriz.
 #' 
 #' @param iData \code{data.frame} ou \code{matrix} contendo os dados.
-#' Valores não numéricos serão ignorados e retornados sem modificação.
+#' Valores nao numericos serao ignorados e retornados sem modificacao.
 #'
 #' @details
-#' A normalização min-max é dada por:
+#' A normalizacao min-max e dada por:
 #' \deqn{ X' = (X - \min(X)) / (\max(X) - \min(X)) }
 #' 
-#' Colunas constantes (mesmo valor para todos) são retornadas como 0.
+#' Colunas constantes (mesmo valor para todos) sao retornadas como 0.
 #'
 #' @return Lista com:
 #' \describe{
-#'   \item{iData}{\code{data.frame} com colunas normalizadas (numéricas) ou originais (não numéricas).}
+#'   \item{iData}{\code{data.frame} com colunas normalizadas (numericas) ou originais (nao numericas).}
 #' }
 #'
 #' @examples

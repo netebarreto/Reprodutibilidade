@@ -1,51 +1,51 @@
-#' Tratamento de Dados com Winsorização, Box-Cox e Normalização
+#' Tratamento de Dados com Winsorizacao, Box-Cox e Normalizacao
 #'
-#' Realiza o pré-processamento de dados a partir de um arquivo Excel, aplicando
-#' estatísticas descritivas, Winsorização, transformação Box-Cox e Normalização.
-#' Os resultados são exportados em arquivos `.xlsx` na pasta `OUTPUT/`.
+#' Realiza o pre-processamento de dados a partir de um arquivo Excel, aplicando
+#' estatisticas descritivas, Winsorizacao, transformacao Box-Cox e Normalizacao.
+#' Os resultados sao exportados em arquivos `.xlsx` na pasta `OUTPUT/`.
 #'
 #' @param input String. Caminho do arquivo Excel de entrada. 
 #'              Default = "INPUT.xlsx".
-#' @param iMeta String. Nome da planilha que contém os metadados.
+#' @param iMeta String. Nome da planilha que contem os metadados.
 #'              Default = "Plan_Metadados".
-#' @param iData String. Nome da planilha que contém os dados brutos.
+#' @param iData String. Nome da planilha que contem os dados brutos.
 #'              Default = "Plan_Dados".
-#' @param method_boxcox String. Método a ser utilizado na transformação Box-Cox
+#' @param method_boxcox String. Metodo a ser utilizado na transformacao Box-Cox
 #'                      (ex.: "forecast"). Default = "forecast".
-#' @param sigla String. Sigla usada na composição dos nomes dos arquivos de saída.
+#' @param sigla String. Sigla usada na composicao dos nomes dos arquivos de saida.
 #'              Default = "SE".
 #' @param subsetor String ou NULL. Define um subtipo/setor para diferenciar
-#'                 os arquivos de saída. Default = NULL.
+#'                 os arquivos de saida. Default = NULL.
 #'
 #' @details
 #' O fluxo de processamento segue as etapas:
 #' 1. Leitura de metadados e dados brutos.
-#' 2. Seleção de registros de nível 7 e arredondamento dos valores.
-#' 3. Estatísticas descritivas com `ADPresumo()`.
-#' 4. Winsorização com `ADPwinsorise()`.
-#' 5. Transformação Box-Cox com `ADPBoxCox()`.
-#' 6. Normalização com `ADPNormalise()`.
-#' 7. Geração de dois arquivos Excel:
-#'    - `ANALISE_DESCRITIVA_...xlsx`: tabelas descritivas, Winsorização e Box-Cox.
-#'    - `DADOS_TRATADOS_...xlsx`: dados brutos, pós-Winsor, pós-BoxCox e normalizados.
+#' 2. Selecao de registros de nivel 7 e arredondamento dos valores.
+#' 3. Estatisticas descritivas com `ADPresumo()`.
+#' 4. Winsorizacao com `ADPwinsorise()`.
+#' 5. Transformacao Box-Cox com `ADPBoxCox()`.
+#' 6. Normalizacao com `ADPNormalise()`.
+#' 7. Geracao de dois arquivos Excel:
+#'    - `ANALISE_DESCRITIVA_...xlsx`: tabelas descritivas, Winsorizacao e Box-Cox.
+#'    - `DADOS_TRATADOS_...xlsx`: dados brutos, pos-Winsor, pos-BoxCox e normalizados.
 #'
 #' @return Uma lista com:
 #' \itemize{
-#'   \item \code{Ref}: Dados de referência.
-#'   \item \code{Resumo}: Estatísticas descritivas (resultado de `ADPresumo`).
-#'   \item \code{iMeta}: Metadados filtrados para nível 7.
+#'   \item \code{Ref}: Dados de referencia.
+#'   \item \code{Resumo}: Estatisticas descritivas (resultado de `ADPresumo`).
+#'   \item \code{iMeta}: Metadados filtrados para nivel 7.
 #'   \item \code{DadosB}: Dados brutos arredondados.
-#'   \item \code{Data_Win}: Resultado da Winsorização.
-#'   \item \code{Data_Bxc}: Resultado da transformação Box-Cox.
+#'   \item \code{Data_Win}: Resultado da Winsorizacao.
+#'   \item \code{Data_Bxc}: Resultado da transformacao Box-Cox.
 #'   \item \code{Data_Normal}: Dados normalizados.
 #' }
 #'
 #' @examples
 #' \dontrun{
-#' # Executar o tratamento com arquivo padrão:
+#' # Executar o tratamento com arquivo padrao:
 #' resultado <- Tratamento()
 #'
-#' # Executar com planilhas específicas e sigla:
+#' # Executar com planilhas especificas e sigla:
 #' resultado <- Tratamento(input = "meu_arquivo.xlsx",
 #'                         iMeta = "Metadados",
 #'                         iData = "Dados",
@@ -65,13 +65,13 @@ Tratamento <- function(input="INPUT.xlsx",
   iData_bruto  <- openxlsx::read.xlsx(inxlsx, sheet = iData)
 
   
-imeta_N7 = subset(iMeta_adapta,Nivel==7)
+imeta_N7 = subset(iMeta_adapta,iMeta_adapta$Nivel==7)
 data_ref = iData_bruto[,c(1:4)]
 idata_N7 = round(iData_bruto[,-c(1:4)],2)
 colnames(idata_N7) <- colnames(iData_bruto[,-c(1:4)])
 resumo <- ADPresumo(idata_N7, imeta_N7$Classe, data_ref[,4], colnames(idata_N7))
 
-data_winsor <- ADPwinsorise(iData=idata_N7,iMeta=imeta_N7,iRef=data_ref[,4])
+data_winsor <- winsorize_apply(dataset=idata_N7,metadados=imeta_N7,cluster_ref=data_ref[,4])
 
 data_bxcx <- ADPBoxCox(data_winsor$iData,idata_N7,imeta_N7$Classe,data_ref[,4],
                       colnames(idata_N7),metodo=method_boxcox)

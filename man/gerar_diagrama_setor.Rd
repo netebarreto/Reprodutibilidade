@@ -2,7 +2,7 @@
 % Please edit documentation in R/ADPGraficos.R
 \name{gerar_diagrama_setor}
 \alias{gerar_diagrama_setor}
-\title{Gerar Diagrama Hierárquico de Setores}
+\title{Gerar Diagrama Hierarquico de Setores}
 \usage{
 gerar_diagrama_setor(
   data,
@@ -19,23 +19,23 @@ gerar_diagrama_setor(
 \item \code{Code}: identifica os elementos pertencentes ao setor.
 }}
 
-\item{setor_e}{(opcional) Nome de um setor específico a ser destacado.
-Caso \code{NULL}, todos os setores serão incluídos.}
+\item{setor_e}{(opcional) Nome de um setor especifico a ser destacado.
+Caso \code{NULL}, todos os setores serao incluidos.}
 
-\item{output_file}{Caminho e nome do arquivo de saída (default: "diagrama.png").}
+\item{output_file}{Caminho e nome do arquivo de saida (default: "diagrama.png").}
 
 \item{width}{Largura do diagrama em pixels (default: 1600).}
 
 \item{height}{Altura do diagrama em pixels (default: 1000).}
 }
 \value{
-Arquivo de imagem (\code{.png}) com o diagrama hierárquico gerado.
-Não retorna objeto em R.
+Arquivo de imagem (\code{.png}) com o diagrama hierarquico gerado.
+Nao retorna objeto em R.
 }
 \description{
-Esta função cria um diagrama hierárquico em formato de setores (subgrafos),
+Esta funcao cria um diagrama hierarquico em formato de setores (subgrafos),
 agrupando elementos de acordo com um "pai" definido no conjunto de dados.
-O diagrama é construído em sintaxe Graphviz e exportado como arquivo de imagem.
+O diagrama e construido em sintaxe Graphviz e exportado como arquivo de imagem.
 }
 \examples{
 \dontrun{

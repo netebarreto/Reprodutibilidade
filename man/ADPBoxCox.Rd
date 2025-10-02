@@ -2,56 +2,70 @@
 % Please edit documentation in R/ADPBoxCox.R
 \name{ADPBoxCox}
 \alias{ADPBoxCox}
-\title{Aplicar transformação Box-Cox condicionalmente}
+\title{Aplicar transformacao Box-Cox condicionalmente}
 \usage{
-ADPBoxCox(dadoswin, dados, classe, cluster, nome, metodo)
+ADPBoxCox(
+  dadoswin = NULL,
+  dados = NULL,
+  classe = NULL,
+  cluster = NULL,
+  nome = NULL,
+  metodo = NULL
+)
 }
 \arguments{
-\item{dadoswin}{\code{data.frame} com os dados já winsorizados.}
+\item{dadoswin}{\code{data.frame} com os dados ja winsorizados.}
 
 \item{dados}{\code{data.frame} com os dados originais.}
 
-\item{classe}{Vetor de caracteres indicando a classe de cada variável.}
+\item{classe}{Vetor de caracteres indicando a classe de cada variavel.}
 
-\item{cluster}{Vetor ou coluna de clusters (atualmente não utilizado nesta função, mas mantido para compatibilidade).}
+\item{cluster}{Vetor ou coluna de clusters (atualmente nao utilizado nesta funcao, mas mantido para compatibilidade).}
 
-\item{nome}{Vetor com os nomes das variáveis.}
+\item{nome}{Vetor com os nomes das variaveis.}
 
-\item{metodo}{String indicando o método de transformação:
+\item{metodo}{String indicando o metodo de transformacao:
 \itemize{
-\item \code{"forecast"} — usa \code{forecast::BoxCox}.
-\item \code{"COINr"} — usa \code{COINr::boxcox}.
-\item \code{"yeojohnson"} — usa \code{bestNormalize::yeojohnson}.
+\item \code{"forecast"} - usa \code{forecast::BoxCox}.
+\item \code{"COINr"} - usa \code{COINr::boxcox}.
+\item \code{"yeojohnson"} - usa \code{bestNormalize::yeojohnson}.
 }}
 }
 \value{
 Lista com:
 \describe{
-\item{meta}{\code{data.frame} com informações sobre a decisão de aplicar Box-Cox para cada variável.}
-\item{data}{\code{data.frame} com os dados transformados (ou originais, caso não se aplique Box-Cox).}
+\item{meta}{\code{data.frame} com informacoes sobre a decisao de aplicar Box-Cox para cada variavel.}
+\item{data}{\code{data.frame} com os dados transformados (ou originais, caso nao se aplique Box-Cox).}
 }
 }
 \description{
-Aplica a transformação Box-Cox (ou variações) a variáveis numéricas de acordo com critérios de distorção (skewness) e curtose.
-Apenas variáveis com distorção >= 2 e curtose >= 3.5 são transformadas.
+Aplica a transformacao Box-Cox (ou variacoes) a variaveis numericas de acordo com criterios de distorcao (skewness) e curtose.
+Apenas variaveis com distorcao >= 2 e curtose >= 3.5 sao transformadas.
 }
 \details{
-A decisão de aplicar Box-Cox é baseada nas seguintes regras:
+A decisao de aplicar Box-Cox e baseada nas seguintes regras:
 \itemize{
-\item Se \code{skewness} (distorção) >= 2 \strong{e}
+\item Se \code{skewness} (distorcao) >= 2 \strong{e}
 \item \code{kurtosis} (curtose) >= 3.5
-então a transformação é aplicada.
+entao a transformacao e aplicada.
 }
 }
 \examples{
-# Exemplo fictício (assumindo que sfunc_bxcx já exista)
+# Exemplo ficticio (assumindo que boxcox_transform ja exista)
 set.seed(123)
 dados <- data.frame(
-  x1 = c(rnorm(10), 100),  # variável distorcida
-  x2 = rnorm(11)           # variável normal
-)
-classe <- c("Numérico", "Numérico")
+  x1 = c(rnorm(10), 100),# variavel distorcida
+  x2 = rnorm(11))        # variavel normal
+
+classe <- c("Numerico", "Numerico")
+
 nomes <- c("x1", "x2")
-ADPBoxCox(dadoswin = dados, dados = dados, classe = classe, cluster = NULL, nome = nomes, metodo = "forecast")
+
+ADPBoxCox(dadoswin = dados, 
+          dados = dados, 
+          classe = classe,
+          cluster = NULL,
+          nome = nomes,
+          metodo = "forecast")
 
 }

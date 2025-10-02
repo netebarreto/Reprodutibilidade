@@ -2,34 +2,34 @@
 % Please edit documentation in R/ADPresumo.R
 \name{criar_resumo}
 \alias{criar_resumo}
-\title{Gerar resumo estatístico para um indicador ou índice específico,
+\title{Gerar resumo estatistico para um indicador ou indice especifico,
 ,}
 \usage{
-criar_resumo(data, class_type, cluster = NULL, name)
+criar_resumo(dataset, class_type, cluster = NULL, name)
 }
 \arguments{
-\item{data}{Um vetor contendo indicador.}
+\item{dataset}{Um data frame contendo os dados (colunas numericas).}
 
-\item{class_types}{classe do indicador que será avaliado (ex: "Numérico", "Cluster", "Score")."}
+\item{class_type}{Um vetor com os tipos de classe para cada coluna (ex: "Numerico", "Cluster", "Score")."}
 
-\item{clusters}{Um vetor com os grupos de cluster (obrigatório se usar tipo "Cluster")."}
+\item{cluster}{Um vetor com os grupos de cluster (obrigatorio se usar tipo "Cluster")."}
 
-\item{names}{o nome do indicador.}
+\item{name}{Vetor com os nomes descritivos de cada coluna de \code{dataset}.}
 }
 \value{
-Um tibble (tabela moderna do R, semelhante a um data.frame) com os resumos estatísticos completos para cada variável.
+Um tibble (tabela moderna do R, semelhante a um data.frame) com os resumos estatisticos completos para cada variavel.
 \describe{
-\item{Min}{Valor mínimo}
+\item{Min}{Valor minimo}
 \item{Quartil 1}{Primeiro Quartil}
 \item{Mediana}{Valor mediano}
 \item{Quartil 3}{Terceiro Quartil}
-\item{Max}{Valor máximo}
+\item{Max}{Valor maximo}
 \item{Outliers_Per}{Percentual de outliers do indicador/indice}
 \item{NAs}{Total de valores ausentes (NAs)}
-\item{Valores_Unicos}{Total de valores únicos}}
+\item{Valores_Unicos}{Total de valores unicos}}
 }
 \description{
-Esta função aplica resumos estatísticos a múltiplas variáveis de um data frame,
+Esta funcao aplica resumos estatisticos a multiplas variaveis de um data frame,
 com suporte para indicadores do tipo cluster.
 ,
 }
@@ -38,9 +38,9 @@ com suporte para indicadores do tipo cluster.
 dados <- data.frame(Pessoas = c(25, 30, 28, 35, 40, 28, 35, 40),
                    Cluster = c("1", "2", "1", "1", "2","2","2","1"))
 
-# Chamando a função com parâmetros fictícios
+# Chamando a funcao com parametros ficticios
 criar_resumo(dados$Pessoas,
-            "Numérico",
+            "Numerico",
              dados$cluster,
              "Pessoas")
 

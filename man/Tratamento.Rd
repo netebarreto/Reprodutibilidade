@@ -2,7 +2,7 @@
 % Please edit documentation in R/ADPExcel.R
 \name{Tratamento}
 \alias{Tratamento}
-\title{Tratamento de Dados com Winsorização, Box-Cox e Normalização}
+\title{Tratamento de Dados com Winsorizacao, Box-Cox e Normalizacao}
 \usage{
 Tratamento(
   input = "INPUT.xlsx",
@@ -17,60 +17,60 @@ Tratamento(
 \item{input}{String. Caminho do arquivo Excel de entrada.
 Default = "INPUT.xlsx".}
 
-\item{iMeta}{String. Nome da planilha que contém os metadados.
+\item{iMeta}{String. Nome da planilha que contem os metadados.
 Default = "Plan_Metadados".}
 
-\item{iData}{String. Nome da planilha que contém os dados brutos.
+\item{iData}{String. Nome da planilha que contem os dados brutos.
 Default = "Plan_Dados".}
 
-\item{method_boxcox}{String. Método a ser utilizado na transformação Box-Cox
+\item{method_boxcox}{String. Metodo a ser utilizado na transformacao Box-Cox
 (ex.: "forecast"). Default = "forecast".}
 
-\item{sigla}{String. Sigla usada na composição dos nomes dos arquivos de saída.
+\item{sigla}{String. Sigla usada na composicao dos nomes dos arquivos de saida.
 Default = "SE".}
 
 \item{subsetor}{String ou NULL. Define um subtipo/setor para diferenciar
-os arquivos de saída. Default = NULL.}
+os arquivos de saida. Default = NULL.}
 }
 \value{
 Uma lista com:
 \itemize{
-\item \code{Ref}: Dados de referência.
-\item \code{Resumo}: Estatísticas descritivas (resultado de \code{ADPresumo}).
-\item \code{iMeta}: Metadados filtrados para nível 7.
+\item \code{Ref}: Dados de referencia.
+\item \code{Resumo}: Estatisticas descritivas (resultado de \code{ADPresumo}).
+\item \code{iMeta}: Metadados filtrados para nivel 7.
 \item \code{DadosB}: Dados brutos arredondados.
-\item \code{Data_Win}: Resultado da Winsorização.
-\item \code{Data_Bxc}: Resultado da transformação Box-Cox.
+\item \code{Data_Win}: Resultado da Winsorizacao.
+\item \code{Data_Bxc}: Resultado da transformacao Box-Cox.
 \item \code{Data_Normal}: Dados normalizados.
 }
 }
 \description{
-Realiza o pré-processamento de dados a partir de um arquivo Excel, aplicando
-estatísticas descritivas, Winsorização, transformação Box-Cox e Normalização.
-Os resultados são exportados em arquivos \code{.xlsx} na pasta \verb{OUTPUT/}.
+Realiza o pre-processamento de dados a partir de um arquivo Excel, aplicando
+estatisticas descritivas, Winsorizacao, transformacao Box-Cox e Normalizacao.
+Os resultados sao exportados em arquivos \code{.xlsx} na pasta \verb{OUTPUT/}.
 }
 \details{
 O fluxo de processamento segue as etapas:
 \enumerate{
 \item Leitura de metadados e dados brutos.
-\item Seleção de registros de nível 7 e arredondamento dos valores.
-\item Estatísticas descritivas com \code{ADPresumo()}.
-\item Winsorização com \code{ADPwinsorise()}.
-\item Transformação Box-Cox com \code{ADPBoxCox()}.
-\item Normalização com \code{ADPNormalise()}.
-\item Geração de dois arquivos Excel:
+\item Selecao de registros de nivel 7 e arredondamento dos valores.
+\item Estatisticas descritivas com \code{ADPresumo()}.
+\item Winsorizacao com \code{ADPwinsorise()}.
+\item Transformacao Box-Cox com \code{ADPBoxCox()}.
+\item Normalizacao com \code{ADPNormalise()}.
+\item Geracao de dois arquivos Excel:
 \itemize{
-\item \code{ANALISE_DESCRITIVA_...xlsx}: tabelas descritivas, Winsorização e Box-Cox.
-\item \code{DADOS_TRATADOS_...xlsx}: dados brutos, pós-Winsor, pós-BoxCox e normalizados.
+\item \code{ANALISE_DESCRITIVA_...xlsx}: tabelas descritivas, Winsorizacao e Box-Cox.
+\item \code{DADOS_TRATADOS_...xlsx}: dados brutos, pos-Winsor, pos-BoxCox e normalizados.
 }
 }
 }
 \examples{
 \dontrun{
-# Executar o tratamento com arquivo padrão:
+# Executar o tratamento com arquivo padrao:
 resultado <- Tratamento()
 
-# Executar com planilhas específicas e sigla:
+# Executar com planilhas especificas e sigla:
 resultado <- Tratamento(input = "meu_arquivo.xlsx",
                         iMeta = "Metadados",
                         iData = "Dados",

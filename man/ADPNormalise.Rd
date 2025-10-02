@@ -2,28 +2,28 @@
 % Please edit documentation in R/ADPNormalise.R
 \name{ADPNormalise}
 \alias{ADPNormalise}
-\title{Normalizar dados para o intervalo \link{0, 1}}
+\title{Normalizar dados para o intervalo \code{[0 , 1]}}
 \usage{
 ADPNormalise(iData)
 }
 \arguments{
 \item{iData}{\code{data.frame} ou \code{matrix} contendo os dados.
-Valores não numéricos serão ignorados e retornados sem modificação.}
+Valores nao numericos serao ignorados e retornados sem modificacao.}
 }
 \value{
 Lista com:
 \describe{
-\item{iData}{\code{data.frame} com colunas normalizadas (numéricas) ou originais (não numéricas).}
+\item{iData}{\code{data.frame} com colunas normalizadas (numericas) ou originais (nao numericas).}
 }
 }
 \description{
-Aplica a normalização min-max para cada coluna numérica de um data.frame ou matriz.
+Aplica a normalizacao min-max para cada coluna numerica de um data.frame ou matriz.
 }
 \details{
-A normalização min-max é dada por:
+A normalizacao min-max e dada por:
 \deqn{ X' = (X - \min(X)) / (\max(X) - \min(X)) }
 
-Colunas constantes (mesmo valor para todos) são retornadas como 0.
+Colunas constantes (mesmo valor para todos) sao retornadas como 0.
 }
 \examples{
 df <- data.frame(a = 1:5, b = c(2,2,2,2,2), c = letters[1:5])

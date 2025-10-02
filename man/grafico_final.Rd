@@ -2,7 +2,7 @@
 % Please edit documentation in R/ADPGraficos.R
 \name{grafico_final}
 \alias{grafico_final}
-\title{Gerar Gráfico Combinado (Dispersão + Histograma)}
+\title{Gerar Grafico Combinado (Dispersao + Histograma)}
 \usage{
 grafico_final(
   df1 = df1,
@@ -17,40 +17,40 @@ grafico_final(
 }
 \arguments{
 \item{df1}{Data frame contendo as colunas \code{Normalizado} e \code{N_Normalizado},
-usadas para o gráfico de dispersão.}
+usadas para o grafico de dispersao.}
 
-\item{df}{Data frame contendo a variável numérica a ser usada no histograma
+\item{df}{Data frame contendo a variavel numerica a ser usada no histograma
 (coluna indicada em \code{nvalores}).}
 
-\item{nome_arquivo}{Nome do arquivo de saída (\code{.png}). Default: "grafico_combinado.png".}
+\item{nome_arquivo}{Nome do arquivo de saida (\code{.png}). Default: "grafico_combinado.png".}
 
 \item{largura}{Largura da imagem em polegadas. Default: 10.}
 
 \item{altura}{Altura da imagem em polegadas. Default: 5.}
 
-\item{dpi}{Resolução (pontos por polegada). Default: 25.}
+\item{dpi}{Resolucao (pontos por polegada). Default: 25.}
 
-\item{nvalores}{String com o nome da variável em \code{df} que será utilizada no histograma.
+\item{nvalores}{String com o nome da variavel em \code{df} que sera utilizada no histograma.
 Default: \code{nvalores}.}
 
-\item{fsize}{Tamanho da fonte para títulos, legendas e eixos. Default: 16.}
+\item{fsize}{Tamanho da fonte para titulos, legendas e eixos. Default: 16.}
 }
 \value{
-Nenhum objeto é retornado. Um arquivo PNG contendo o gráfico combinado é salvo no diretório de trabalho.
+Nenhum objeto e retornado. Um arquivo PNG contendo o grafico combinado e salvo no diretorio de trabalho.
 }
 \description{
-Esta função cria um gráfico composto por:
-(i) um gráfico de dispersão entre valores normalizados e brutos; e
-(ii) um histograma dos dados normalizados com curva de distribuição normal ajustada.
-Os dois gráficos são apresentados lado a lado em um único layout e salvos em arquivo PNG.
+Esta funcao cria um grafico composto por:
+(i) um grafico de dispersao entre valores normalizados e brutos; e
+(ii) um histograma dos dados normalizados com curva de distribuicao normal ajustada.
+Os dois graficos sao apresentados lado a lado em um unico layout e salvos em arquivo PNG.
 }
 \details{
 \itemize{
-\item O gráfico de dispersão usa os eixos:
+\item O grafico de dispersao usa os eixos:
 \code{x = Normalizado}, \code{y = N_Normalizado}.
-\item O histograma inclui uma linha da distribuição normal ajustada (média e desvio-padrão dos dados).
-\item Em caso de erro na geração do histograma (ex.: coluna não encontrada), é exibido
-um gráfico de mensagem de erro no lugar.
+\item O histograma inclui uma linha da distribuicao normal ajustada (media e desvio-padrao dos dados).
+\item Em caso de erro na geracao do histograma (ex.: coluna nao encontrada), e exibido
+um grafico de mensagem de erro no lugar.
 }
 }
 \examples{

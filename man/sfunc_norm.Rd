@@ -2,24 +2,24 @@
 % Please edit documentation in R/ADPNormalise.R
 \name{sfunc_norm}
 \alias{sfunc_norm}
-\title{Normalização Min-Max}
+\title{Normalizacao Min-Max}
 \usage{
 sfunc_norm(Y)
 }
 \arguments{
-\item{Y}{Vetor numérico a ser normalizado.}
+\item{Y}{Vetor numerico a ser normalizado.}
 }
 \value{
-Vetor numérico normalizado no intervalo [0, 1], preservando as posições originais de \code{NA}.
+Vetor numerico normalizado no intervalo [0, 1], preservando as posicoes originais de \code{NA}.
 }
 \description{
-Normaliza um vetor numérico usando o método Min-Max,
+Normaliza um vetor numerico usando o metodo Min-Max,
 transformando seus valores para o intervalo [0, 1].
 }
 \details{
 \itemize{
-\item Valores \code{NA} são ignorados nos cálculos de mínimo e máximo, mas preservados na saída.
-\item Fórmula utilizada:
+\item Valores \code{NA} sao ignorados nos calculos de minimo e maximo, mas preservados na saida.
+\item Formula utilizada:
 \deqn{Y_{norm} = \frac{Y - \min(Y)}{\max(Y) - \min(Y)}}
 }
 }
@@ -27,7 +27,7 @@ transformando seus valores para o intervalo [0, 1].
 # Vetor de exemplo
 dados <- c(10, 20, 30, NA, 40)
 
-# Normalização Min-Max
+# Normalizacao Min-Max
 sfunc_norm(dados)
 
 }

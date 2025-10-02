@@ -2,15 +2,13 @@
 % Please edit documentation in R/ADPGraficos.R
 \name{Map_result}
 \alias{Map_result}
-\title{Gerar Mapa Temático por Município}
+\title{Gerar Mapa Tematico por Municipio}
 \usage{
 Map_result(
   iNome,
   DADOS,
   REFERENCE,
   Titulo = "Titulo",
-  shp_mun = mun_shp,
-  shp_uf = uf_shp,
   nome_arquivo = "map_N7.png",
   largura = 20,
   altura = 24,
@@ -19,56 +17,50 @@ Map_result(
 )
 }
 \arguments{
-\item{iNome}{String. Nome da coluna em \code{DADOS} que será usada como variável de preenchimento do mapa.}
+\item{iNome}{String. Nome da coluna em \code{DADOS} que sera usada como variavel de preenchimento do mapa.}
 
-\item{DADOS}{Data frame com os valores a serem mapeados, incluindo a coluna de códigos de município (\code{GEOCOD}).}
+\item{DADOS}{Data frame com os valores a serem mapeados, incluindo a coluna de codigos de municipio (\code{GEOCOD}).}
 
-\item{REFERENCE}{Data frame de referência contendo identificadores (\code{GEOCOD}) para associação com \code{shp_mun}.}
+\item{REFERENCE}{Data frame de referencia contendo identificadores (\code{GEOCOD}) para associacao com \code{shp_mun}.}
 
-\item{Titulo}{Título do mapa. Default: "Titulo".}
+\item{Titulo}{Titulo do mapa. Default: "Titulo".}
 
-\item{shp_mun}{Objeto \code{sf} com polígonos municipais (default: \code{mun_shp}).}
-
-\item{shp_uf}{Objeto \code{sf} com polígonos estaduais (default: \code{uf_shp}).}
-
-\item{nome_arquivo}{Nome do arquivo de saída (\code{.png}). Default: "map_N7.png".}
+\item{nome_arquivo}{Nome do arquivo de saida (\code{.png}). Default: "map_N7.png".}
 
 \item{largura}{Largura da imagem em polegadas. Default: 20.}
 
 \item{altura}{Altura da imagem em polegadas. Default: 24.}
 
-\item{dpi}{Resolução (pontos por polegada). Default: 25.}
+\item{dpi}{Resolucao (pontos por polegada). Default: 25.}
 
-\item{fsize}{Tamanho da fonte para títulos, legendas e eixos. Default: 16.}
+\item{fsize}{Tamanho da fonte para titulos, legendas e eixos. Default: 16.}
 }
 \value{
-Nenhum objeto é retornado. Um arquivo PNG contendo o mapa é salvo no diretório de trabalho.
+Nenhum objeto e retornado. Um arquivo PNG contendo o mapa e salvo no diretorio de trabalho.
 }
 \description{
-Esta função gera um mapa temático (choropleth) a partir de dados associados
-a municípios, unindo um shapefile municipal a um conjunto de dados de referência.
-O resultado é exportado como arquivo de imagem (\code{.png}).
+Esta funcao gera um mapa tematico (choropleth) a partir de dados associados
+a municipios, unindo um shapefile municipal a um conjunto de dados de referencia.
+O resultado e exportado como arquivo de imagem (\code{.png}).
 }
 \details{
 \itemize{
-\item O shapefile municipal é combinado com os dados fornecidos via \code{merge},
+\item O shapefile municipal e combinado com os dados fornecidos via \code{merge},
 utilizando a chave \code{CD_MUN} (shapefile) e \code{GEOCOD} (dados).
-\item A paleta usada é \code{Spectral}, invertida (\code{direction = -1}).
-\item O número de intervalos da legenda é definido automaticamente com base no histograma dos dados.
-\item Os limites de visualização estão fixos para o Brasil (\code{xlim = c(-74.1, -34.5)},
+\item A paleta usada e \code{Spectral}, invertida (\code{direction = -1}).
+\item O numero de intervalos da legenda e definido automaticamente com base no histograma dos dados.
+\item Os limites de visualizacao estao fixos para o Brasil (\code{xlim = c(-74.1, -34.5)},
 \code{ylim = c(-35, 5)}).
 }
 }
 \examples{
 \dontrun{
-# Exemplo hipotético
+# Exemplo hipotetico
 Map_result(
   iNome = "variavel_exemplo",
   DADOS = df_dados,
   REFERENCE = df_ref,
   Titulo = "Mapa de Exemplo",
-  shp_mun = shp_municipios,
-  shp_uf = shp_estados,
   nome_arquivo = "meu_mapa.png"
 )
 }

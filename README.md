@@ -8,40 +8,80 @@ OBJETIVOS ESPECÍFICOS
 
    - 1.	Testar a ferramenta de validação e corrigir dados atualmente publicados para o novo formato;
    - 2.	Estudar o processo de construção de indicadores no AdaptaBrasil.
-   - 3.	Desenvolver scripts R para criação dos indicadores do AdaptaBrasil usando o pacote COINr.;
-   - 4.	Elaborar um tutorial de como usar o COINr para criar os índices do AdaptaBrasil; 
-   - 5.	Elaborar o Relatório final de atividades, apontando inclusive as limitações do pacote COINr para a criação dos índices do AdaptaBrasil.
-
+   - 3.	Desenvolver scripts R para criação dos indicadores do AdaptaBrasil;
+   - 4.	Elaborar um tutorial de como usar o pacote para criar os índices do AdaptaBrasil;
+        
 BOLSISTA  
-* Nete Barreto - Bolsista PCI-DA/INPE-DIIAV - naurinete.barreto@gmail.com
+* Nete Barreto - Bolsista DTI-A/INPE-DIIAV - naurinete.barreto@inpe.br
 
 DATAS INICIO: _20/07/2024_
 
-Informações Basicas: 
-- Versão do R:
-  * "R version 4.3.2 (2023-10-31 ucrt)"
-- Pacotes Instalados: 
-   * COINr_1.1.14
-   * lubridate_1.9.3  
-   * openxlsx_4.2.6.1     
+## Pacote _reprodutibilidade_ 
 
-ARQUIVOS: 
-* *IData_RH_INDBRT:* é os arquivos com os dados organizados dos indicadores simples, apenas para o nível  1, no formato de leitura do COINr
-* *IMeta_RH_INDBRT:* - São os metadados dos indicadores
+Pacote em R para análise estatística e reprodutibilidade dos indicadores simples, incluindo funções: 
 
-#### Arquivos gerados manualmente baseados no arquivo: 
-  * Planilha de funções - Valores - desastres_inundação - 13-12-23_revisao6 p script.xlsx
+- Criação de diagrama,
+- Resumos Estatíticos,
+- Winsorização,
+- BoxCox,
+- Normalização
+- geração de gráficos e mapas,
+- cálculos de correlação total, parcial e outras metricas,
+- Criação de Arquivos Excell com resultados
+- Criação de Apresentação em Powerpoint 
 
-#### "Winsorization" 
-  **Incluisão de uma coluna _[Score_ADP]_ no iMeta**
-  * Score_ADP = 1; Coluna do tipo Score - Não Aplicar Winsorization 
-  * Score_ADP = 0; Coluna Numérica - Aplicar o  Winsorization 
-  * Score_ADP = -1; Coluna do tipo Cluster (Urbano/Não Urbano), fazer avaliação depois
+---
 
-  **Contador dos Indicadores Simples** 
-  * Inclusão de uma coluna de contador simples no arquivo iMeta.csv
+## 📦 Instalação
 
-  **Títulos das figuras e Nomes dos Arquivos**
-    * Nome do Arquivo : 01-iCODE.png
-    * Modificação do título das figuras 
-    * inclusão do percentual de outlines
+Você pode instalar a versão de desenvolvimento diretamente do GitHub:
+
+```r
+# Instalar o pacote devtools, se ainda não tiver
+install.packages("devtools")
+
+# Instalar o pacote reprodutibilidade do GitHub
+devtools::install_github("AdaptaBrasil/reprodutibilidade")
+```
+> <div class="custom-block">
+  <strong>Funcionalidades Principais:</strong>
+> ADPNormalise() — Normalização de variáveis.  
+> ADPwinsorise() — Winsorização de dados para lidar com outliers.  
+> criar_resumo() — Criação de resumos estatísticos (mínimo, quartis, mediana, máximo, outliers, NAs).  
+> grafico_final() — Geração de gráficos com dados normalizados.  
+> gerar_diagrama_setor() — Criação de diagramas hierárquicos com DiagrammeR.  
+> Map_result() — Visualização de mapas (municípios/UF).  
+
+
+
+> <div class="custom-block">
+  <strong>IMPORTANTE:</strong> O pacote depende dos seguintes pacotes R:  
+> dplyr  
+> ggplot2   
+> tidyr  
+> DiagrammeR  
+> DiagrammeRsvg  
+> rsvg
+> psych  
+> Hmisc  
+> COINr  
+> e outros listados em DESCRIPTION.
+</div>
+
+
+
+```R
+library(reprodutibilidade)
+
+# Criando dados fictícios
+dados <- data.frame( var1 = c(1, 2, 3, 100),
+                     var2 = c(10, 20, 30, 40),
+                    CLUSTER = c(1, 1, 2, 2))
+
+meta <- data.frame( Classe = c("Numerico", "Numerico", "Cluster"),
+                    Code   = c("var1", "var2", "CLUSTER"))
+
+# Winsorização
+ref <- dados$CLUSTER
+ADPwinsorise(dados, meta, ref)
+```
