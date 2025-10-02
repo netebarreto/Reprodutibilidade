@@ -74,7 +74,7 @@ boxcox_transform<- function(value,metodo=c("forecast", "COINr", "yeojohnson"))
     Yres[which(is.na(Y))] = NA
     
     Yres[-which(is.na(Y))] = Ybcx
-    message(sprintf("Box-Cox aplicado com método: %s", metodo))
+    message(sprintf("Box-Cox aplicado com metodo: %s", metodo))
     return(Yres)
                 }
 
