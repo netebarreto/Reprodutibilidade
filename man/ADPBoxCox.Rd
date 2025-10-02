@@ -51,7 +51,7 @@ entao a transformacao e aplicada.
 }
 }
 \examples{
-# Exemplo ficticio (assumindo que sfunc_bxcx ja exista)
+# Exemplo ficticio (assumindo que boxcox_transform ja exista)
 set.seed(123)
 dados <- data.frame(
   x1 = c(rnorm(10), 100),# variavel distorcida

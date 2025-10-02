@@ -57,7 +57,7 @@
 #' @export
 boxcox_transform<- function(value,metodo=c("forecast", "COINr", "yeojohnson")) 
                 {
-    Ysna = Y[-which(is.na(value))]
+    Ysna = value[-which(is.na(value))]
     
     Ysna[Ysna==0] = Ysna[Ysna==0] +0.001 
     
@@ -69,11 +69,11 @@ boxcox_transform<- function(value,metodo=c("forecast", "COINr", "yeojohnson"))
     "yeojohnson"  = bestNormalize::yeojohnson(Ysna)$x.t,
     stop("Metodo invalido. Use 'forecast', 'COINr' ou 'yeojohnson'."))
     
-    Yres = Y
+    Yres = value
     
-    Yres[which(is.na(Y))] = NA
+    Yres[which(is.na(value))] = NA
     
-    Yres[-which(is.na(Y))] = Ybcx
+    Yres[-which(is.na(value))] = Ybcx
     message(sprintf("Box-Cox aplicado com metodo: %s", metodo))
     return(Yres)
                 }
@@ -109,7 +109,7 @@ boxcox_transform<- function(value,metodo=c("forecast", "COINr", "yeojohnson"))
 #' }
 #'
 #' @examples
-#' # Exemplo ficticio (assumindo que sfunc_bxcx ja exista)
+#' # Exemplo ficticio (assumindo que boxcox_transform ja exista)
 #' set.seed(123)
 #' dados <- data.frame(
 #'   x1 = c(rnorm(10), 100),# variavel distorcida
@@ -142,7 +142,7 @@ ADPBoxCox <- function(dadoswin=NULL,dados=NULL,classe=NULL,cluster=NULL,nome=NUL
         meta_cx$BoxCox = ifelse(is.na(meta_cx$Distorcao) | is.na(meta_cx$Curtose),0,ifelse(as.numeric(meta_cx$Distorcao)>=2 & as.numeric(meta_cx$Curtose)>=3.5, 1, 0))
         {
         if (meta_cx$BoxCox == 1 ) 
-        data_bx <-sfunc_bxcx(dados,metodo) 
+        data_bx <-boxcox_transform(dados,metodo) 
         else 
          {
           if (meta_cx$BoxCox == 0 )
