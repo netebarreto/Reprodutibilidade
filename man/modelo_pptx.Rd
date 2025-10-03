@@ -2,7 +2,7 @@
 % Please edit documentation in R/modelo_slides.r
 \name{modelo_pptx}
 \alias{modelo_pptx}
-\title{Abrir modelo de apresentação do pacote}
+\title{Abrir modelo de apresentacao do pacote}
 \usage{
 modelo_pptx()
 }
@@ -10,7 +10,7 @@ modelo_pptx()
 Objeto \code{pptx} (classe do pacote officer).
 }
 \description{
-Esta função carrega o arquivo .pptx incluído no pacote
+Esta funcao carrega o arquivo .pptx incluído no pacote
 e retorna um objeto pptx pronto para ser manipulado com o pacote officer.
 }
 \examples{
