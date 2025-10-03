@@ -1,6 +1,6 @@
-#' Abrir modelo de apresentação do pacote
+#' Abrir modelo de apresentacao do pacote
 #'
-#' Esta função carrega o arquivo .pptx incluído no pacote
+#' Esta funcao carrega o arquivo .pptx incluído no pacote
 #' e retorna um objeto pptx pronto para ser manipulado com o pacote officer.
 #'
 #' @return Objeto `pptx` (classe do pacote officer).
@@ -10,13 +10,13 @@
 #' print(ppt)
 modelo_pptx <- function() {
   # Localiza o arquivo dentro do pacote
-  arquivo <- system.file("templates", "modelo.pptx", package = "reprodutibilidade")
+  arquivo <- system.file("templates", "template_slide.pptx", package = "reprodutibilidade")
 
   if (arquivo == "") {
-    stop("O arquivo modelo.pptx não foi encontrado no pacote.")
+    stop("O arquivo modelo.pptx nao foi encontrado no pacote.")
   }
 
-  # Lê o pptx com officer
+  # Le o pptx com officer
   ppt <- officer::read_pptx(arquivo)
 
   return(ppt)
