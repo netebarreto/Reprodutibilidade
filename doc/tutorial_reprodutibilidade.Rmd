@@ -1,0 +1,26 @@
+---
+title: "Tutorial de Reprodutibilidade"
+author: "Nete Barreto"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+abstract: O pacote reprodutibilidade foi desenvolvido para apoiar as etapas de elaboração dos indicadores da plataforma AdaptaBrasil. Como o processo de criação dos índices e indicadores envolve diversas fases — incluindo validação, análises estatísticas — o pacote oferece funções que facilitam a criação, verificação e divulgação dos resultados de forma rastreavél e reprodutível.
+vignette: >
+  %\VignetteIndexEntry{Tutorial de Reprodutibilidade}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+## Introdução 
+
+Este pacote permite que o usuário faça a validação e análise estatísticas dos indicadores e indices. Para iniciar, é necessario instalar o pacote disponivel no GitHub.
+
+```{r, eval = FALSE}
+devtools::install_github("pedro-andrade-inpe/colrow")
+```
+
+Esse pacote inicialmente foi desenvolvido em ambiente windows 11
+
+## Conclusão
+
+
