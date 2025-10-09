@@ -1,3 +1,6 @@
 ## ----eval = FALSE-------------------------------------------------------------
-#  devtools::install_github("pedro-andrade-inpe/colrow")
+#  devtools::install_github("AdaptaBrasil/reprodutibilidade")
+
+## ----eval = FALSE-------------------------------------------------------------
+#  require(reprodutibilidade)
 
