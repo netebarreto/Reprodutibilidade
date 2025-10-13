@@ -12,7 +12,7 @@
 
 <meta name="author" content="Nete Barreto" />
 
-<meta name="date" content="2025-10-09" />
+<meta name="date" content="2025-10-13" />
 
 <title>Tutorial de Reprodutibilidade</title>
 
@@ -144,16 +144,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; }
 })();
 </script>
 
-<style type="text/css">
-p.abstract{
-text-align: center;
-font-weight: bold;
-}
-div.abstract{
-margin: auto;
-width: 90%;
-}
-</style>
 
 
 
@@ -351,19 +341,20 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Tutorial de Reprodutibilidade</h1>
 <h4 class="author">Nete Barreto</h4>
-<h4 class="date">2025-10-09</h4>
-<div class="abstract">
-<p class="abstract">Abstract</p>
-O pacote reprodutibilidade foi desenvolvido para apoiar as etapas de
-elaboração dos indicadores da plataforma AdaptaBrasil. Como o processo
-de criação dos índices e indicadores envolve diversas fases — incluindo
-validação, análises estatísticas — o pacote oferece funções que
-facilitam a criação, verificação e divulgação dos resultados de forma
-rastreavél e reprodutível.
+<h4 class="date">2025-10-13</h4>
+
+
+
+<div id="resumo" class="section level2" style="text-align: justify; width: 100%; margin: auto; font-size: 1em;">
+<h2>Resumo</h2>
+<p>O pacote <strong>reprodutibilidade</strong> foi desenvolvido para
+apoiar as etapas de elaboração dos indicadores da plataforma
+<strong>AdaptaBrasil</strong>. Como o processo de criação dos índices e
+indicadores envolve diversas fases — incluindo validação e análises
+estatísticas — o pacote oferece funções que facilitam a criação,
+verificação e divulgação dos resultados de forma rastreável e
+reprodutível.</p>
 </div>
-
-
-
 <div id="introdução" class="section level2">
 <h2>Introdução</h2>
 <p>Este pacote permite que o usuário faça a validação e análise
@@ -372,9 +363,79 @@ instalar o pacote disponivel no GitHub.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;AdaptaBrasil/reprodutibilidade&quot;</span>)</span></code></pre></div>
 <p>Esse pacote inicialmente foi desenvolvido em ambiente windows 11</p>
 </div>
+<div id="carregando-o-pacote" class="section level2">
+<h2>Carregando o pacote</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">require</span>(reprodutibilidade)</span></code></pre></div>
+</div>
 <div id="lendo-arquivos-de-entrada" class="section level2">
 <h2>Lendo arquivos de entrada</h2>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">require</span>(reprodutibilidade)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>inxlsx <span class="ot">&lt;-</span> openxlsx<span class="sc">::</span><span class="fu">loadWorkbook</span>(<span class="at">file =</span> <span class="st">&quot;DATASET/Base_inicial_SA_Acesso.xlsx&quot;</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  name_meta <span class="ot">=</span> <span class="st">&quot;Metadados&quot;</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  name_data <span class="ot">=</span> <span class="st">&quot;Dados_RA_Acesso&quot;</span></span></code></pre></div>
+<p>Lendo as planilhas do arquivo, nesse caso a planilha metadados,
+contem as informações sobre os indicadores que serão analisados
+como:</p>
+<ul>
+<li>Nome</li>
+<li>Tipo</li>
+<li>Pai</li>
+<li>Categoria</li>
+</ul>
+<p>Enquanto a planilha <em>“Dados_RA_Acesso”</em> contém os dados de
+georeferenciamento, tipo GEOCOD, NOME do Municpio, Estado, Região e
+Cluster <span style="color:red;">(esse elemento será explicado
+futuramente)<em elaboração></span> de cada indicador simples, o número
+total de linhas deve ser igual ao numero total de municípios avaliados.
+e o número total de colunas deve ser igual ao numero <span style="color:red;">XX <em elaboração> </span>.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>  metadados <span class="ot">&lt;-</span> openxlsx<span class="sc">::</span><span class="fu">read.xlsx</span>(inxlsx, <span class="at">sheet =</span> name_meta)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  dataset  <span class="ot">&lt;-</span> openxlsx<span class="sc">::</span><span class="fu">read.xlsx</span>(inxlsx, <span class="at">sheet =</span> name_data)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="co"># Recortando apenas os dados do Nivel 7</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  metadadosN7 <span class="ot">=</span> <span class="fu">subset</span>(metadados,metadados<span class="sc">$</span>Nivel<span class="sc">==</span><span class="dv">7</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>  <span class="co"># Selecionando apenas as referencias </span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>  data_ref <span class="ot">=</span> dataset[,<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>)]</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>  <span class="co"># Selecionando todos os dados   </span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>  datasetN7 <span class="ot">=</span> <span class="fu">round</span>(dateset[,<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>)],<span class="dv">2</span>)</span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>  <span class="co">#Atribuindo nome as colunas</span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>  <span class="fu">colnames</span>(datasetN7) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(dataset[,<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>)])</span></code></pre></div>
+<div id="aplicando-as-funções-de-resumo" class="section level4">
+<h4><em>Aplicando as Funções de Resumo</em></h4>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>resumo <span class="ot">&lt;-</span> <span class="fu">ADPresumo</span>(idata_N7, </span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>                    imeta_N7<span class="sc">$</span>Classe, </span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>                    data_ref[,<span class="dv">4</span>], </span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>                    <span class="fu">colnames</span>(idata_N7))</span></code></pre></div>
+</div>
+<div id="aplicando-as-funções-de-resumo-1" class="section level4">
+<h4><em>Aplicando as Funções de Resumo</em></h4>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">winsorize_data</span>(<span class="at">dataset=</span>idata_N7, </span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>               <span class="at">metadados=</span>imeta_N7,</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>               <span class="at">cluster_ref=</span>data_ref[,<span class="dv">4</span>])</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>data_winsor <span class="ot">&lt;-</span> <span class="fu">winsorize_apply</span>(<span class="at">dataset=</span>idata_N7,</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>                              <span class="at">metadados=</span>imeta_N7,</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>                              <span class="at">cluster_ref=</span>data_ref[,<span class="dv">4</span>])</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>data_bxcx <span class="ot">&lt;-</span> <span class="fu">ADPBoxCox</span>(<span class="at">dadoswin=</span>data_winsor<span class="sc">$</span>dataset,</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>                      <span class="at">dados=</span>idata_N7,</span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>                      <span class="at">classe=</span>imeta_N7<span class="sc">$</span>Classe,</span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>                      <span class="at">cluster=</span>data_ref[,<span class="dv">4</span>],</span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>                      <span class="at">nome=</span><span class="fu">colnames</span>(idata_N7),</span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>                      <span class="at">metodo=</span>method_boxcox)</span></code></pre></div>
+<p>Excutando a função que aplica as métricas, Cria uma lista chamado
+result, onde estão os resultados das metricas aplicadas.<br />
+Salvando em dois (2) arquivos .xlsx no diretório OUTPUT</p>
+<ul>
+<li>O primeiro ANALISE_DESCRITIVA_SETOR_DATA_HORA.xlsx</li>
+<li>O segundo DADOS_TRATADOS_SETOR_DATA_HORA.xlsx</li>
+</ul>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>result <span class="ot">=</span> <span class="fu">Tratamento</span>(<span class="at">input=</span><span class="st">&quot;../../DATASET/Base_inicial_SA_Acesso.xlsx&quot;</span>,</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>           <span class="at">iMeta =</span> <span class="st">&quot;Metadados&quot;</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>           <span class="at">iData =</span> <span class="st">&quot;Dados_RA_Acesso&quot;</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>           <span class="at">method_boxcox=</span><span class="st">&quot;forecast&quot;</span>)</span></code></pre></div>
+</div>
 </div>
 
 

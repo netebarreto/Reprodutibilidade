@@ -2,14 +2,23 @@
 title: "Tutorial de Reprodutibilidade"
 author: "Nete Barreto"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
-abstract: O pacote reprodutibilidade foi desenvolvido para apoiar as etapas de elaboração dos indicadores da plataforma AdaptaBrasil. Como o processo de criação dos índices e indicadores envolve diversas fases — incluindo validação, análises estatísticas — o pacote oferece funções que facilitam a criação, verificação e divulgação dos resultados de forma rastreavél e reprodutível.
+output: 
+  rmarkdown::html_vignette:
+    highlight: pygments
 vignette: >
   %\VignetteIndexEntry{Tutorial de Reprodutibilidade}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
+
+
+<div style="text-align: justify; width: 100%; margin: auto; font-size: 1em;">
+
+## Resumo
+ O pacote **reprodutibilidade** foi desenvolvido para apoiar as etapas de elaboração dos indicadores da plataforma **AdaptaBrasil**. Como o processo de criação dos índices e indicadores envolve diversas fases — incluindo validação e análises estatísticas — o pacote oferece funções que facilitam a criação, verificação e divulgação dos resultados de forma rastreável e reprodutível.
+
+</div>
 
 ## Introdução 
 
@@ -22,10 +31,89 @@ devtools::install_github("AdaptaBrasil/reprodutibilidade")
 
 Esse pacote inicialmente foi desenvolvido em ambiente windows 11
 
-## Lendo arquivos de entrada 
+## Carregando o pacote 
 
 ```{r, eval = FALSE}
 require(reprodutibilidade)
 ```
 
+## Lendo arquivos de entrada 
 
+```{r, eval = FALSE}
+inxlsx <- openxlsx::loadWorkbook(file = "DATASET/Base_inicial_SA_Acesso.xlsx")
+  name_meta = "Metadados"
+  name_data = "Dados_RA_Acesso"
+```
+
+Lendo as planilhas do arquivo, nesse caso a planilha metadados, contem as informações sobre os indicadores que serão analisados como: 
+
+* Nome 
+* Tipo 
+* Pai 
+* Categoria 
+
+Enquanto a planilha _"Dados_RA_Acesso"_ contém os dados de georeferenciamento, tipo GEOCOD, NOME do Municpio, Estado, Região e Cluster <span style="color:red;">(esse elemento será explicado futuramente)<em elaboração></span> de cada indicador simples, o número total de linhas deve ser igual ao numero total de municípios avaliados. e o número total de colunas deve ser igual ao numero <span style="color:red;">XX <em elaboração> </span>.  
+
+
+```{r, eval = FALSE}
+  metadados <- openxlsx::read.xlsx(inxlsx, sheet = name_meta)
+  dataset  <- openxlsx::read.xlsx(inxlsx, sheet = name_data)
+
+  # Recortando apenas os dados do Nivel 7
+  metadadosN7 = subset(metadados,metadados$Nivel==7)
+
+  # Selecionando apenas as referencias 
+  data_ref = dataset[,c(1:4)]
+
+  # Selecionando todos os dados   
+  datasetN7 = round(dateset[,-c(1:4)],2)
+
+  #Atribuindo nome as colunas
+  colnames(datasetN7) <- colnames(dataset[,-c(1:4)])
+```
+
+#### _Aplicando as Funções de Resumo_  
+```{r, eval = FALSE}
+resumo <- ADPresumo(idata_N7, 
+                    imeta_N7$Classe, 
+                    data_ref[,4], 
+                    colnames(idata_N7))
+```
+
+#### _Aplicando as Funções de Resumo_
+
+```{r, eval = FALSE}
+
+winsorize_data(dataset=idata_N7, 
+               metadados=imeta_N7,
+               cluster_ref=data_ref[,4])
+
+data_winsor <- winsorize_apply(dataset=idata_N7,
+                              metadados=imeta_N7,
+                              cluster_ref=data_ref[,4])
+
+data_bxcx <- ADPBoxCox(dadoswin=data_winsor$dataset,
+                      dados=idata_N7,
+                      classe=imeta_N7$Classe,
+                      cluster=data_ref[,4],
+                      nome=colnames(idata_N7),
+                      metodo=method_boxcox)
+
+```
+
+Excutando a função que aplica as métricas, 
+Cria uma lista chamado result, onde estão os resultados 
+das metricas aplicadas.  
+Salvando em dois (2) arquivos .xlsx no diretório OUTPUT 
+
+* O primeiro ANALISE_DESCRITIVA_SETOR_DATA_HORA.xlsx
+* O segundo DADOS_TRATADOS_SETOR_DATA_HORA.xlsx
+
+```{r, eval = FALSE}
+result = Tratamento(input="../../DATASET/Base_inicial_SA_Acesso.xlsx",
+           iMeta = "Metadados",
+           iData = "Dados_RA_Acesso",
+           method_boxcox="forecast")
+```
+
+```{r, eval = FALSE}
