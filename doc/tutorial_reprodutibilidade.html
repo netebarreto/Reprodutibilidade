@@ -12,7 +12,7 @@
 
 <meta name="author" content="Nete Barreto" />
 
-<meta name="date" content="2025-10-13" />
+<meta name="date" content="2025-10-14" />
 
 <title>Tutorial de Reprodutibilidade</title>
 
@@ -341,7 +341,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Tutorial de Reprodutibilidade</h1>
 <h4 class="author">Nete Barreto</h4>
-<h4 class="date">2025-10-13</h4>
+<h4 class="date">2025-10-14</h4>
 
 
 
@@ -384,9 +384,10 @@ como:</p>
 <p>Enquanto a planilha <em>“Dados_RA_Acesso”</em> contém os dados de
 georeferenciamento, tipo GEOCOD, NOME do Municpio, Estado, Região e
 Cluster <span style="color:red;">(esse elemento será explicado
-futuramente)<em elaboração></span> de cada indicador simples, o número
-total de linhas deve ser igual ao numero total de municípios avaliados.
-e o número total de colunas deve ser igual ao numero <span style="color:red;">XX <em elaboração> </span>.</p>
+futuramente)</span> de cada indicador simples, o número total de linhas
+deve ser igual ao numero total de municípios avaliados. e o número total
+de colunas deve ser igual ao numero <span style="color:red;">XX
+</span>.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>  metadados <span class="ot">&lt;-</span> openxlsx<span class="sc">::</span><span class="fu">read.xlsx</span>(inxlsx, <span class="at">sheet =</span> name_meta)</span>
 <span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  dataset  <span class="ot">&lt;-</span> openxlsx<span class="sc">::</span><span class="fu">read.xlsx</span>(inxlsx, <span class="at">sheet =</span> name_data)</span>
 <span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a></span>
@@ -403,27 +404,111 @@ e o número total de colunas deve ser igual ao numero <span style="color:red;">X
 <span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>  <span class="fu">colnames</span>(datasetN7) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(dataset[,<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>)])</span></code></pre></div>
 <div id="aplicando-as-funções-de-resumo" class="section level4">
 <h4><em>Aplicando as Funções de Resumo</em></h4>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>resumo <span class="ot">&lt;-</span> <span class="fu">ADPresumo</span>(idata_N7, </span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>                    imeta_N7<span class="sc">$</span>Classe, </span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>                    data_ref[,<span class="dv">4</span>], </span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>                    <span class="fu">colnames</span>(idata_N7))</span></code></pre></div>
+<p><span style="color:red;"> Essa função obtem estastitiscas básicas de
+apenas um unico indicador, para o calcúlo ser executado de forma
+correta, atentar para o segundo objeto inserido no indicador, que se
+refere a classe do objeto, caso ele seja <em>Numérico</em> é necessario
+que seja escrito da seguinte forma: <strong>“Numerico”</strong>.
+</span></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;reprodutibilidade&quot;</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="co"># Carregando a base de dados de exemplo</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;iData_N7&quot;</span>, <span class="at">package =</span> <span class="st">&quot;reprodutibilidade&quot;</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>idx_MMPD <span class="ot">=</span> iData_N7<span class="sc">$</span>MMPD</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>nome <span class="ot">=</span> <span class="st">&quot;MMPD&quot;</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>res1 <span class="ot">=</span> <span class="fu">criar_resumo</span>(idx_MMPD,<span class="st">&quot;Numerico&quot;</span> , <span class="at">cluster =</span> <span class="cn">NULL</span>, <span class="st">&quot;MMPD&quot;</span>)</span></code></pre></div>
+<pre><code>##     iName Classe    
+##   1 MMPD  Numerico</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">t</span>(<span class="fu">as.data.frame</span>(res1))</span></code></pre></div>
+<pre><code>##                   [,1]      
+## iName             &quot;MMPD&quot;    
+## Classe            &quot;Numerico&quot;
+## Min               &quot;2.33&quot;    
+## Quartil 1         &quot;2.89&quot;    
+## Mediana           &quot;3.09&quot;    
+## Quartil 3         &quot;3.36&quot;    
+## Max               &quot;4.07&quot;    
+## Outliers_Per      &quot;3.93&quot;    
+## NAs               &quot;5&quot;       
+## Percentual_NAs    &quot;0.09&quot;    
+## Valores_Unicos    &quot;5559&quot;    
+## Percentual_Unicos &quot;99.89&quot;</code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;reprodutibilidade&quot;</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="co"># Carregando a base de dados de exemplo</span></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;iMeta_N7&quot;</span>, <span class="at">package =</span> <span class="st">&quot;reprodutibilidade&quot;</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;iData_N7&quot;</span>, <span class="at">package =</span> <span class="st">&quot;reprodutibilidade&quot;</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="co"># Selecionando apenas as referencias </span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>data_ref <span class="ot">=</span> iData_N7[,<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>)]</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>resumo <span class="ot">&lt;-</span> <span class="fu">ADPresumo</span>(iData_N7, </span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>                    iMeta_N7<span class="sc">$</span>Classe, </span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>                    data_ref[,<span class="dv">4</span>], </span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>                    <span class="fu">colnames</span>(iData_N7))</span></code></pre></div>
+<pre><code>##     iName Classe  
+##   1 MMPD  Score</code></pre>
+<pre><code>##     iName    Classe  
+##   1 MCFSFCBR Score</code></pre>
+<pre><code>##     iName   Classe  
+##   1 PED(CI) Score</code></pre>
+<pre><code>##     iName  Classe  
+##   1 DRDAFD Score</code></pre>
+<pre><code>##     iName Classe  
+##   1 QA    Score</code></pre>
+<pre><code>##     iName      Classe  
+##   1 DCAU10MILH Score</code></pre>
+<pre><code>##     iName Classe  
+##   1 SRAAB Score</code></pre>
+<pre><code>##     iName Classe  
+##   1 NIAN  Score</code></pre>
+<pre><code>##     iName  Classe  
+##   1 PCM2AD Score</code></pre>
+<pre><code>##     iName  Classe  
+##   1 ODRSAI Score</code></pre>
+<pre><code>##     iName Classe  
+##   1 NSP   Score</code></pre>
+<pre><code>##     iName     Classe  
+##   1 IFPCPESIA Score</code></pre>
+<pre><code>##     iName Classe  
+##   1 IPGSA Score</code></pre>
+<pre><code>##     iName Classe  
+##   1 APNAE Score</code></pre>
+<pre><code>##     iName          Classe  
+##   1 NAPURPAATSASMC Score</code></pre>
+<pre><code>##     iName   Classe  
+##   1 FPAAPCT Score</code></pre>
+<pre><code>##     iName    Classe  
+##   1 NAPCP1MC Score</code></pre>
+<pre><code>##     iName Classe  
+##   1 APBF  Score</code></pre>
+<pre><code>##     iName Classe  
+##   1 IDRD  Score</code></pre>
+<pre><code>##     iName    Classe  
+##   1 DRPCS5SM Score</code></pre>
+<pre><code>##     iName Classe  
+##   1 DP    Score</code></pre>
+<pre><code>##     iName Classe  
+##   1 PT    Score</code></pre>
+<pre><code>## 
+##  Resumo Geral Obtido</code></pre>
 </div>
 <div id="aplicando-as-funções-de-resumo-1" class="section level4">
 <h4><em>Aplicando as Funções de Resumo</em></h4>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">winsorize_data</span>(<span class="at">dataset=</span>idata_N7, </span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>               <span class="at">metadados=</span>imeta_N7,</span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>               <span class="at">cluster_ref=</span>data_ref[,<span class="dv">4</span>])</span>
-<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a></span>
-<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>data_winsor <span class="ot">&lt;-</span> <span class="fu">winsorize_apply</span>(<span class="at">dataset=</span>idata_N7,</span>
-<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>                              <span class="at">metadados=</span>imeta_N7,</span>
-<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>                              <span class="at">cluster_ref=</span>data_ref[,<span class="dv">4</span>])</span>
-<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a></span>
-<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>data_bxcx <span class="ot">&lt;-</span> <span class="fu">ADPBoxCox</span>(<span class="at">dadoswin=</span>data_winsor<span class="sc">$</span>dataset,</span>
-<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>                      <span class="at">dados=</span>idata_N7,</span>
-<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>                      <span class="at">classe=</span>imeta_N7<span class="sc">$</span>Classe,</span>
-<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>                      <span class="at">cluster=</span>data_ref[,<span class="dv">4</span>],</span>
-<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>                      <span class="at">nome=</span><span class="fu">colnames</span>(idata_N7),</span>
-<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>                      <span class="at">metodo=</span>method_boxcox)</span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a><span class="fu">winsorize_data</span>(<span class="at">dataset=</span>idata_N7, </span>
+<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a>               <span class="at">metadados=</span>imeta_N7,</span>
+<span id="cb33-3"><a href="#cb33-3" tabindex="-1"></a>               <span class="at">cluster_ref=</span>data_ref[,<span class="dv">4</span>])</span>
+<span id="cb33-4"><a href="#cb33-4" tabindex="-1"></a></span>
+<span id="cb33-5"><a href="#cb33-5" tabindex="-1"></a>data_winsor <span class="ot">&lt;-</span> <span class="fu">winsorize_apply</span>(<span class="at">dataset=</span>idata_N7,</span>
+<span id="cb33-6"><a href="#cb33-6" tabindex="-1"></a>                              <span class="at">metadados=</span>imeta_N7,</span>
+<span id="cb33-7"><a href="#cb33-7" tabindex="-1"></a>                              <span class="at">cluster_ref=</span>data_ref[,<span class="dv">4</span>])</span>
+<span id="cb33-8"><a href="#cb33-8" tabindex="-1"></a></span>
+<span id="cb33-9"><a href="#cb33-9" tabindex="-1"></a>data_bxcx <span class="ot">&lt;-</span> <span class="fu">ADPBoxCox</span>(<span class="at">dadoswin=</span>data_winsor<span class="sc">$</span>dataset,</span>
+<span id="cb33-10"><a href="#cb33-10" tabindex="-1"></a>                      <span class="at">dados=</span>idata_N7,</span>
+<span id="cb33-11"><a href="#cb33-11" tabindex="-1"></a>                      <span class="at">classe=</span>imeta_N7<span class="sc">$</span>Classe,</span>
+<span id="cb33-12"><a href="#cb33-12" tabindex="-1"></a>                      <span class="at">cluster=</span>data_ref[,<span class="dv">4</span>],</span>
+<span id="cb33-13"><a href="#cb33-13" tabindex="-1"></a>                      <span class="at">nome=</span><span class="fu">colnames</span>(idata_N7),</span>
+<span id="cb33-14"><a href="#cb33-14" tabindex="-1"></a>                      <span class="at">metodo=</span>method_boxcox)</span></code></pre></div>
 <p>Excutando a função que aplica as métricas, Cria uma lista chamado
 result, onde estão os resultados das metricas aplicadas.<br />
 Salvando em dois (2) arquivos .xlsx no diretório OUTPUT</p>
@@ -431,11 +516,16 @@ Salvando em dois (2) arquivos .xlsx no diretório OUTPUT</p>
 <li>O primeiro ANALISE_DESCRITIVA_SETOR_DATA_HORA.xlsx</li>
 <li>O segundo DADOS_TRATADOS_SETOR_DATA_HORA.xlsx</li>
 </ul>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>result <span class="ot">=</span> <span class="fu">Tratamento</span>(<span class="at">input=</span><span class="st">&quot;../../DATASET/Base_inicial_SA_Acesso.xlsx&quot;</span>,</span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>           <span class="at">iMeta =</span> <span class="st">&quot;Metadados&quot;</span>,</span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>           <span class="at">iData =</span> <span class="st">&quot;Dados_RA_Acesso&quot;</span>,</span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>           <span class="at">method_boxcox=</span><span class="st">&quot;forecast&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a>result <span class="ot">=</span> <span class="fu">Tratamento</span>(<span class="at">input=</span><span class="st">&quot;../../DATASET/Base_inicial_SA_Acesso.xlsx&quot;</span>,</span>
+<span id="cb34-2"><a href="#cb34-2" tabindex="-1"></a>           <span class="at">iMeta =</span> <span class="st">&quot;Metadados&quot;</span>,</span>
+<span id="cb34-3"><a href="#cb34-3" tabindex="-1"></a>           <span class="at">iData =</span> <span class="st">&quot;Dados_RA_Acesso&quot;</span>,</span>
+<span id="cb34-4"><a href="#cb34-4" tabindex="-1"></a>           <span class="at">method_boxcox=</span><span class="st">&quot;forecast&quot;</span>)</span></code></pre></div>
 </div>
+</div>
+<div id="atenção" class="section level2">
+<h2>ATENÇÃO</h2>
+<p><span style="color:red;"> O texto com destaque em vermelho, serão
+revisados novamente, ao longo do processo de desenvolvimento </span></p>
 </div>
 
 

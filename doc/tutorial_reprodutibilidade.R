@@ -25,11 +25,34 @@
 #    #Atribuindo nome as colunas
 #    colnames(datasetN7) <- colnames(dataset[,-c(1:4)])
 
-## ----eval = FALSE-------------------------------------------------------------
-#  resumo <- ADPresumo(idata_N7,
-#                      imeta_N7$Classe,
-#                      data_ref[,4],
-#                      colnames(idata_N7))
+## ----echo=TRUE, eval=TRUE, results='markup'-----------------------------------
+
+library("reprodutibilidade")
+# Carregando a base de dados de exemplo
+data("iData_N7", package = "reprodutibilidade")
+
+idx_MMPD = iData_N7$MMPD
+nome = "MMPD"
+
+res1 = criar_resumo(idx_MMPD,"Numerico" , cluster = NULL, "MMPD")
+
+t(as.data.frame(res1))
+
+
+## ----eval = TRUE, echo = TRUE-------------------------------------------------
+
+library("reprodutibilidade")
+# Carregando a base de dados de exemplo
+data("iMeta_N7", package = "reprodutibilidade")
+data("iData_N7", package = "reprodutibilidade")
+
+# Selecionando apenas as referencias 
+data_ref = iData_N7[,c(1:4)]
+
+resumo <- ADPresumo(iData_N7, 
+                    iMeta_N7$Classe, 
+                    data_ref[,4], 
+                    colnames(iData_N7))
 
 ## ----eval = FALSE-------------------------------------------------------------
 #  
@@ -54,7 +77,4 @@
 #             iMeta = "Metadados",
 #             iData = "Dados_RA_Acesso",
 #             method_boxcox="forecast")
-
-## ----eval = FALSE-------------------------------------------------------------
-#  NA
 

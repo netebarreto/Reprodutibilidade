@@ -52,7 +52,7 @@ Lendo as planilhas do arquivo, nesse caso a planilha metadados, contem as inform
 * Pai 
 * Categoria 
 
-Enquanto a planilha _"Dados_RA_Acesso"_ contém os dados de georeferenciamento, tipo GEOCOD, NOME do Municpio, Estado, Região e Cluster <span style="color:red;">(esse elemento será explicado futuramente)<em elaboração></span> de cada indicador simples, o número total de linhas deve ser igual ao numero total de municípios avaliados. e o número total de colunas deve ser igual ao numero <span style="color:red;">XX <em elaboração> </span>.  
+Enquanto a planilha _"Dados_RA_Acesso"_ contém os dados de georeferenciamento, tipo GEOCOD, NOME do Municpio, Estado, Região e Cluster <span style="color:red;">(esse elemento será explicado futuramente)</span> de cada indicador simples, o número total de linhas deve ser igual ao numero total de municípios avaliados. e o número total de colunas deve ser igual ao numero <span style="color:red;">XX </span>.  
 
 
 ```{r, eval = FALSE}
@@ -72,12 +72,38 @@ Enquanto a planilha _"Dados_RA_Acesso"_ contém os dados de georeferenciamento, 
   colnames(datasetN7) <- colnames(dataset[,-c(1:4)])
 ```
 
-#### _Aplicando as Funções de Resumo_  
-```{r, eval = FALSE}
-resumo <- ADPresumo(idata_N7, 
-                    imeta_N7$Classe, 
+#### _Aplicando as Funções de Resumo_ 
+<span style="color:red;"> Essa função obtem estastitiscas básicas de apenas um unico indicador, para o calcúlo ser executado de forma correta, atentar para o segundo objeto inserido no indicador, que se refere a classe do objeto, caso ele seja _Numérico_ é necessario que seja escrito da seguinte forma: **"Numerico"**. </span>
+
+```{r, echo=TRUE, eval=TRUE, results='markup'}
+
+library("reprodutibilidade")
+# Carregando a base de dados de exemplo
+data("iData_N7", package = "reprodutibilidade")
+
+idx_MMPD = iData_N7$MMPD
+nome = "MMPD"
+
+res1 = criar_resumo(idx_MMPD,"Numerico" , cluster = NULL, "MMPD")
+
+t(as.data.frame(res1))
+
+```
+
+```{r, eval = TRUE, echo = TRUE}
+
+library("reprodutibilidade")
+# Carregando a base de dados de exemplo
+data("iMeta_N7", package = "reprodutibilidade")
+data("iData_N7", package = "reprodutibilidade")
+
+# Selecionando apenas as referencias 
+data_ref = iData_N7[,c(1:4)]
+
+resumo <- ADPresumo(iData_N7, 
+                    iMeta_N7$Classe, 
                     data_ref[,4], 
-                    colnames(idata_N7))
+                    colnames(iData_N7))
 ```
 
 #### _Aplicando as Funções de Resumo_
@@ -116,4 +142,5 @@ result = Tratamento(input="../../DATASET/Base_inicial_SA_Acesso.xlsx",
            method_boxcox="forecast")
 ```
 
-```{r, eval = FALSE}
+## ATENÇÃO 
+<span style="color:red;"> O texto com destaque em vermelho, serão revisados novamente, ao longo do processo de desenvolvimento </span>
