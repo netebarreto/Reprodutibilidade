@@ -40,6 +40,7 @@ require(reprodutibilidade)
 ## Lendo arquivos de entrada 
 
 ```{r, eval = FALSE}
+library("reprodutibilidade")
 inxlsx <- openxlsx::loadWorkbook(file = "DATASET/Base_inicial_SA_Acesso.xlsx")
   name_meta = "Metadados"
   name_data = "Dados_RA_Acesso"
@@ -52,9 +53,23 @@ Lendo as planilhas do arquivo, nesse caso a planilha metadados, contem as inform
 * Pai 
 * Categoria 
 
+
+<div style="text-align: justify; width: 100%; margin: auto; font-size: 1em;">
+
 Enquanto a planilha _"Dados_RA_Acesso"_ contém os dados de georeferenciamento, tipo GEOCOD, NOME do Municpio, Estado, Região e Cluster <span style="color:red;">(esse elemento será explicado futuramente)</span> de cada indicador simples, o número total de linhas deve ser igual ao numero total de municípios avaliados. e o número total de colunas deve ser igual ao numero <span style="color:red;">XX </span>.  
+A Figura abaixo ilustra as planilhas usadas no fluxo do pacote — contém exemplos de formatos e campos esperados (georeferenciamento, nome do município, estado, região e cluster). Na plnailha **Dados_RA_Acesso** — as coluna 1–4 são referências, as demais colunas correspondem aos indicadores por município.
+</div>
+#
 
+<figure style="text-align: justify; width: 100%; margin: auto;">
 
+<img src="figures/Print_planilhas.png" style="width:100%; height:auto;" />
+<figcaption style="text-align:left; font-size:0.95em; margin-top:6px;">
+    Figura 1: Exemplo das planilhas de entrada do pacote reprodutibilidade, planilhas Metadados e Dados_RA_Acesso. 
+  </figcaption>
+</figure>
+
+###
 ```{r, eval = FALSE}
   metadados <- openxlsx::read.xlsx(inxlsx, sheet = name_meta)
   dataset  <- openxlsx::read.xlsx(inxlsx, sheet = name_data)
