@@ -188,7 +188,7 @@ ADPresumo <- function(dataset, class_types, clusters, names) {
   }
   
   resumo <- lapply(seq_along(names), function(i) {
-    criar_resumo(dataset[[i]], class_types[i], clusters, names[i])
+    suppressMessages(criar_resumo(dataset[[i]], class_types[i], clusters, names[i]))
   })
   
   resumo_combinado <- dplyr::bind_rows(resumo)
