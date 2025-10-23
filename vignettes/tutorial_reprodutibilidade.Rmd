@@ -22,14 +22,28 @@ vignette: >
 
 ## Introdução 
 
-Este pacote permite que o usuário faça a validação e análise estatísticas dos indicadores e indices. Para iniciar, é necessario instalar o pacote disponivel no GitHub.
+O fluxograma apresentado ilustra o fluxo de tratamento e preparação dos dados dentro do processo analítico da plataforma AdaptaBrasil. Ele representa a sequência de etapas aplicadas aos dados brutos antes da execução das análises estatísticas e da construção dos indicadores.
+
+<figure style="text-align: justify; width: 100%; margin: auto;">
+
+<img src="figures/Fluxograma_V02.png" style="width:100%; height:auto;" />
+<figcaption style="text-align:left; font-size:0.95em; margin-top:6px;">
+    Figura 1: Fluxo de tratamento e preparação dos dados brutos, incluindo etapas de verificação, transformação e normalização para garantir consistência e reprodutibilidade estatística.
+  </figcaption>
+</figure>
+
+#####
+
+O processo inicia com a verificação do tipo de variável, diferenciando dados do tipo Score de variáveis numéricas. Para variáveis numéricas, ocorre a identificação de outliers e, se necessário, aplica-se a winsorização, que reduz o impacto de valores extremos sem removê-los. Em seguida, os dados são avaliados quanto à assimetria e curtose, de modo a identificar distorções na distribuição. Quando essas distorções são significativas, utiliza-se a transformação Box-Cox, que corrige desvios de normalidade e estabiliza a variância.
+
+Após o ajuste da distribuição, os dados passam pela normalização, permintido a comparabilidade entre diferentes variáveis e unidades de medida. Por fim, realiza-se a análise de correlação, que permite avaliar as relações entre os indicadores e seguir para as etapas subsequentes de modelagem e composição dos índices.
+
+Esse fluxo propricia reprodutibilidade e consistência estatística dos dados processados, consolidando a qualidade das informações analisadas. Para iniciar, é necessario instalar o pacote disponivel no GitHub, sendo inicialmente desenvolvido em ambiente windows 11.
 
 ```{r, eval = FALSE}
 devtools::install_github("AdaptaBrasil/reprodutibilidade")
 ```
 
-
-Esse pacote inicialmente foi desenvolvido em ambiente windows 11
 
 ## Carregando o pacote 
 
@@ -105,7 +119,8 @@ t(as.data.frame(res1))
 
 ```
 
-```{r, eval = TRUE, echo = TRUE}
+
+```{r, eval = FALSE}
 
 library("reprodutibilidade")
 # Carregando a base de dados de exemplo
@@ -121,24 +136,77 @@ resumo <- ADPresumo(iData_N7,
                     colnames(iData_N7))
 ```
 
-#### _Aplicando as Funções de Resumo_
+#### _Aplicando as Funções de Winsorization_
+<span style="color:red;"> Essa função tem como objetivo reduzir o impacto dos valores extremos (_outliers_) do conjunto de dados, reprojetando os mesmos para valores proximos a limiares definidos baseados no percentis inferiores e superiores.  </span>
 
 ```{r, eval = FALSE}
 
-winsorize_data(dataset=idata_N7, 
-               metadados=imeta_N7,
+library("reprodutibilidade")
+# Carregando a base de dados de exemplo
+data("iMeta_N7", package = "reprodutibilidade")
+data("iData_N7", package = "reprodutibilidade")
+
+
+winsorize_data(dataset=iData_N7, 
+               metadados=iMeta_N7,
                cluster_ref=data_ref[,4])
 
-data_winsor <- winsorize_apply(dataset=idata_N7,
-                              metadados=imeta_N7,
+data_winsor <- winsorize_apply(dataset=iData_N7,
+                              metadados=iMeta_N7,
                               cluster_ref=data_ref[,4])
 
+```
+#### _Aplicando as Funções BoxCox_
+<span style="color:red;"> Essa função aplica da trnasformada BoxCox buscando corrigir assietria e estabilizar a variância, aproximando de uma distribuição normal.  </span>
+
+
+```{r, eval = FALSE}
+
+library("reprodutibilidade")
+
+# Carregando a base de dados de exemplo
+data("iMeta_N7", package = "reprodutibilidade")
+data("iData_N7", package = "reprodutibilidade")
+
+dados <- iMeta_N7[,7]
+
+# Aplicando Box-Cox com pacote forecast
+bxcx.fcs <- boxcox_transform(dados, metodo = "forecast")
+ 
+# Aplicando Box-Cox com o COINr
+bxcx.coin <- boxcox_transform(dados,metodo = "COINr")
+ 
+# Aplicando Yeo-Johnson
+bxcx.yjn <- boxcox_transform(dados, metodo = "yeojohnson")
+ 
+par(mfrow=c(1,3)) ; par(mar=c(5,5,6,1))
+ 
+ plot(c(1:length(dados)),bxcx.fcs,
+      main = "Transformacao BoxCox \n via pacote Forecast",
+      cex.axis=1.5,las=1,ylab="Transformada BoxCox",
+      xlab="Reference", cex.lab=1.8,cex.main=2) 
+ 
+ plot(c(1:length(dados)),bxcx.coin,
+      main = "Transformacao BoxCox \n via pacote COINr",
+      cex.axis=1.5,las=1,ylab="Transformada BoxCox",
+      xlab="Reference",cex.lab=1.8,cex.main=2) 
+ 
+ plot(c(1:length(dados)),bxcx.yjn,
+      main = "Transformacao BoxCox \n via pacote bestNormalize::Yeojohnson",
+      cex.axis=1.5,las=1,ylab="Transformada BoxCox",
+      xlab="Reference",cex.lab=1.8,cex.main=2)
+```
+
+```{r, eval = FALSE}
 data_bxcx <- ADPBoxCox(dadoswin=data_winsor$dataset,
-                      dados=idata_N7,
-                      classe=imeta_N7$Classe,
+                      dados=iData_N7,
+                      classe=iMeta_N7$Classe,
                       cluster=data_ref[,4],
                       nome=colnames(idata_N7),
                       metodo=method_boxcox)
+
+
+data_normal <- ADPNormalise(data_bxcx$data)
 
 ```
 
