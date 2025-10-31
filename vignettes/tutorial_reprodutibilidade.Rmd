@@ -26,7 +26,7 @@ O fluxograma apresentado ilustra o fluxo de tratamento e preparação dos dados 
 
 <figure style="text-align: justify; width: 100%; margin: auto;">
 
-<img src="figures/Fluxograma_V02.png" style="width:100%; height:auto;" />
+<img src="figures/Fluxograma_V02.png" style="width:98%; height:auto;" />
 <figcaption style="text-align:left; font-size:0.95em; margin-top:6px;">
     Figura 1: Fluxo de tratamento e preparação dos dados brutos, incluindo etapas de verificação, transformação e normalização para garantir consistência e reprodutibilidade estatística.
   </figcaption>
@@ -54,23 +54,43 @@ require(reprodutibilidade)
 ## Lendo arquivos de entrada 
 
 ```{r, eval = FALSE}
+
 library("reprodutibilidade")
+
 inxlsx <- openxlsx::loadWorkbook(file = "DATASET/Base_inicial_SA_Acesso.xlsx")
-  name_meta = "Metadados"
-  name_data = "Dados_RA_Acesso"
+
 ```
 
 Lendo as planilhas do arquivo, nesse caso a planilha metadados, contem as informações sobre os indicadores que serão analisados como: 
 
-* Nome 
-* Tipo 
-* Pai 
-* Categoria 
+<style>
+.textbox{
+  background: #f7f7f7; border-left: 4px solid #007bff;
+  padding: 12px 16px;
+  border-radius: 4px;
+  margin: 12px 0;
+}
+
+.textbox-offset{ margin-left: 40px; margin-right: 12px; 
+}
+</style>
+
+<div class="textbox textbox-offset">
+
+* **N**      - Contador simples.
+* **NIVEL**  - Nivel do Índice/Indicador.
+* **CODE**   - Sigla para indexação do Índice/Indicador.
+* **NOME**   - Descrição completa do título do Índice/Indicador.
+* **TIPO**   - Categoria do Índice/Indicador. 
+* **PAI**    - Informa a qual Índice/Indicador está relacionado no nível acima. 
+* **CLASSE** - Informa a categoria que serão aplicadas as operações. Se **_Numerico_** operações padrões, se **_Descrição_** utilizado apenas para indexação.
+
+</div>
 
 
 <div style="text-align: justify; width: 100%; margin: auto; font-size: 1em;">
 
-Enquanto a planilha _"Dados_RA_Acesso"_ contém os dados de georeferenciamento, tipo GEOCOD, NOME do Municpio, Estado, Região e Cluster <span style="color:red;">(esse elemento será explicado futuramente)</span> de cada indicador simples, o número total de linhas deve ser igual ao numero total de municípios avaliados. e o número total de colunas deve ser igual ao numero <span style="color:red;">XX </span>.  
+Enquanto a planilha _"Dados_RA_Acesso"_ contém nas três (3) colunas iniciais as informações de georeferenciamento como: GEOCOD, NOME do Município, Unidade Federativa (UF), em seguida deve conter as colunas referentes aos índices/indicadores descritos na planilha metadados, sendo que o número total de linhas deve ser igual ao numero total de municípios avaliados e o número total de colunas deve ser igual ao numero ao valor máximo encontrado na coluna _**N**_ dos metadados.  
 A Figura abaixo ilustra as planilhas usadas no fluxo do pacote — contém exemplos de formatos e campos esperados (georeferenciamento, nome do município, estado, região e cluster). Na plnailha **Dados_RA_Acesso** — as coluna 1–4 são referências, as demais colunas correspondem aos indicadores por município.
 </div>
 #
@@ -83,92 +103,140 @@ A Figura abaixo ilustra as planilhas usadas no fluxo do pacote — contém exemp
   </figcaption>
 </figure>
 
-###
+
+##
 ```{r, eval = FALSE}
-  metadados <- openxlsx::read.xlsx(inxlsx, sheet = name_meta)
-  dataset  <- openxlsx::read.xlsx(inxlsx, sheet = name_data)
+  
+  metadados <- openxlsx::read.xlsx(inxlsx, sheet = "metadados")
+  dataset  <- openxlsx::read.xlsx(inxlsx, sheet = "dados_SA_Acesso")
 
   # Recortando apenas os dados do Nivel 7
   metadadosN7 = subset(metadados,metadados$Nivel==7)
 
   # Selecionando apenas as referencias 
-  data_ref = dataset[,c(1:4)]
+  data_ref = dataset[,c(1:3)]
 
   # Selecionando todos os dados   
-  datasetN7 = round(dateset[,-c(1:4)],2)
+  datasetN7 = round(dateset[,-c(1:3)],2)
 
   #Atribuindo nome as colunas
-  colnames(datasetN7) <- colnames(dataset[,-c(1:4)])
+  colnames(datasetN7) <- colnames(dataset[,-c(1:3)])
 ```
 
-#### _Aplicando as Funções de Resumo_ 
-<span style="color:red;"> Essa função obtem estastitiscas básicas de apenas um unico indicador, para o calcúlo ser executado de forma correta, atentar para o segundo objeto inserido no indicador, que se refere a classe do objeto, caso ele seja _Numérico_ é necessario que seja escrito da seguinte forma: **"Numerico"**. </span>
+## Aplicando as Funções 
+### _Resumo_ 
 
-```{r, echo=TRUE, eval=TRUE, results='markup'}
-
+#### criar_resumo<i>(dataset, class_type, nome)</i>
+Essa função obtem estastitiscas básicas de apenas um único indicador, para executar o cálculo de forma correta, atentar para objeto _class_type_ que se refere a classe do objeto, sendo um objeto _Numérico_ é a escrita deve ser a seguinte: **"Numerico"**. 
+```{r, echo=TRUE, eval=TRUE, results='markup',fig.width=6.8, fig.height=4, dpi=100}
 library("reprodutibilidade")
-# Carregando a base de dados de exemplo
-data("iData_N7", package = "reprodutibilidade")
 
-idx_MMPD = iData_N7$MMPD
+# Carregando a base de dados de exemplo
+data("datasetN7", package = "reprodutibilidade")
+
+idx_MMPD = datasetN7$MMPD
 nome = "MMPD"
 
-res1 = criar_resumo(idx_MMPD,"Numerico" , cluster = NULL, "MMPD")
+res1 = criar_resumo(idx_MMPD,"Numerico" , "MMPD")
 
-t(as.data.frame(res1))
+print_summary(res1)
+
+criar_grafico(idx_MMPD, plot=TRUE, nome_arquivo = "grafico_combinado.png", 
+              largura = 10, altura = 5, dpi = 25, 
+              nvalores="MMPD",fsize=6)
 
 ```
 
+#### ADPresumo _(dataset, class_types, clusters, nomes)_
+A função _ADPresumo(dataset, class_types, clusters, nomes)_ executa a geração padronizada de resumos descritivos para cada variável de um conjunto de dados.
 
-```{r, eval = FALSE}
+O procedimento interno da função envolve:
+
+<div class="textbox textbox-offset">
+
+* Verificação da consistência entre o número de colunas do dataset e os vetores informados;
+
+* Resumir as medidas descritivas de cada variavel;
+
+* Combinação dos resultados em um único quadro (resumo_combinado);
+
+</div>
+
+Gerando três objetos de saída:
+
+* _resumo_total_: resumo completo de todas as variáveis;
+
+* _resumo_basico_: tabela transposta com estatísticas principais;
+
+* _resumo_na_: resumo focado em valores ausentes.
+
+```{r, eval = TRUE}
 
 library("reprodutibilidade")
 # Carregando a base de dados de exemplo
-data("iMeta_N7", package = "reprodutibilidade")
-data("iData_N7", package = "reprodutibilidade")
 
-# Selecionando apenas as referencias 
-data_ref = iData_N7[,c(1:4)]
+# Metadados
+data("metadadosN7", package = "reprodutibilidade")
 
-resumo <- ADPresumo(iData_N7, 
-                    iMeta_N7$Classe, 
-                    data_ref[,4], 
-                    colnames(iData_N7))
+# Dataset 
+data("datasetN7", package = "reprodutibilidade")
+
+# Dataset referencia
+data("data_ref", package = "reprodutibilidade")
+
+resumo <- ADPresumo(datasetN7, 
+                    metadadosN7$CLASSE,  
+                    colnames(datasetN7))
+
+print(resumo$resumo_total)                    
 ```
 
-#### _Aplicando as Funções de Winsorization_
-<span style="color:red;"> Essa função tem como objetivo reduzir o impacto dos valores extremos (_outliers_) do conjunto de dados, reprojetando os mesmos para valores proximos a limiares definidos baseados no percentis inferiores e superiores.  </span>
-
-```{r, eval = FALSE}
-
+### _Winsorization_
+Essas funções tem como objetivo reduzir o impacto dos valores extremos (_outliers_) do conjunto de dados, reprojetando os mesmos para valores próximos a limiares baseados nos percentis inferiores e superiores de cada variável.
+#### winsorize_info(<i>indice, classe_label = NULL, var_name=NULL</i>)
+```{r, eval = TRUE}
 library("reprodutibilidade")
+
 # Carregando a base de dados de exemplo
-data("iMeta_N7", package = "reprodutibilidade")
-data("iData_N7", package = "reprodutibilidade")
+data("metadadosN7", package = "reprodutibilidade")
+data("datasetN7", package = "reprodutibilidade")
 
+idx_MMPD = datasetN7$MMPD
+nome = "MMPD"
 
-winsorize_data(dataset=iData_N7, 
-               metadados=iMeta_N7,
-               cluster_ref=data_ref[,4])
+res1 = winsorize_info(idx_MMPD,"Numerico" , "MMPD")
 
-data_winsor <- winsorize_apply(dataset=iData_N7,
-                              metadados=iMeta_N7,
-                              cluster_ref=data_ref[,4])
+print_summary(res1)
 
 ```
-#### _Aplicando as Funções BoxCox_
+#### winsorize_data( _dataset_, _metadados_)
+
+```{r, eval = TRUE}
+
+winsorize_data(dataset = datasetN7, 
+               metadados = metadadosN7)
+```
+
+```{r, eval = TRUE, fig.width=6.8, fig.height=4, dpi=100}
+
+data_winsor <- winsorize_apply(dataset=datasetN7,
+                              metadados=metadadosN7)
+
+```
+
+### _BoxCox_
 <span style="color:red;"> Essa função aplica da trnasformada BoxCox buscando corrigir assietria e estabilizar a variância, aproximando de uma distribuição normal.  </span>
 
 
-```{r, eval = FALSE}
+```{r, eval = TRUE,fig.width=6.8, fig.height=4, dpi=100}
 
 library("reprodutibilidade")
 
 # Carregando a base de dados de exemplo
-data("iMeta_N7", package = "reprodutibilidade")
-data("iData_N7", package = "reprodutibilidade")
+data("metadadosN7", package = "reprodutibilidade")
+data("datasetN7", package = "reprodutibilidade")
 
-dados <- iMeta_N7[,7]
+dados <- datasetN7[,19]
 
 # Aplicando Box-Cox com pacote forecast
 bxcx.fcs <- boxcox_transform(dados, metodo = "forecast")
@@ -178,23 +246,23 @@ bxcx.coin <- boxcox_transform(dados,metodo = "COINr")
  
 # Aplicando Yeo-Johnson
 bxcx.yjn <- boxcox_transform(dados, metodo = "yeojohnson")
+
+par(mfrow=c(1,3)) ; par(mar=c(5,4,6,1))
  
-par(mfrow=c(1,3)) ; par(mar=c(5,5,6,1))
- 
- plot(c(1:length(dados)),bxcx.fcs,
+ plot(sort(dados),sort(bxcx.fcs),
       main = "Transformacao BoxCox \n via pacote Forecast",
-      cex.axis=1.5,las=1,ylab="Transformada BoxCox",
-      xlab="Reference", cex.lab=1.8,cex.main=2) 
+      cex.axis=1,las=1,ylab="Transformada BoxCox",
+      xlab="Reference", cex.lab=0.8,cex.main=1) 
  
- plot(c(1:length(dados)),bxcx.coin,
+ plot(sort(dados),sort(bxcx.coin),
       main = "Transformacao BoxCox \n via pacote COINr",
-      cex.axis=1.5,las=1,ylab="Transformada BoxCox",
-      xlab="Reference",cex.lab=1.8,cex.main=2) 
+      cex.axis=1,las=1,ylab="Transformada BoxCox",
+      xlab="Reference",cex.lab=0.8,cex.main=1) 
  
- plot(c(1:length(dados)),bxcx.yjn,
+ plot(sort(dados),sort(bxcx.yjn),
       main = "Transformacao BoxCox \n via pacote bestNormalize::Yeojohnson",
-      cex.axis=1.5,las=1,ylab="Transformada BoxCox",
-      xlab="Reference",cex.lab=1.8,cex.main=2)
+      cex.axis=1,las=1,ylab="Transformada BoxCox",
+      xlab="Reference",cex.lab=0.8,cex.main=1)
 ```
 
 ```{r, eval = FALSE}
@@ -225,5 +293,3 @@ result = Tratamento(input="../../DATASET/Base_inicial_SA_Acesso.xlsx",
            method_boxcox="forecast")
 ```
 
-## ATENÇÃO 
-<span style="color:red;"> O texto com destaque em vermelho, serão revisados novamente, ao longo do processo de desenvolvimento </span>
