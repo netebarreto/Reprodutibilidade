@@ -47,48 +47,44 @@ winsorize_info <- function(indice,classe_label=NULL,var_name=NULL)
 #' @param dataset \code{data.frame} com os dados originais.
 #' @param metadados \code{data.frame} com metadados das variaveis. Deve conter colunas:
 #'   \itemize{
-#'     \item \code{Classe} - Tipo da variavel ("Numerico").
-#'     \item \code{Code} - Nome da coluna correspondente em \code{dataset}.
+#'     \item \code{CLASSE} - Tipo da variavel ("Numerico").
+#'     \item \code{CODE} - Nome da coluna correspondente em \code{dataset}.
 #'   }
-#' @param cluster_ref Vetor ou coluna de cluster_ref para identificar grupos (usado no caso de variaveis "Cluster").
 #'
 #' @details
-#' Esta funcao utiliza a funcao auxiliar \code{wins_par} para calcular os limites de Winsorization
+#' Esta funcao utiliza a funcao auxiliar \code{winsorize_info} para calcular os limites de Winsorization
 #' e retorna um resumo para cada variavel processada.
 #'
-#' - Se houver variaveis do tipo "Cluster", o processo e aplicado separadamente para cada grupo identificado em \code{cluster_ref}.
-#' - As variaveis sao retornadas na ordem definida por \code{metadados$Code}.
+#' - As variaveis sao retornadas na ordem definida por \code{metadados$CODE}.
 #'
 #' @return Um \code{data.frame} com o resumo da Winsorization de cada variavel.
 #'
 #' @examples
-#' # Exemplo ficticio (assumindo que wins_par ja esteja implementada)
+#' # Exemplo ficticio (assumindo que winsorize_info ja esteja implementada)
 #' dataset <- data.frame(
 #'   var1 = c(1, 2, 3, 100),
-#'   var2 = c(10, 20, 30, 40),
-#'   cluster = c(1, 1, 2, 2)
+#'   var2 = c(10, 20, 30, 40)
 #' )
 #'
 #' metadados <- data.frame(
-#'   Classe = c("Numerico", "Numerico", "Cluster"),
-#'   Code = c("var1", "var2", "cluster")
+#'   CLASSE = c("Numerico", "Numerico"),
+#'   CODE = c("var1", "var2")
 #' )
 #'
-#' cluster_ref <- dataset$cluster
 #'
-#' winsorize_data(dataset, metadados, cluster_ref)
+#' winsorize_data(dataset, metadados)
 #'
 #' @export
-winsorize_data <- function(dataset=NULL,metadados=NULL,cluster_ref=NULL) {
+winsorize_data <- function(dataset=NULL,metadados=NULL) {
   
     ##### Aplicando para as colunas padrao 
 
-      ncsc =  which(as.data.frame(metadados$Classe) == "Numerico")   
-      lcolz <- which(colnames(dataset) %in% metadados$Code[ncsc])
+      ncsc =  which(as.data.frame(metadados$CLASSE) == "Numerico")   
+      lcolz <- which(colnames(dataset) %in% metadados$CODE[ncsc])
       list_winsor <-t(mapply(winsorize_info,dataset[, lcolz], classe_label = "Numerico", var_name = colnames(dataset)[lcolz]))
 
       resumo_df <- as.data.frame(list_winsor)
-      resumo_df <- resumo_df[order(match(resumo_df$nome,metadados$Code)),] 
+      resumo_df <- resumo_df[order(match(resumo_df$nome,metadados$CODE)),] 
       rownames(resumo_df)<-c(1:nrow(resumo_df))
       message("\n Resumo Winsorize Criado\n")
       return(resumo_df)
@@ -103,7 +99,6 @@ winsorize_data <- function(dataset=NULL,metadados=NULL,cluster_ref=NULL) {
 #'
 #' @param dataset \code{data.frame} contendo os dados originais.
 #' @param metadados \code{data.frame} de metadados, conforme exigido por \code{winsorize_data}.
-#' @param cluster_ref Vetor ou coluna de referencia para identificar grupos (necessario para variaveis de tipo "Cluster").
 #'
 #' @details
 #' - A funcao espera que a saida de \code{winsorize_data} contenha:
@@ -112,7 +107,6 @@ winsorize_data <- function(dataset=NULL,metadados=NULL,cluster_ref=NULL) {
 #'     \item Coluna 2: tipo ("Numerico", "Descricao", "Score", "Grupo 1", "Grupo 2").
 #'     \item Colunas \code{LSUP} e \code{LINF}: limites superiores e inferiores.
 #'   }
-#' - Para variaveis do tipo "Cluster", o Winsorization e aplicado separadamente para cada grupo.
 #'
 #' @return Lista com dois elementos:
 #' \describe{
@@ -124,21 +118,19 @@ winsorize_data <- function(dataset=NULL,metadados=NULL,cluster_ref=NULL) {
 #' # Exemplo ficticio (assumindo que winsorize_data e winsorize_info ja existam)
 #' dados <- data.frame(
 #'   var1 = c(1, 2, 3, 100),
-#'   var2 = c(10, 20, 30, 40),
-#'   CLUSTER = c(1, 1, 2, 2)
+#'   var2 = c(10, 20, 30, 40)
 #' )
 #' meta <- data.frame(
-#'   Classe = c("Numerico", "Numerico", "Cluster"),
-#'   Code = c("var1", "var2", "CLUSTER")
+#'   Classe = c("Numerico", "Numerico"),
+#'   Code = c("var1", "var2")
 #' )
-#' ref <- dados$CLUSTER
 #'
-#' winsorize_apply(dataset=dados, metadados=meta,cluster_ref= ref)
+#' winsorize_apply(dataset=dados, metadados=meta)
 #'
 #' @export
-winsorize_apply <- function(dataset=NULL,metadados=NULL,cluster_ref=NULL) 
+winsorize_apply <- function(dataset=NULL,metadados=NULL) 
 { 
-   resumo_df = winsorize_data(dataset,metadados,cluster_ref)
+   resumo_df = winsorize_data(dataset,metadados)
 
    dados_out = dataset
    dados_out[,1:ncol(dataset)] <- NA

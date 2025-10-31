@@ -6,8 +6,7 @@
     #' com suporte para indicadores do tipo cluster.
     #',
     #' @param dataset Um data frame contendo os dados (colunas numericas).
-    #' @param class_type Um vetor com os tipos de classe para cada coluna (ex: "Numerico", "Cluster", "Score")."
-    #' @param cluster Um vetor com os grupos de cluster (obrigatorio se usar tipo "Cluster")."
+    #' @param class_type Um vetor com os tipos de classe para cada coluna (ex: "Numerico")."
     #' @param name Vetor com os nomes descritivos de cada coluna de `dataset`.
     #'
     #' @return Um tibble (tabela moderna do R, semelhante a um data.frame) com os resumos estatisticos completos para cada variavel.
@@ -24,17 +23,15 @@
 #'
 #' @examples
 #' # Criando um data frame de exemplo
-#' dados <- data.frame(Pessoas = c(25, 30, 28, 35, 40, 28, 35, 40),
-#'                    Cluster = c("1", "2", "1", "1", "2","2","2","1"))
+#' dados <- data.frame(Pessoas = c(25, 30, 28, 35, 40, 28, 35, 40))
 #' 
 #' # Chamando a funcao com parametros ficticios
 #' criar_resumo(dados$Pessoas,
 #'             "Numerico",
-#'              dados$cluster,
 #'              "Pessoas")
 #'
 #' @export
-criar_resumo <- function(dataset, class_type, cluster = NULL, name) {
+criar_resumo <- function(dataset,class_type,name) {
   
   #percentual de outlines
 
@@ -46,11 +43,10 @@ criar_resumo <- function(dataset, class_type, cluster = NULL, name) {
   unique_count <- length(unique(dataset[!is.na(dataset)]))
   unique_percent <- round(unique_count / length(dataset[!is.na(dataset)]) * 100, 2)
   
-  if (class_type == "Numerico") {
     fnum <- grDevices::boxplot.stats(dataset)$stats
     per_out <- round(length(grDevices::boxplot.stats(dataset)$out)/length(dataset) * 100, 2)
     summary <- tidyr::tibble(
-      iName = name,
+      Nome = name,
       Classe = "Numerico",
       Min = fnum[1],
       quartil1 = fnum[2],
@@ -61,80 +57,19 @@ criar_resumo <- function(dataset, class_type, cluster = NULL, name) {
       NAs = na_count,
       Percentual_NAs = na_percent,
       Valores_Unicos = unique_count,
-      Percentual_Unicos = unique_percent
-    )
-  } else if (class_type == "Cluster") {
-    if (is.null(cluster)) {
-      stop("Cluster information must be provided for 'Cluster' class type.")
-    }
-    
-    # Resumo para cada grupo de cluster
-    cluster_summary <- lapply(unique(cluster), function(cl) {
-      cluster_data <- dataset[cluster == cl & !is.na(dataset)]
-      fnum <- grDevices::boxplot.stats(dataset)$stats
-      per_out <- round(length(grDevices::boxplot.stats(dataset[cluster == cl])$out)/length(dataset[cluster == cl]) * 100, 2)
-      tidyr::tibble(
-        iName = name,
-        Classe = paste("Grupo", cl),
-        Min = round(fnum[1], 2),
-        quartil1 = round(fnum[2], 2),
-        Mediana = round(fnum[3], 2),
-        quartil3 = round(fnum[4], 2),
-        Max = round(fnum[5], 2),
-        Outliers_Per = per_out,
-        NAs = sum(is.na(dataset[cluster == cl])),
-        Percentual_NAs = round(sum(is.na(dataset[cluster == cl])) / length(dataset[cluster == cl]) * 100, 2),
-        Valores_Unicos = length(unique(cluster_data)),
-        Percentual_Unicos = round(length(unique(cluster_data)) / length(cluster_data) * 100, 2)
-      )
-    }) |> dplyr::bind_rows()
-    
-    # Resumo para o conjunto completo
-    full_summary <- tidyr::tibble(
-      iName = name,
-      Classe = "Conjunto Completo",
-      Min = round(min(dataset, na.rm = TRUE), 2),
-      quartil1 = round(stats::quantile(dataset, 0.25, na.rm = TRUE), 2),
-      Mediana = round(stats::median(dataset, na.rm = TRUE), 2),
-      quartil3 = round(stats::quantile(dataset, 0.75, na.rm = TRUE), 2),
-      Max = round(max(dataset, na.rm = TRUE), 2),
-      Outliers_Per = round(length(grDevices::boxplot.stats(dataset)$out)/length(dataset) * 100, 2),
-      NAs = na_count,
-      Percentual_NAs = na_percent,
-      Valores_Unicos = unique_count,
-      Percentual_Unicos = unique_percent
-    )
-    
-    # Combinar resumos
-    summary <- dplyr::bind_rows(full_summary, cluster_summary)
-  } else {
-    summary <- tidyr::tibble(
-      iName = name,
-      Classe = "Score",
-      Min = NA,
-      quartil1 = NA,
-      Mediana = NA,
-      quartil3 = NA,
-      Max = NA,
-      Outliers_Per = NA,
-      NAs = NA,
-      Percentual_NAs = NA,
-      Valores_Unicos = NA,
-      Percentual_Unicos = NA
-    )
-  }
-
-  summary <- summary |>
-    dplyr::mutate(
-      Min = round(.data$Min, 2),
-      quartil1 = round(.data$quartil1, 2),
-      Mediana = round(.data$Mediana, 2),
-      quartil3 = round(.data$quartil3, 2),
-      Max = round(.data$Max, 2),
-      Outliers_Per = round(.data$Outliers_Per, 2),
-      Percentual_NAs = round(.data$Percentual_NAs, 2),
-      Percentual_Unicos = round(.data$Percentual_Unicos, 2)
-    )
+      Percentual_Unicos = unique_percent)
+   
+  # summary <- summary |>
+  #   dplyr::mutate(
+  #     Min = round(.data$Min, 2),
+  #     quartil1 = round(.data$quartil1, 2),
+  #     Mediana = round(.data$Mediana, 2),
+  #     quartil3 = round(.data$quartil3, 2),
+  #     Max = round(.data$Max, 2),
+  #     Outliers_Per = round(.data$Outliers_Per, 2),
+  #     Percentual_NAs = round(.data$Percentual_NAs, 2),
+  #     Percentual_Unicos = round(.data$Percentual_Unicos, 2)
+  #   )
   summary <- summary |>
     dplyr::rename(
       `Quartil 1` = .data$quartil1,
@@ -144,6 +79,68 @@ texto <- utils::capture.output(print(summary[1:2]))
 message(paste(" ",texto[c(2,4)]," ", collapse = "\n"))
   return(summary)
 }
+
+#' Imprimir resumo amigável no console
+#'
+#' @description Formata e imprime um resumo (por exemplo, saída transposta de listas/data.frames)
+#' com cabeçalhos e alinhamento simples.
+#'
+#' @param summary_data Objeto tipo matrix/data.frame (1 coluna) ou data.frame com campos e valores.
+#'
+#' @return Invisivelmente, retorna \code{NULL}. Efeito colateral é a impressão no console.
+#' @export
+#' @examples
+#' res <- list(iName="MMPD", Classe="Numerico", Min="2.33")
+#' print_summary(res)
+print_summary <- function(result_resumo) {
+  # Aceita tanto lista quanto data.frame transposto como no exemplo
+
+  summary_data = t(as.data.frame(result_resumo))
+
+  if (is.matrix(summary_data) || is.data.frame(summary_data)) {
+    summary_data <- as.data.frame(summary_data)
+  }
+  
+  # Se tiver apenas uma coluna (como no seu caso), simplifica a estrutura
+  if (ncol(summary_data) == 1) {
+    summary_data <- data.frame(
+      Campo = rownames(summary_data),
+      Valor = as.character(summary_data[, 1]),
+      row.names = NULL
+    )
+  } else {
+    colnames(summary_data) <- c("Campo", "Valor")
+  }
+  
+  # Título amigável
+  cat("\n📊  Resumo Estatístico da Variável\n")
+  cat(strrep("═", 40), "\n", sep = "")
+  
+  # Nome da variável (se existir)
+  if ("Nome" %in% summary_data$Campo) {
+    var_name <- summary_data$Valor[summary_data$Campo == "Nome"]
+    cat("🔹 Variável:", var_name, "\n")
+  }
+  if ("Classe" %in% summary_data$Campo) {
+    var_class <- summary_data$Valor[summary_data$Campo == "Classe"]
+    cat("🔹 Classe:", var_class, "\n")
+  }
+  cat(strrep("─", 40), "\n", sep = "")
+  
+  # Tabela organizada
+  suppressWarnings({
+    for (i in seq_len(nrow(summary_data))) {
+      field <- summary_data$Campo[i]
+      value <- summary_data$Valor[i]
+      if (!field %in% c("Nome", "Classe")) {
+        cat(sprintf("%-20s : %s\n", field, value))
+      }
+    }
+  })
+  
+  cat(strrep("═", 40), "\n\n", sep = "")
+}
+
 
 ###############################
 #' @title Gerar resumos estatísticos para múltiplos indicadores
@@ -174,21 +171,20 @@ message(paste(" ",texto[c(2,4)]," ", collapse = "\n"))
 #'   Pessoas = c(25, 30, 28, 35, 40, 28, 35, 40),
 #'   Vendas = c(100, 200, 150, NA, 180, 175, 190, 210)
 #' )
-#' class_types <- c("Numérico", "Numérico")
-#' clusters <- c("1", "2", "1", "1", "2", "2", "2", "1")
+#' class_types <- c("Numerico", "Numerico")
 #' nomes <- c("Pessoas", "Vendas")
 #'
 #' # Gerar resumos
-#' ADPresumo(dados, class_types, clusters, nomes)
+#' ADPresumo(dados, class_types, nomes)
 #'
 #' @export
-ADPresumo <- function(dataset, class_types, clusters, names) {
+ADPresumo <- function(dataset, class_types, names) {
   if (ncol(dataset) != length(class_types) || ncol(dataset) != length(names)) {
     stop("Number of columns in dataset must match the length of class_types and names.")
   }
   
   resumo <- lapply(seq_along(names), function(i) {
-    suppressMessages(criar_resumo(dataset[[i]], class_types[i], clusters, names[i]))
+    suppressMessages(criar_resumo(dataset[[i]], class_types[i], names[i]))
   })
   
   resumo_combinado <- dplyr::bind_rows(resumo)
@@ -199,7 +195,7 @@ ADPresumo <- function(dataset, class_types, clusters, names) {
   
   
   res_basico <- as.data.frame(t(resumo_combinado)[2:8,]) 
-  colnames(res_basico) <- resumo_combinado$iName
+  colnames(res_basico) <- resumo_combinado$NOME
   
   resumo_na<-resumo_combinado[,c(1,9:12)]
   

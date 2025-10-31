@@ -105,7 +105,7 @@ gerar_diagrama_setor <- function(data, setor_e, output_file = "diagrama.png", wi
 #' @seealso \code{\link[ggplot2]{ggplot}}, \code{\link[gridExtra]{arrangeGrob}}
 #'
 #' @export
-criar_grafico <- function(dados, nome_arquivo = "grafico_combinado.png", largura = 10, altura = 5, dpi = 25,nvalores="DD1",fsize=16) {
+criar_grafico <- function(dados, nome_arquivo = "grafico_combinado.png", largura = 10, altura = 5, dpi = 25,nvalores="DD1",fsize=16,plot=TRUE) {
   # Carregar as bibliotecas necessarias
 
   
@@ -132,7 +132,7 @@ criar_grafico <- function(dados, nome_arquivo = "grafico_combinado.png", largura
   # Criar o histograma com a linha de distribuicao normal
   hist_base <- graphics::hist(df[,1], plot = FALSE)
   histograma <- ggplot2::ggplot(df, ggplot2::aes(x =  !!rlang::sym(nvalores))) +
-    ggplot2::geom_histogram(ggplot2::aes(y = ggplot2::after_stat(stats::density)),  breaks = hist_base$breaks, fill = "lightblue", color = "blue") +
+    ggplot2::geom_histogram(ggplot2::aes(y = ggplot2::after_stat(density)),  breaks = hist_base$breaks, fill = "lightblue", color = "blue") +
     ggplot2::stat_function(fun = stats::dnorm, args = list(mean = mean(df[[rlang::sym(nvalores)]]), sd = stats::sd(df[[rlang::sym(nvalores)]])), 
                   color = "red", linewidth = 1.5) +
     ggplot2::theme_minimal() +
@@ -147,9 +147,13 @@ criar_grafico <- function(dados, nome_arquivo = "grafico_combinado.png", largura
       plot.margin = ggplot2::margin(t = 10, r = 10, b = 20, l = 10))   
   # Combinar os dois graficos em um unico layout
   grafico_combinado <- gridExtra::arrangeGrob(histograma, boxplot, ncol = 2, widths = c(2,1.2))
-  
-  # Salvar o grafico combinado em um arquivo PNG
-  ggplot2::ggsave(filename = nome_arquivo, plot = grafico_combinado, width = largura, height = altura, dpi = dpi)
+  if(plot==TRUE) 
+  {grid::grid.newpage()
+   grid::grid.draw(grafico_combinado)}
+  else 
+  { # Salvar o grafico combinado em um arquivo PNG
+  ggplot2::ggsave(filename = nome_arquivo, plot = grafico_combinado, width = largura, height = altura, dpi = dpi)}
+
   }
 
 

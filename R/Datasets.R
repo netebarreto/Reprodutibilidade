@@ -1,18 +1,27 @@
-#' Dados de exemplo iData_N7
+#' Dados de exemplo datasetN7
 #'
 #' Um tibble de exemplo com dados do N7.
 #'
 #' @format Um tibble com X linhas e Y colunas.
-#' @source Fonte dos dados (se houver)
-"iData_N7"
+#' @source Fonte dos dados Base_inicial_SA_Acesso.xlsx
+"datasetN7"
 
-#' Metadados iMeta_N7
+#' Metadados metadadosN7
 #'
-#' Metadados do dataset iData_N7.
+#' Metadados do dataset datasetN7.
 #'
 #' @format Um tibble com X linhas e Y colunas.
-#' @source Fonte dos dados (se houver)
-"iMeta_N7"
+#' @source Fonte dos dados Base_inicial_SA_Acesso.xlsx
+"metadadosN7"
+
+#' Metadados data_ref
+#'
+#' Colunas de referencia para indexacao do dataset.
+#'
+#' @format Um tibble com X linhas e Y colunas.
+#' @source Fonte dos dados Base_inicial_SA_Acesso.xlsx
+"data_ref"
+
 
 #' Shape de municípios
 #'
