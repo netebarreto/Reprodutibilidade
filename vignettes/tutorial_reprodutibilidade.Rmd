@@ -105,10 +105,14 @@ A Figura abaixo ilustra as planilhas usadas no fluxo do pacote — contém exemp
 
 
 ##
-```{r, eval = FALSE}
+```{r, eval = TRUE}
   
-  metadados <- openxlsx::read.xlsx(inxlsx, sheet = "metadados")
-  dataset  <- openxlsx::read.xlsx(inxlsx, sheet = "dados_SA_Acesso")
+  library("reprodutibilidade")
+
+  input <- read_exemplo_xlsx()
+
+  metadados <- input$metadados
+  dataset  <- input$dataset
 
   # Recortando apenas os dados do Nivel 7
   metadadosN7 = subset(metadados,metadados$Nivel==7)
@@ -117,10 +121,11 @@ A Figura abaixo ilustra as planilhas usadas no fluxo do pacote — contém exemp
   data_ref = dataset[,c(1:3)]
 
   # Selecionando todos os dados   
-  datasetN7 = round(dateset[,-c(1:3)],2)
+  datasetN7 = round(dataset[,-c(1:3)],2)
 
   #Atribuindo nome as colunas
   colnames(datasetN7) <- colnames(dataset[,-c(1:3)])
+
 ```
 
 ## Aplicando as Funções 
@@ -193,12 +198,14 @@ print(resumo$resumo_total)
 
 ### _Winsorization_
 Essas funções tem como objetivo reduzir o impacto dos valores extremos (_outliers_) do conjunto de dados, reprojetando os mesmos para valores próximos a limiares baseados nos percentis inferiores e superiores de cada variável.
+
 #### winsorize_info(<i>indice, classe_label = NULL, var_name=NULL</i>)
 ```{r, eval = TRUE}
 library("reprodutibilidade")
 
 # Carregando a base de dados de exemplo
 data("metadadosN7", package = "reprodutibilidade")
+
 data("datasetN7", package = "reprodutibilidade")
 
 idx_MMPD = datasetN7$MMPD
@@ -207,6 +214,7 @@ nome = "MMPD"
 res1 = winsorize_info(idx_MMPD,"Numerico" , "MMPD")
 
 print_summary(res1)
+
 
 ```
 #### winsorize_data( _dataset_, _metadados_)
@@ -221,6 +229,11 @@ winsorize_data(dataset = datasetN7,
 
 data_winsor <- winsorize_apply(dataset=datasetN7,
                               metadados=metadadosN7)
+
+plot(idx_MMPD,data_winsor$dataset$MMPD,
+      main = paste0("Comparação dados sem Winzorise X Dados com Winzorise  \n Indicador: ",nome),
+      cex.axis=1,las=1,ylab="Dados Transformados",
+      xlab="Reference", cex.lab=0.8,cex.main=1) 
 
 ```
 
