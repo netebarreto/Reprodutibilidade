@@ -11,22 +11,27 @@
 #  inxlsx <- openxlsx::loadWorkbook(file = "DATASET/Base_inicial_SA_Acesso.xlsx")
 #  
 
-## ----eval = FALSE-------------------------------------------------------------
-#  
-#    metadados <- openxlsx::read.xlsx(inxlsx, sheet = "metadados")
-#    dataset  <- openxlsx::read.xlsx(inxlsx, sheet = "dados_SA_Acesso")
-#  
-#    # Recortando apenas os dados do Nivel 7
-#    metadadosN7 = subset(metadados,metadados$Nivel==7)
-#  
-#    # Selecionando apenas as referencias
-#    data_ref = dataset[,c(1:3)]
-#  
-#    # Selecionando todos os dados
-#    datasetN7 = round(dateset[,-c(1:3)],2)
-#  
-#    #Atribuindo nome as colunas
-#    colnames(datasetN7) <- colnames(dataset[,-c(1:3)])
+## ----eval = TRUE--------------------------------------------------------------
+  
+  library("reprodutibilidade")
+
+  input <- read_exemplo_xlsx()
+
+  metadados <- input$metadados
+  dataset  <- input$dataset
+
+  # Recortando apenas os dados do Nivel 7
+  metadadosN7 = subset(metadados,metadados$Nivel==7)
+
+  # Selecionando apenas as referencias 
+  data_ref = dataset[,c(1:3)]
+
+  # Selecionando todos os dados   
+  datasetN7 = round(dataset[,-c(1:3)],2)
+
+  #Atribuindo nome as colunas
+  colnames(datasetN7) <- colnames(dataset[,-c(1:3)])
+
 
 ## ----echo=TRUE, eval=TRUE, results='markup',fig.width=6.8, fig.height=4, dpi=100----
 library("reprodutibilidade")
@@ -71,6 +76,7 @@ library("reprodutibilidade")
 
 # Carregando a base de dados de exemplo
 data("metadadosN7", package = "reprodutibilidade")
+
 data("datasetN7", package = "reprodutibilidade")
 
 idx_MMPD = datasetN7$MMPD
@@ -79,6 +85,7 @@ nome = "MMPD"
 res1 = winsorize_info(idx_MMPD,"Numerico" , "MMPD")
 
 print_summary(res1)
+
 
 
 ## ----eval = TRUE--------------------------------------------------------------
@@ -90,6 +97,11 @@ winsorize_data(dataset = datasetN7,
 
 data_winsor <- winsorize_apply(dataset=datasetN7,
                               metadados=metadadosN7)
+
+plot(idx_MMPD,data_winsor$dataset$MMPD,
+      main = paste0("Comparação dados sem Winzorise X Dados com Winzorise  \n Indicador: ",nome),
+      cex.axis=1,las=1,ylab="Dados Transformados",
+      xlab="Reference", cex.lab=0.8,cex.main=1) 
 
 
 ## ----eval = TRUE,fig.width=6.8, fig.height=4, dpi=100-------------------------
