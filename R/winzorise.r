@@ -130,7 +130,8 @@ winsorize_data <- function(dataset=NULL,metadados=NULL) {
 #' @export
 winsorize_apply <- function(dataset=NULL,metadados=NULL) 
 { 
-   resumo_df = winsorize_data(dataset,metadados)
+   resumo_df = winsorize_data(dataset = datasetN7, 
+               metadados = metadadosN7)
 
    dados_out = dataset
    dados_out[,1:ncol(dataset)] <- NA
@@ -143,9 +144,9 @@ winsorize_apply <- function(dataset=NULL,metadados=NULL)
     if(resumo_df[i,2]=="Numerico") 
     {
       X1 <- dataset[unlist(resumo_df[i,1])]
-      X1[which(dataset[unlist(resumo_df[i,1])]>as.numeric(resumo_df$LSUP[i])),1] <- as.numeric(resumo_df$LSUP[i])
+      X1[which(dataset[unlist(resumo_df[i,1])]>as.numeric(resumo_df$lsup[i])),1] <- as.numeric(resumo_df$lsup[i])
 
-      X1[which(dataset[unlist(resumo_df[i,1])]<as.numeric(resumo_df$LINF[i])),1] <- as.numeric(resumo_df$LINF[i])
+      X1[which(dataset[unlist(resumo_df[i,1])]<as.numeric(resumo_df$linfg[i])),1] <- as.numeric(resumo_df$linf[i])
       dados_out[unlist(resumo_df[i,1])] <- X1[,1]
     }
 
