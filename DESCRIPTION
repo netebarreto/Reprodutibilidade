@@ -1,4 +1,5 @@
 Package: reprodutibilidade
+Type: Package
 Title: Funções Indicadores Simples ADAPTABRASIL
 Version: 0.0.0.9000
 Authors@R: 
@@ -31,5 +32,6 @@ Imports:
     stats
 Suggests:
     knitr,
-    rmarkdown, quarto
+    rmarkdown, 
+    quarto
 VignetteBuilder: knitr
