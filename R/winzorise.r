@@ -2,11 +2,10 @@
 
     #' @title Gerar resumo sobre os limites do Winsorize de unico indicador.
     #',
-    #' @description Esta funcao gera os limites inferiores e superiores para a aplicacao do winzorise num indicador especifico,
-    #' com suporte para indicadores do tipo cluster.
+    #' @description Esta funcao gera os limites inferiores e superiores para a aplicacao do winzorise num indicador especifico
     #',
     #' @param indice Um vetor contendo os dados de entrada .
-    #' @param classe_label classe do indice (ex: "Numerico", "Cluster", "Score")."
+    #' @param classe_label classe do indice (ex: "Numerico", "Score")."
     #' @param var_name nome da variavel.
 #' 
 #' @export
@@ -95,7 +94,7 @@ winsorize_data <- function(dataset=NULL,metadados=NULL) {
 #' @description
 #' Aplica a funcao \code{winsorize_data} para calcular limites de Winsorization
 #' e depois substitui os valores dos indicadores de acordo com esses limites,
-#' considerando variaveis numericas e de cluster.
+#' considerando variaveis numericas.
 #'
 #' @param dataset \code{data.frame} contendo os dados originais.
 #' @param metadados \code{data.frame} de metadados, conforme exigido por \code{winsorize_data}.
@@ -116,31 +115,27 @@ winsorize_data <- function(dataset=NULL,metadados=NULL) {
 #'
 #' @examples
 #' # Exemplo ficticio (assumindo que winsorize_data e winsorize_info ja existam)
-#' dados <- data.frame(
-#'   var1 = c(1, 2, 3, 100),
-#'   var2 = c(10, 20, 30, 40)
-#' )
-#' meta <- data.frame(
-#'   Classe = c("Numerico", "Numerico"),
-#'   Code = c("var1", "var2")
-#' )
+#'  #dados <- data.frame(
+#'   # var1 = c(1, 2, 3, 100),
+#'   #var2 = c(10, 20, 30, 40)
+#'   #)
+#' data("metadadosN7", package = "reprodutibilidade")
 #'
-#' winsorize_apply(dataset=dados, metadados=meta)
+#' data("datasetN7", package = "reprodutibilidade")
+#'
+#' data_winsor <- winsorize_apply(dataset=datasetN7,
+#'                              metadados=metadadosN7)
 #'
 #' @export
 winsorize_apply <- function(dataset=NULL,metadados=NULL) 
 { 
-   resumo_df = winsorize_data(dataset = datasetN7, 
-               metadados = metadadosN7)
+   resumo_df = winsorize_data(dataset = dataset, 
+               metadados = metadados)
 
    dados_out = dataset
    dados_out[,1:ncol(dataset)] <- NA
    for(i in 1:nrow(resumo_df))
    {
-    if(resumo_df[i,2]=="Descricao" | resumo_df[i,2]=="Score") 
-    {
-     dados_out[unlist(resumo_df[i,1])] <- dataset[unlist(resumo_df[i,1])]
-    }
     if(resumo_df[i,2]=="Numerico") 
     {
       X1 <- dataset[unlist(resumo_df[i,1])]
@@ -149,9 +144,6 @@ winsorize_apply <- function(dataset=NULL,metadados=NULL)
       X1[which(dataset[unlist(resumo_df[i,1])]<as.numeric(resumo_df$linfg[i])),1] <- as.numeric(resumo_df$linf[i])
       dados_out[unlist(resumo_df[i,1])] <- X1[,1]
     }
-
-
-
    }
 
    result <- list(resumo=resumo_df,dataset=dados_out)

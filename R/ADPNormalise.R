@@ -60,6 +60,7 @@ ADPNormalise <- function(iData)
 
 data_value <- iData
 data_norm <- iData
-data_norm <-apply(data_value,2,sfunc_norm) 
-result <- list(iData = data_norm)
+data_norm <- suppressMessages(apply(data_value,2,sfunc_norm)) 
+result <- list(dataset = data_norm)
+message("\n Normalizacao Aplicada no data.frame \n")
 return(result)}

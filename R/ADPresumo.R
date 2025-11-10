@@ -2,8 +2,7 @@
 
     #' @title Gerar resumo estatistico para um indicador ou indice especifico,
     #',
-    #' @description Esta funcao aplica resumos estatisticos a multiplas variaveis de um data frame,
-    #' com suporte para indicadores do tipo cluster.
+    #' @description Esta funcao aplica resumos estatisticos a multiplas variaveis de um data frame.
     #',
     #' @param dataset Um data frame contendo os dados (colunas numericas).
     #' @param class_type Um vetor com os tipos de classe para cada coluna (ex: "Numerico")."
@@ -59,17 +58,6 @@ criar_resumo <- function(dataset,class_type,name) {
       Valores_Unicos = unique_count,
       Percentual_Unicos = unique_percent)
    
-  # summary <- summary |>
-  #   dplyr::mutate(
-  #     Min = round(.data$Min, 2),
-  #     quartil1 = round(.data$quartil1, 2),
-  #     Mediana = round(.data$Mediana, 2),
-  #     quartil3 = round(.data$quartil3, 2),
-  #     Max = round(.data$Max, 2),
-  #     Outliers_Per = round(.data$Outliers_Per, 2),
-  #     Percentual_NAs = round(.data$Percentual_NAs, 2),
-  #     Percentual_Unicos = round(.data$Percentual_Unicos, 2)
-  #   )
   summary <- summary |>
     dplyr::rename(
       `Quartil 1` = .data$quartil1,
@@ -80,18 +68,18 @@ message(paste(" ",texto[c(2,4)]," ", collapse = "\n"))
   return(summary)
 }
 
-#' Imprimir resumo amigável no console
+#' Imprimir resumo amigavel no console
 #'
-#' @description Formata e imprime um resumo (por exemplo, saída transposta de listas/data.frames)
-#' com cabeçalhos e alinhamento simples.
+#' @description Formata e imprime um resumo (por exemplo, saida transposta de listas/data.frames)
+#' com cabecalhos e alinhamento simples.
 #'
-#' @param summary_data Objeto tipo matrix/data.frame (1 coluna) ou data.frame com campos e valores.
+#' @param result_resumo Objeto tipo matrix/data.frame (1 coluna) ou data.frame com campos e valores.
 #'
-#' @return Invisivelmente, retorna \code{NULL}. Efeito colateral é a impressão no console.
+#' @return Invisivelmente, retorna \code{NULL}. Efeito colateral e a impressao no console.
 #' @export
 #' @examples
-#' res <- list(iName="MMPD", Classe="Numerico", Min="2.33")
-#' print_summary(res)
+#' result_resumo <- list(iName="MMPD", Classe="Numerico", Min="2.33")
+#' print_summary(result_resumo)
 print_summary <- function(result_resumo) {
   # Aceita tanto lista quanto data.frame transposto como no exemplo
 
@@ -112,20 +100,20 @@ print_summary <- function(result_resumo) {
     colnames(summary_data) <- c("Campo", "Valor")
   }
   
-  # Título amigável
-  cat("\n📊  Resumo Estatístico da Variável\n")
-  cat(strrep("═", 40), "\n", sep = "")
+  # Titulo amigavel
+  cat("\n  Resumo Estatistico da Variavel\n")
+  cat(strrep(" ", 40), "\n", sep = "")
   
-  # Nome da variável (se existir)
+  # Nome da variavel (se existir)
   if ("Nome" %in% summary_data$Campo) {
     var_name <- summary_data$Valor[summary_data$Campo == "Nome"]
-    cat("🔹 Variável:", var_name, "\n")
+    cat(" Variavel:", var_name, "\n")
   }
   if ("Classe" %in% summary_data$Campo) {
     var_class <- summary_data$Valor[summary_data$Campo == "Classe"]
-    cat("🔹 Classe:", var_class, "\n")
+    cat(" Classe:", var_class, "\n")
   }
-  cat(strrep("─", 40), "\n", sep = "")
+  cat(strrep(" ", 40), "\n", sep = "")
   
   # Tabela organizada
   suppressWarnings({
@@ -138,35 +126,34 @@ print_summary <- function(result_resumo) {
     }
   })
   
-  cat(strrep("═", 40), "\n\n", sep = "")
+  cat(strrep(" ", 40), "\n\n", sep = "")
 }
 
 
 ###############################
-#' @title Gerar resumos estatísticos para múltiplos indicadores
+#' @title Gerar resumos estatisticos para multiplos indicadores
 #'
 #' @description
-#' Aplica a função \code{criar_resumo} a cada coluna de um \code{data.frame},
+#' Aplica a funcao \code{criar_resumo} a cada coluna de um \code{data.frame},
 #' gerando tabelas com os resultados organizados.
 #'
 #' @param dataset Um \code{data.frame} contendo os indicadores.
 #' @param class_types Vetor de caracteres com a classe/tipo de cada indicador (mesma ordem das colunas de \code{dataset}).
-#' @param clusters Vetor ou coluna representando os clusters associados aos dados.
 #' @param names Vetor de nomes dos indicadores (mesma ordem das colunas de \code{dataset}).
 #'
 #' @details
-#' - O número de colunas de \code{dataset} deve ser igual ao comprimento de \code{class_types} e \code{names}.
-#' - Valores \code{NA} nos resumos são substituídos por "-".
+#' - O numero de colunas de \code{dataset} deve ser igual ao comprimento de \code{class_types} e \code{names}.
+#' - Valores \code{NA} nos resumos sao substituidos por "-".
 #'
-#' @return Uma lista com três elementos:
+#' @return Uma lista com tres elementos:
 #' \describe{
 #'   \item{resumo_total}{\code{data.frame} com todos os resumos completos.}
-#'   \item{resumo_basico}{\code{data.frame} transposto com estatísticas básicas (linhas: medidas, colunas: indicadores).}
-#'   \item{resumo_na}{\code{data.frame} com informações sobre valores ausentes, outliers e valores únicos.}
+#'   \item{resumo_basico}{\code{data.frame} transposto com estatisticas basicas (linhas: medidas, colunas: indicadores).}
+#'   \item{resumo_na}{\code{data.frame} com informacoes sobre valores ausentes, outliers e valores unicos.}
 #' }
 #'
 #' @examples
-#' # Exemplo fictício (assumindo que criar_resumo já esteja implementada)
+#' # Exemplo ficticio (assumindo que criar_resumo ja esteja implementada)
 #' dados <- data.frame(
 #'   Pessoas = c(25, 30, 28, 35, 40, 28, 35, 40),
 #'   Vendas = c(100, 200, 150, NA, 180, 175, 190, 210)
@@ -195,7 +182,7 @@ ADPresumo <- function(dataset, class_types, names) {
   
   
   res_basico <- as.data.frame(t(resumo_combinado)[2:8,]) 
-  colnames(res_basico) <- resumo_combinado$NOME
+  colnames(res_basico) <- resumo_combinado$Nome
   
   resumo_na<-resumo_combinado[,c(1,9:12)]
   

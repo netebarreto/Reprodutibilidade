@@ -6,13 +6,14 @@
 #'
 #' @param input String. Caminho do arquivo Excel de entrada. 
 #'              Default = "INPUT.xlsx".
-#' @param iMeta String. Nome da planilha que contem os metadados.
+#' @param metadados String. Nome da planilha que contem os metadados.
 #'              Default = "Plan_Metadados".
-#' @param iData String. Nome da planilha que contem os dados brutos.
+#' @param dataset String. Nome da planilha que contem os dados brutos.
 #'              Default = "Plan_Dados".
-#' @param method_boxcox String. Metodo a ser utilizado na transformacao Box-Cox
+#' @param nivel Numeric ou NULL. Define o nivel dos indicadores que serao tratados. Default = 7.
+#' @param method_boxcox String ou NULL. Metodo a ser utilizado na transformacao Box-Cox
 #'                      (ex.: "forecast"). Default = "forecast".
-#' @param sigla String. Sigla usada na composicao dos nomes dos arquivos de saida.
+#' @param sigla String ou NULL. Sigla usada na composicao dos nomes dos arquivos de saida.
 #'              Default = "SE".
 #' @param subsetor String ou NULL. Define um subtipo/setor para diferenciar
 #'                 os arquivos de saida. Default = NULL.
@@ -33,7 +34,7 @@
 #' \itemize{
 #'   \item \code{Ref}: Dados de referencia.
 #'   \item \code{Resumo}: Estatisticas descritivas (resultado de `ADPresumo`).
-#'   \item \code{iMeta}: Metadados filtrados para nivel 7.
+#'   \item \code{metadados}: Metadados filtrados para nivel 7.
 #'   \item \code{DadosB}: Dados brutos arredondados.
 #'   \item \code{Data_Win}: Resultado da Winsorizacao.
 #'   \item \code{Data_Bxc}: Resultado da transformacao Box-Cox.
@@ -47,34 +48,39 @@
 #'
 #' # Executar com planilhas especificas e sigla:
 #' resultado <- Tratamento(input = "meu_arquivo.xlsx",
-#'                         iMeta = "Metadados",
-#'                         iData = "Dados",
+#'                         metadados = "Metadados",
+#'                         dataset = "Dados",
 #'                         sigla = "NE")
 #' }
 #'
 #' @export
 Tratamento <- function(input="INPUT.xlsx",
-                       iMeta = "Plan_Metadados",
-                       iData  = "Plan_Dados",
-                       method_boxcox = "forecast",
+                       metadados = "Plan_Metadados",
+                       dataset  = "Plan_Dados",
+                       nivel = NULL,
+                       method_boxcox = NULL,
                        sigla="SE",
                        subsetor=NULL)
 {
   inxlsx       <- openxlsx::loadWorkbook(file = input)
-  iMeta_adapta <- openxlsx::read.xlsx(inxlsx, sheet = iMeta)
-  iData_bruto  <- openxlsx::read.xlsx(inxlsx, sheet = iData)
+  metadados_adapta <- openxlsx::read.xlsx(inxlsx, sheet = metadados)
+  dataset_bruto  <- openxlsx::read.xlsx(inxlsx, sheet = dataset)
 
-  
-imeta_N7 = subset(iMeta_adapta,iMeta_adapta$Nivel==7)
-data_ref = iData_bruto[,c(1:4)]
-idata_N7 = round(iData_bruto[,-c(1:4)],2)
-colnames(idata_N7) <- colnames(iData_bruto[,-c(1:4)])
-resumo <- ADPresumo(idata_N7, imeta_N7$Classe, data_ref[,4], colnames(idata_N7))
+if(is.null(nivel)) {nivel = 7}
+metadadosN7 = subset(metadados_adapta,metadados_adapta$NIVEL==nivel)
 
-data_winsor <- winsorize_apply(dataset=idata_N7,metadados=imeta_N7,cluster_ref=data_ref[,4])
+data_ref = dataset_bruto[,c(1:3)]
+datasetN7 = round(dataset_bruto[,-c(1:3)],2)
 
-data_bxcx <- ADPBoxCox(data_winsor$iData,idata_N7,imeta_N7$Classe,data_ref[,4],
-                      colnames(idata_N7),metodo=method_boxcox)
+colnames(datasetN7) <- colnames(dataset_bruto[,-c(1:3)])
+resumo <- ADPresumo(datasetN7, metadadosN7$CLASSE, colnames(datasetN7))
+
+data_winsor <- winsorize_apply(dataset=datasetN7,metadados=metadadosN7)
+
+if(is.null(method_boxcox)) {method_boxcox = "forecast"}
+data_bxcx <- ADPBoxCox(data_winsor$dataset,datasetN7,metadadosN7$CLASSE,
+                      colnames(datasetN7),metodo=method_boxcox)
+
 data_normal <- ADPNormalise(data_bxcx$data)
 
     xlsx_res <- openxlsx::createWorkbook()
@@ -90,36 +96,36 @@ data_normal <- ADPNormalise(data_bxcx$data)
     
     xlsx_dados <- openxlsx::createWorkbook()
     openxlsx::addWorksheet(xlsx_dados, "BNivel 7")
-    dadosn7 = data.frame(data_ref[,-4],idata_N7)
+    dadosn7 = data.frame(data_ref,datasetN7)
     openxlsx::writeData(xlsx_dados,"BNivel 7",dadosn7, startCol = 1,  startRow = 1)
 
     openxlsx::addWorksheet(xlsx_dados, "Winsorization")
-    dadoswin = data.frame(data_ref[,-4],data_winsor$iData)
+    dadoswin = data.frame(data_ref,data_winsor$dataset)
     openxlsx::writeData(xlsx_dados,"Winsorization",dadoswin, startCol = 1,  startRow = 1)
 
     openxlsx::addWorksheet(xlsx_dados, "BoxCox")
-    dadosbxc = data.frame(data_ref[,-4],data_bxcx$data)
+    dadosbxc = data.frame(data_ref,data_bxcx$data)
     openxlsx::writeData(xlsx_dados,"BoxCox",dadosbxc, startCol = 1,  startRow = 1)
 
     openxlsx::addWorksheet(xlsx_dados, "Normalizado")
-    dadosnorm = data.frame(data_ref[,-4],data_normal$iData)
+    dadosnorm = data.frame(data_ref,data_normal$dataset)
     openxlsx::writeData(xlsx_dados,"Normalizado",dadosnorm, startCol = 1,  startRow = 1)
 ##### Gerando nome do arquivo excel #####
       if(!is.null(subsetor)) {
-        outfilex1 <- paste0("OUTPUT/ANALISE_DESCRITIVA_",sigla,subsetor,"_",format(Sys.time(),"%Y-%m-%d_%Hh%Mm"),".xlsx")
+        outfilex1 <- paste0("ANALISE_DESCRITIVA_",sigla,subsetor,"_",format(Sys.time(),"%Y-%m-%d_%Hh%Mm"),".xlsx")
         
-        outfilex2 <- paste0("OUTPUT/DADOS_TRATADOS_",sigla,subsetor,"_",format(Sys.time(),"%Y-%m-%d_%Hh%Mm"),".xlsx")}
+        outfilex2 <- paste0("DADOS_TRATADOS_",sigla,subsetor,"_",format(Sys.time(),"%Y-%m-%d_%Hh%Mm"),".xlsx")}
       else {
-        outfilex1 <- paste0("OUTPUT/ANALISE_DESCRITIVA_",sigla,"_",format(Sys.time(),"%Y-%m-%d_%Hh%Mm"),".xlsx")
-        outfilex2 <- paste0("OUTPUT/DADOS_TRATADOS_",sigla,"_",format(Sys.time(),"%Y-%m-%d_%Hh%Mm"),".xlsx")}
+        outfilex1 <- paste0("ANALISE_DESCRITIVA_",sigla,"_",format(Sys.time(),"%Y-%m-%d_%Hh%Mm"),".xlsx")
+        outfilex2 <- paste0("DADOS_TRATADOS_",sigla,"_",format(Sys.time(),"%Y-%m-%d_%Hh%Mm"),".xlsx")}
 
     openxlsx::saveWorkbook(xlsx_res,outfilex1,overwrite = TRUE)
     openxlsx::saveWorkbook(xlsx_dados,outfilex2,overwrite = TRUE)
     cat("\n Arquivos .xlsx Gerados \n ",outfilex1,"\n ",outfilex2,"\n")
     output_result <- list(Ref = data_ref,
     Resumo = resumo,
-    iMeta = imeta_N7,
-    DadosB = idata_N7,
+    metadados = metadadosN7,
+    DadosB = datasetN7,
     Data_Win = data_winsor,
     Data_Bxc = data_bxcx,
     Data_Normal=data_normal)

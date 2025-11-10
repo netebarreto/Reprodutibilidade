@@ -1,20 +1,20 @@
-#' @title Ler arquivo de exemplo incluído no pacote
+#' @title Ler arquivo de exemplo incluido no pacote
 #'
 #' @description
 #' Carrega o arquivo Excel de exemplo \code{Base_inicial_SA_Acesso.xlsx} que acompanha o pacote,
-#' contendo as planilhas de metadados e dados utilizados para demonstração das funções.
+#' contendo as planilhas de metadados e dados utilizados para demonstracao das funcoes.
 #'
 #' @details
-#' Esta função é útil para testar e exemplificar o fluxo completo de análise
-#' (leitura, resumo, winsorização, normalização e Box-Cox) sem necessidade de
+#' Esta funcao e util para testar e exemplificar o fluxo completo de analise
+#' (leitura, resumo, winsorizacao, normalizacao e Box-Cox) sem necessidade de
 #' carregar dados externos.  
-#' O arquivo de exemplo está localizado internamente em:
+#' O arquivo de exemplo esta localizado internamente em:
 #' \code{inst/dataset/Base_inicial_SA_Acesso.xlsx}
 #'
-#' O arquivo contém duas planilhas:
+#' O arquivo contem duas planilhas:
 #' \itemize{
-#'   \item \strong{"metadados"} — informações descritivas sobre as variáveis.
-#'   \item \strong{"dados_SA_Acesso"} — base de dados com indicadores de acesso e atributos numéricos.
+#'   \item \strong{"metadados"} — informacoes descritivas sobre as variaveis.
+#'   \item \strong{"dados_SA_Acesso"} — base de dados com indicadores de acesso e atributos numericos.
 #' }
 #'
 #' @return Uma lista contendo:
@@ -41,10 +41,10 @@ read_exemplo_xlsx <- function() {
   metadados <- openxlsx::read.xlsx(inxlsx, sheet = "metadados")
   dataset <- openxlsx::read.xlsx(inxlsx, sheet = "dados_SA_Acesso")
   
-  message("\n✔ Arquivo de exemplo 'Base_inicial_SA_Acesso.xlsx' carregado com sucesso!")
-  message("📂 O arquivo foi lido a partir do pacote 'reprodutibilidade'.")
-  message("📑 As planilhas disponíveis são: 'metadados' e 'dados_SA_Acesso'.")
-  message("💡 Acesse-as com: resultado$metadados ou resultado$dataset\n")
+  message("\n Arquivo de exemplo 'Base_inicial_SA_Acesso.xlsx' carregado com sucesso!")
+  message(" O arquivo foi lido a partir do pacote 'reprodutibilidade'.")
+  message(" As planilhas disponiveis sao: 'metadados' e 'dados_SA_Acesso'.")
+  message(" Acesse-as com: resultado$metadados ou resultado$dataset\n")
   result <- list(
     File = inxlsx,
     metadados = metadados,

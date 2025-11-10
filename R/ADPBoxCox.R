@@ -85,9 +85,8 @@ boxcox_transform<- function(value,metodo=c("forecast", "COINr", "yeojohnson"))
 #' Apenas variaveis com distorcao >= 2 e curtose >= 3.5 sao transformadas.
 #'
 #' @param dadoswin \code{data.frame} com os dados ja winsorizados.
-#' @param dados \code{data.frame} com os dados originais.
+#' @param dados_originais \code{data.frame} com os dados originais.
 #' @param classe Vetor de caracteres indicando a classe de cada variavel.
-#' @param cluster Vetor ou coluna de clusters (atualmente nao utilizado nesta funcao, mas mantido para compatibilidade).
 #' @param nome Vetor com os nomes das variaveis.
 #' @param metodo String indicando o metodo de transformacao:
 #'   \itemize{
@@ -115,21 +114,28 @@ boxcox_transform<- function(value,metodo=c("forecast", "COINr", "yeojohnson"))
 #'   x1 = c(rnorm(10), 100),# variavel distorcida
 #'   x2 = rnorm(11))        # variavel normal
 #'
-#' classe <- c("Numerico", "Numerico")
+#' meta_test <- data.frame(N = c(1,2),
+#'                         NIVEL = c("7","7"),
+#'                         CODE = c("x1","x2"),
+#'                         NOME = c("Variavel exemplo x1",
+#'                                   "Variavel exemplo x2"),
+#'                         TIPO = c("Indicator","Indicator"),
+#'                         PAI  = c("X1L2","X2L2"),
+#'                         CLASSE =c("Numerico","Numerico"))
 #' 
-#' nomes <- c("x1", "x2")
+#' dados_win <- winsorize_apply(dataset=dados,
+#'                               metadados=meta_test)
 #' 
-#' ADPBoxCox(dadoswin = dados, 
-#'           dados = dados, 
-#'           classe = classe,
-#'           cluster = NULL,
-#'           nome = nomes,
+#' ADPBoxCox(dadoswin = dados_win$dataset, 
+#'           dados_originais = dados, 
+#'           classe = meta_test$CLASSE,
+#'           nome = meta_test$CODE,
 #'           metodo = "forecast")
 #'
 #' @export
-ADPBoxCox <- function(dadoswin=NULL,dados=NULL,classe=NULL,cluster=NULL,nome=NULL,metodo=NULL)
+ADPBoxCox <- function(dadoswin=NULL,dados_originais=NULL,classe=NULL,nome=NULL,metodo=NULL)
 {
-   prec_boxcox<-function(dadoswin,dados,classe,cluster,nome,metodo) 
+   prec_boxcox<-function(dadoswin,dados_originais,classe,nome,metodo) 
    { 
        if(classe == "Numerico") 
         {
@@ -142,7 +148,7 @@ ADPBoxCox <- function(dadoswin=NULL,dados=NULL,classe=NULL,cluster=NULL,nome=NUL
         meta_cx$BoxCox = ifelse(is.na(meta_cx$Distorcao) | is.na(meta_cx$Curtose),0,ifelse(as.numeric(meta_cx$Distorcao)>=2 & as.numeric(meta_cx$Curtose)>=3.5, 1, 0))
         {
         if (meta_cx$BoxCox == 1 ) 
-        data_bx <-boxcox_transform(dados,metodo) 
+        data_bx <-boxcox_transform(dados_originais,metodo) 
         else 
          {
           if (meta_cx$BoxCox == 0 )
@@ -155,9 +161,9 @@ ADPBoxCox <- function(dadoswin=NULL,dados=NULL,classe=NULL,cluster=NULL,nome=NUL
 data_bcx =NULL
 meta_bcx =NULL
 
-for(i in 1:NCOL(dados))
+for(i in 1:NCOL(dados_originais))
 {
-res = prec_boxcox(dadoswin[,i],dados[,i],classe[i],cluster,nome[i],metodo)
+res = prec_boxcox(dadoswin[,i],dados_originais[,i],classe[i],nome[i],metodo)
 meta_bcx <- rbind(meta_bcx,res$meta)
 data_bcx <- cbind(data_bcx,res$data)
 colnames(data_bcx)[i]<-nome[i]

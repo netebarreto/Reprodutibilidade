@@ -29,6 +29,8 @@ Imports:
     gridExtra,
     officer,
     rsvg,
+    Hmisc,
+    corrplot,
     stats
 Suggests:
     knitr,

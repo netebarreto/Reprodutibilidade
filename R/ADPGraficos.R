@@ -86,7 +86,7 @@ gerar_diagrama_setor <- function(data, setor_e, output_file = "diagrama.png", wi
 #' @param nvalores Nome da variavel (string) a ser usada no grafico 
 #'   e nos rotulos. Default: "DD1".
 #' @param fsize Tamanho base da fonte nos eixos e titulos. Default: 16.
-#'
+#' @param plot Logical; se TRUE, plota na tela. Se FALSE, apenas retorna o objeto.
 #' @return Nenhum objeto e retornado. Um arquivo PNG e salvo no diretorio de trabalho.
 #'
 #' @details
@@ -103,7 +103,7 @@ gerar_diagrama_setor <- function(data, setor_e, output_file = "diagrama.png", wi
 #' }
 #'
 #' @seealso \code{\link[ggplot2]{ggplot}}, \code{\link[gridExtra]{arrangeGrob}}
-#'
+#' @importFrom stats density
 #' @export
 criar_grafico <- function(dados, nome_arquivo = "grafico_combinado.png", largura = 10, altura = 5, dpi = 25,nvalores="DD1",fsize=16,plot=TRUE) {
   # Carregar as bibliotecas necessarias
