@@ -6,9 +6,10 @@
 \usage{
 Tratamento(
   input = "INPUT.xlsx",
-  iMeta = "Plan_Metadados",
-  iData = "Plan_Dados",
-  method_boxcox = "forecast",
+  metadados = "Plan_Metadados",
+  dataset = "Plan_Dados",
+  nivel = NULL,
+  method_boxcox = NULL,
   sigla = "SE",
   subsetor = NULL
 )
@@ -17,16 +18,18 @@ Tratamento(
 \item{input}{String. Caminho do arquivo Excel de entrada.
 Default = "INPUT.xlsx".}
 
-\item{iMeta}{String. Nome da planilha que contem os metadados.
+\item{metadados}{String. Nome da planilha que contem os metadados.
 Default = "Plan_Metadados".}
 
-\item{iData}{String. Nome da planilha que contem os dados brutos.
+\item{dataset}{String. Nome da planilha que contem os dados brutos.
 Default = "Plan_Dados".}
 
-\item{method_boxcox}{String. Metodo a ser utilizado na transformacao Box-Cox
+\item{nivel}{Numeric ou NULL. Define o nivel dos indicadores que serao tratados. Default = 7.}
+
+\item{method_boxcox}{String ou NULL. Metodo a ser utilizado na transformacao Box-Cox
 (ex.: "forecast"). Default = "forecast".}
 
-\item{sigla}{String. Sigla usada na composicao dos nomes dos arquivos de saida.
+\item{sigla}{String ou NULL. Sigla usada na composicao dos nomes dos arquivos de saida.
 Default = "SE".}
 
 \item{subsetor}{String ou NULL. Define um subtipo/setor para diferenciar
@@ -37,7 +40,7 @@ Uma lista com:
 \itemize{
 \item \code{Ref}: Dados de referencia.
 \item \code{Resumo}: Estatisticas descritivas (resultado de \code{ADPresumo}).
-\item \code{iMeta}: Metadados filtrados para nivel 7.
+\item \code{metadados}: Metadados filtrados para nivel 7.
 \item \code{DadosB}: Dados brutos arredondados.
 \item \code{Data_Win}: Resultado da Winsorizacao.
 \item \code{Data_Bxc}: Resultado da transformacao Box-Cox.
@@ -72,8 +75,8 @@ resultado <- Tratamento()
 
 # Executar com planilhas especificas e sigla:
 resultado <- Tratamento(input = "meu_arquivo.xlsx",
-                        iMeta = "Metadados",
-                        iData = "Dados",
+                        metadados = "Metadados",
+                        dataset = "Dados",
                         sigla = "NE")
 }
 

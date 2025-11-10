@@ -11,7 +11,8 @@ criar_grafico(
   altura = 5,
   dpi = 25,
   nvalores = "DD1",
-  fsize = 16
+  fsize = 16,
+  plot = TRUE
 )
 }
 \arguments{
@@ -30,6 +31,8 @@ Default: "grafico_combinado.png".}
 e nos rotulos. Default: "DD1".}
 
 \item{fsize}{Tamanho base da fonte nos eixos e titulos. Default: 16.}
+
+\item{plot}{Logical; se TRUE, plota na tela. Se FALSE, apenas retorna o objeto.}
 }
 \value{
 Nenhum objeto e retornado. Um arquivo PNG e salvo no diretorio de trabalho.

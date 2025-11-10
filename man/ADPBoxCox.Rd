@@ -6,9 +6,8 @@
 \usage{
 ADPBoxCox(
   dadoswin = NULL,
-  dados = NULL,
+  dados_originais = NULL,
   classe = NULL,
-  cluster = NULL,
   nome = NULL,
   metodo = NULL
 )
@@ -16,11 +15,9 @@ ADPBoxCox(
 \arguments{
 \item{dadoswin}{\code{data.frame} com os dados ja winsorizados.}
 
-\item{dados}{\code{data.frame} com os dados originais.}
+\item{dados_originais}{\code{data.frame} com os dados originais.}
 
 \item{classe}{Vetor de caracteres indicando a classe de cada variavel.}
-
-\item{cluster}{Vetor ou coluna de clusters (atualmente nao utilizado nesta funcao, mas mantido para compatibilidade).}
 
 \item{nome}{Vetor com os nomes das variaveis.}
 
@@ -57,15 +54,22 @@ dados <- data.frame(
   x1 = c(rnorm(10), 100),# variavel distorcida
   x2 = rnorm(11))        # variavel normal
 
-classe <- c("Numerico", "Numerico")
+meta_test <- data.frame(N = c(1,2),
+                        NIVEL = c("7","7"),
+                        CODE = c("x1","x2"),
+                        NOME = c("Variavel exemplo x1",
+                                  "Variavel exemplo x2"),
+                        TIPO = c("Indicator","Indicator"),
+                        PAI  = c("X1L2","X2L2"),
+                        CLASSE =c("Numerico","Numerico"))
 
-nomes <- c("x1", "x2")
+dados_win <- winsorize_apply(dataset=dados,
+                              metadados=meta_test)
 
-ADPBoxCox(dadoswin = dados, 
-          dados = dados, 
-          classe = classe,
-          cluster = NULL,
-          nome = nomes,
+ADPBoxCox(dadoswin = dados_win$dataset, 
+          dados_originais = dados, 
+          classe = meta_test$CLASSE,
+          nome = meta_test$CODE,
           metodo = "forecast")
 
 }

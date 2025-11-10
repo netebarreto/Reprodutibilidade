@@ -4,14 +4,12 @@
 \alias{winsorize_apply}
 \title{Aplicar Winsorization a um conjunto de dados}
 \usage{
-winsorize_apply(dataset = NULL, metadados = NULL, cluster_ref = NULL)
+winsorize_apply(dataset = NULL, metadados = NULL)
 }
 \arguments{
 \item{dataset}{\code{data.frame} contendo os dados originais.}
 
 \item{metadados}{\code{data.frame} de metadados, conforme exigido por \code{winsorize_data}.}
-
-\item{cluster_ref}{Vetor ou coluna de referencia para identificar grupos (necessario para variaveis de tipo "Cluster").}
 }
 \value{
 Lista com dois elementos:
@@ -23,7 +21,7 @@ Lista com dois elementos:
 \description{
 Aplica a funcao \code{winsorize_data} para calcular limites de Winsorization
 e depois substitui os valores dos indicadores de acordo com esses limites,
-considerando variaveis numericas e de cluster.
+considerando variaveis numericas.
 }
 \details{
 \itemize{
@@ -33,22 +31,19 @@ considerando variaveis numericas e de cluster.
 \item Coluna 2: tipo ("Numerico", "Descricao", "Score", "Grupo 1", "Grupo 2").
 \item Colunas \code{LSUP} e \code{LINF}: limites superiores e inferiores.
 }
-\item Para variaveis do tipo "Cluster", o Winsorization e aplicado separadamente para cada grupo.
 }
 }
 \examples{
 # Exemplo ficticio (assumindo que winsorize_data e winsorize_info ja existam)
-dados <- data.frame(
-  var1 = c(1, 2, 3, 100),
-  var2 = c(10, 20, 30, 40),
-  CLUSTER = c(1, 1, 2, 2)
-)
-meta <- data.frame(
-  Classe = c("Numerico", "Numerico", "Cluster"),
-  Code = c("var1", "var2", "CLUSTER")
-)
-ref <- dados$CLUSTER
+ #dados <- data.frame(
+  # var1 = c(1, 2, 3, 100),
+  #var2 = c(10, 20, 30, 40)
+  #)
+data("metadadosN7", package = "reprodutibilidade")
 
-winsorize_apply(dataset=dados, metadados=meta,cluster_ref= ref)
+data("datasetN7", package = "reprodutibilidade")
+
+data_winsor <- winsorize_apply(dataset=datasetN7,
+                             metadados=metadadosN7)
 
 }

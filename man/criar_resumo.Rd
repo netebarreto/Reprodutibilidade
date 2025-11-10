@@ -5,14 +5,12 @@
 \title{Gerar resumo estatistico para um indicador ou indice especifico,
 ,}
 \usage{
-criar_resumo(dataset, class_type, cluster = NULL, name)
+criar_resumo(dataset, class_type, name)
 }
 \arguments{
 \item{dataset}{Um data frame contendo os dados (colunas numericas).}
 
-\item{class_type}{Um vetor com os tipos de classe para cada coluna (ex: "Numerico", "Cluster", "Score")."}
-
-\item{cluster}{Um vetor com os grupos de cluster (obrigatorio se usar tipo "Cluster")."}
+\item{class_type}{Um vetor com os tipos de classe para cada coluna (ex: "Numerico")."}
 
 \item{name}{Vetor com os nomes descritivos de cada coluna de \code{dataset}.}
 }
@@ -29,19 +27,16 @@ Um tibble (tabela moderna do R, semelhante a um data.frame) com os resumos estat
 \item{Valores_Unicos}{Total de valores unicos}}
 }
 \description{
-Esta funcao aplica resumos estatisticos a multiplas variaveis de um data frame,
-com suporte para indicadores do tipo cluster.
+Esta funcao aplica resumos estatisticos a multiplas variaveis de um data frame.
 ,
 }
 \examples{
 # Criando um data frame de exemplo
-dados <- data.frame(Pessoas = c(25, 30, 28, 35, 40, 28, 35, 40),
-                   Cluster = c("1", "2", "1", "1", "2","2","2","1"))
+dados <- data.frame(Pessoas = c(25, 30, 28, 35, 40, 28, 35, 40))
 
 # Chamando a funcao com parametros ficticios
 criar_resumo(dados$Pessoas,
             "Numerico",
-             dados$cluster,
              "Pessoas")
 
 }

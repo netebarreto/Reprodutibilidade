@@ -2,7 +2,7 @@
 % Please edit documentation in R/read_exemplo_xlsx.R
 \name{read_exemplo_xlsx}
 \alias{read_exemplo_xlsx}
-\title{Ler arquivo de exemplo incluído no pacote}
+\title{Ler arquivo de exemplo incluido no pacote}
 \usage{
 read_exemplo_xlsx()
 }
@@ -16,19 +16,19 @@ Uma lista contendo:
 }
 \description{
 Carrega o arquivo Excel de exemplo \code{Base_inicial_SA_Acesso.xlsx} que acompanha o pacote,
-contendo as planilhas de metadados e dados utilizados para demonstração das funções.
+contendo as planilhas de metadados e dados utilizados para demonstracao das funcoes.
 }
 \details{
-Esta função é útil para testar e exemplificar o fluxo completo de análise
-(leitura, resumo, winsorização, normalização e Box-Cox) sem necessidade de
+Esta funcao e util para testar e exemplificar o fluxo completo de analise
+(leitura, resumo, winsorizacao, normalizacao e Box-Cox) sem necessidade de
 carregar dados externos.
-O arquivo de exemplo está localizado internamente em:
+O arquivo de exemplo esta localizado internamente em:
 \code{inst/dataset/Base_inicial_SA_Acesso.xlsx}
 
-O arquivo contém duas planilhas:
+O arquivo contem duas planilhas:
 \itemize{
-\item \strong{"metadados"} — informações descritivas sobre as variáveis.
-\item \strong{"dados_SA_Acesso"} — base de dados com indicadores de acesso e atributos numéricos.
+\item \strong{"metadados"} — informacoes descritivas sobre as variaveis.
+\item \strong{"dados_SA_Acesso"} — base de dados com indicadores de acesso e atributos numericos.
 }
 }
 \examples{

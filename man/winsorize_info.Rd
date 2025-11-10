@@ -10,12 +10,11 @@ winsorize_info(indice, classe_label = NULL, var_name = NULL)
 \arguments{
 \item{indice}{Um vetor contendo os dados de entrada .}
 
-\item{classe_label}{classe do indice (ex: "Numerico", "Cluster", "Score")."}
+\item{classe_label}{classe do indice (ex: "Numerico", "Score")."}
 
 \item{var_name}{nome da variavel.}
 }
 \description{
-Esta funcao gera os limites inferiores e superiores para a aplicacao do winzorise num indicador especifico,
-com suporte para indicadores do tipo cluster.
+Esta funcao gera os limites inferiores e superiores para a aplicacao do winzorise num indicador especifico
 ,
 }
