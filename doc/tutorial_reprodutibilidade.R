@@ -15,10 +15,10 @@
   
   library("reprodutibilidade")
 
-  input <- read_exemplo_xlsx()
+  resultado <- read_exemplo_xlsx()
 
-  metadados <- input$metadados
-  dataset  <- input$dataset
+  metadados <- resultado$metadados
+  dataset  <- resultado$dataset
 
   # Recortando apenas os dados do Nivel 7
   metadadosN7 = subset(metadados,metadados$Nivel==7)
@@ -140,21 +140,49 @@ par(mfrow=c(1,3)) ; par(mar=c(5,4,6,1))
       cex.axis=1,las=1,ylab="Transformada BoxCox",
       xlab="Reference",cex.lab=0.8,cex.main=1)
 
-## ----eval = FALSE-------------------------------------------------------------
-#  data_bxcx <- ADPBoxCox(dadoswin=data_winsor$dataset,
-#                        dados=iData_N7,
-#                        classe=iMeta_N7$Classe,
-#                        cluster=data_ref[,4],
-#                        nome=colnames(idata_N7),
-#                        metodo=method_boxcox)
-#  
-#  
-#  data_normal <- ADPNormalise(data_bxcx$data)
-#  
+## ----eval = TRUE--------------------------------------------------------------
+method_boxcox = "forecast"
 
-## ----eval = FALSE-------------------------------------------------------------
-#  result = Tratamento(input="../../DATASET/Base_inicial_SA_Acesso.xlsx",
-#             iMeta = "Metadados",
-#             iData = "Dados_RA_Acesso",
-#             method_boxcox="forecast")
+data_bxcx <- ADPBoxCox(dadoswin=data_winsor$dataset,
+                      dados=datasetN7,
+                      classe=metadadosN7$CLASSE,
+                      nome=colnames(datasetN7),
+                      metodo=method_boxcox)
+
+## ----eval = TRUE--------------------------------------------------------------
+data_normal <- ADPNormalise(data_bxcx$data)
+
+## ----eval = TRUE--------------------------------------------------------------
+caminho_arquivo <- system.file("dataset", "Base_inicial_SA_Acesso.xlsx", package = "reprodutibilidade")
+
+result = Tratamento(input=caminho_arquivo,
+           metadados = "metadados",
+           dataset = "dados_SA_Acesso",
+           nivel=7,
+           method_boxcox="forecast",
+           sigla = "SE",
+           subsetor= NULL)
+
+## ----eval = TRUE--------------------------------------------------------------
+total.na(datasetN7$MMPD)
+
+## ----eval = TRUE--------------------------------------------------------------
+mat <- cor(mtcars)
+get_max_cor("mpg", mat)
+
+## ----eval = TRUE--------------------------------------------------------------
+res <- ADPcorrel(result$Data_Normal$dataset)
+head(res$cor_summary)
+
+## ----eval = TRUE,fig.width=7.2, fig.height=5----------------------------------
+
+result_cor <- correl_ind(result$Data_Normal$dataset)
+
+head(result_cor$Resumo)
+
+FigContNA(result_cor$Contagem_NA,nfile="Contagem_NA_ISimples.png",visivel=TRUE)
+
+
+## ----eval = TRUE,fig.width=7.2, fig.height=5----------------------------------
+ FigCorrelPlot(result_cor$Correl,tipo="Total",save=FALSE,nfile="FIGs/Correlação_Total.png")
 
