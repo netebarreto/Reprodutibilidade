@@ -142,6 +142,7 @@ return(result_cor)
 #' Gera grafico de barras mostrando a quantidade de valores ausentes por variável.
 #'
 #' @param Y Vetor nomeado com contagem de NAs por variável.
+#' @param file NULL.
 #' @param nfile Nome do arquivo de saída (PNG).
 #' @param visivel logical, se TRUE o grafico e exibido no prompt.
 #'
@@ -150,16 +151,16 @@ return(result_cor)
 #' @examples
 #' cont_na <- apply(mtcars, 2, function(x) sum(is.na(x)))
 #' FigContNA(cont_na, "ContNA.png",visivel=TRUE)
-#'
+#' @importFrom rlang .data
 #' @export
-FigContNA = function(Y,nfile = "FigContNA.png",visivel=TRUE)
+FigContNA = function(Y,file=FALSE,nfile = "FigContNA.png",visivel=FALSE)
 {
  
-data.fr <- data.frame(Categorias =names(Y)  , 
-                      Value = Y)
+data.fr <- data.frame(Classes =names(Y)  , 
+                      Valores = Y)
 
 # Barplot using ggplot2
-plot = ggplot2::ggplot(data.fr, ggplot2::aes(x = Categorias, y = Value)) +
+plot = ggplot2::ggplot(data.fr, ggplot2::aes(x = .data$Classes, y = .data$Valores)) +
   ggplot2::geom_bar(stat = "identity", fill = "steelblue") +
   ggplot2::labs(title = "Total de NA's por Indicador Simples",
        x = "Indicadores Simples",
@@ -176,8 +177,12 @@ plot = ggplot2::ggplot(data.fr, ggplot2::aes(x = Categorias, y = Value)) +
     panel.border = ggplot2::element_rect(color = "black", fill = NA, linewidth = 1)  # Borda ao redor
   )
 
-ggplot2::ggsave(nfile, plot = plot, width = 10, height = 6, dpi = 600,bg="white")
-if(visivel) { print(plot)}
+  if (isTRUE(file)) {
+    ggplot2::ggsave(filename =nfile, plot = plot, width = 10, height = 6, dpi = 600,bg="white")
+  }
+
+
+if(isTRUE(visivel)) { print(plot)}
 message("\n       Figura de Contagem de NA's Gerada\n")
 }
 
@@ -195,16 +200,26 @@ message("\n       Figura de Contagem de NA's Gerada\n")
 #'
 #' @examples
 #' res <- correl_ind(mtcars)
-#' FigCorrelPlot(res$Correl, tipo = "Total", save=TRUE,nfile = "Correl.png",visivel=TRUE)
+#' 
+#' ## Exemplo que salva em arquivo (não roda no check):
+#' \dontrun{
+#' FigCorrelPlot(
+#'   res$Correl,
+#'   tipo   = "Total",
+#'   save   = TRUE,
+#'   nfile  = file.path(tempdir(), "Correl.png"),
+#'   visivel = TRUE
+#' )
+#' }
 #'
 #' @importFrom grDevices colorRampPalette dev.off png 
 #' @importFrom graphics mtext
 #' @export
-FigCorrelPlot <- function(Y,tipo="Total",save=TRUE,nfile = "output.png",visivel=TRUE)
+FigCorrelPlot <- function(Y,tipo="Total",save=FALSE,nfile = "output.png",visivel=FALSE)
 { 
 lado = ifelse(tipo=="Total", "lower","upper")
 
-if(save==TRUE) { 
+if(isTRUE(save)) { 
 png(nfile,width = 2000, height = 2000,res = 300,bg="white")
 
 corrplot::corrplot(Y,
@@ -221,7 +236,7 @@ mtext("Indicadores Simples",side=2,cex=1,line=2.5)
 dev.off()
 }
 
-if(visivel)
+if(isTRUE(visivel))
 {
 corrplot::corrplot(Y,
          method = "circle",

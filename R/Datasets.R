@@ -25,16 +25,24 @@
 
 #' Shape de municípios
 #'
-#' Objeto `sf` com limites municipais.
+#' Objeto sf com municípios brasileiros, incluindo a coluna \code{CD_MUN}.
 #'
-#' @format Um objeto `sf` com X linhas e Y colunas.
+#' @format Objeto \code{sf} com colunas de atributos.
 #' @source IBGE
+#' @examples
+#' head(mun_shp)
 "mun_shp"
 
 #' Shape de unidades federativas
 #'
-#' Objeto `sf` com limites das UFs.
+#' Objeto sf com unidades da federação.
 #'
-#' @format Um objeto `sf` com X linhas e Y colunas.
+#' @format Objeto \code{sf}.
 #' @source IBGE
+#' @examples
+#' head(uf_shp)
 "uf_shp"
+
+if (getRversion() >= "2.15.1") {
+  utils::globalVariables(c("mun_shp", "uf_shp"))
+}

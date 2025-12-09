@@ -153,36 +153,103 @@ data_bxcx <- ADPBoxCox(dadoswin=data_winsor$dataset,
 data_normal <- ADPNormalise(data_bxcx$data)
 
 ## ----eval = TRUE--------------------------------------------------------------
-caminho_arquivo <- system.file("dataset", "Base_inicial_SA_Acesso.xlsx", package = "reprodutibilidade")
+caminho_arquivo <- system.file("dataset", 
+                               "Base_inicial_SA_Acesso.xlsx",
+                                package = "reprodutibilidade")
 
 result = Tratamento(input=caminho_arquivo,
-           metadados = "metadados",
-           dataset = "dados_SA_Acesso",
-           nivel=7,
-           method_boxcox="forecast",
-           sigla = "SE",
-           subsetor= NULL)
+                    metadados = "metadados",
+                    dataset = "dados_SA_Acesso",
+                    nivel=7,
+                    method_boxcox="forecast",
+                    sigla = "SE",
+                    subsetor= NULL)
+
+## ----eval = TRUE,fig.width=7.2, fig.height=5----------------------------------
+library("reprodutibilidade")
+
+map_result("MMPD", datasetN7, data_ref, fs = 10, titulo = "MMPD")
+
+## ----eval = TRUE,fig.width=7.2, fig.height=5----------------------------------
+map_result_normal("MMPD", result$Data_Normal$dataset, data_ref, 
+                  fs = 10, 
+                  titulo = "MMPD")
+
+## ----eval = FALSE-------------------------------------------------------------
+#  
+#  # definindo o caminho da base de dados no formato .xlsx
+#    caminho_arquivo <- system.file("dataset",
+#                                 "Base_inicial_SA_Acesso.xlsx",
+#                                  package = "reprodutibilidade")
+#  
+#  # gerando os resultados e salvando em .xlsx
+#    result = Tratamento(input=caminho_arquivo,
+#                        metadados = "metadados",
+#                        dataset = "dados_SA_Acesso",
+#                        nivel=7,
+#                        method_boxcox="forecast",
+#                        sigla = "SE",
+#                        subsetor= NULL)
+#  
+#  # Determinado o indicador que será apresentado
+#    icode <- tab.descricao$CODE
+#  
+#  # Criando os gráficos de resumo
+#    criar_grafico(result$DadosB[[icode]],
+#                  plot=FALSE,
+#                  nome_arquivo = "grafico_combinado.png",
+#                  largura = 10, altura = 5, dpi = 100,
+#                  nvalores="MMPD", fsize=18)
+#  
+#  # Gerando a figura do mapa
+#  
+#    map_result(icode,
+#               result$DadosB,
+#               result$Ref,
+#               fs = 30,
+#               Titulo = icode,
+#               salvar=TRUE)
+#  
+#    slides_descricao(result, icode,
+#                     titulo=NULL,
+#                     caminho_arquivo = "saida_apresentacao.pptx",
+#                     caminho_imagem  = "grafico_combinado.png",
+#                     caminho_map     = "map_N7.png")
+#  
+
+## ----eval = FALSE-------------------------------------------------------------
+#  slides_winsorize(
+#    result$Data_Win$resumo[1,],
+#    titulo          = "Tabela Gerada no R",
+#    caminho_arquivo = paste0("saida_apresentacao_Win_",i,".pptx"),
+#    caminho_map     = "MMPD_result$Data_Win$dataset.png"
+#  )
 
 ## ----eval = TRUE--------------------------------------------------------------
 total.na(datasetN7$MMPD)
 
 ## ----eval = TRUE--------------------------------------------------------------
 mat <- cor(mtcars)
+
 get_max_cor("mpg", mat)
 
 ## ----eval = TRUE--------------------------------------------------------------
 res <- ADPcorrel(result$Data_Normal$dataset)
+
 head(res$cor_summary)
 
 ## ----eval = TRUE,fig.width=7.2, fig.height=5----------------------------------
-
 result_cor <- correl_ind(result$Data_Normal$dataset)
 
 head(result_cor$Resumo)
 
-FigContNA(result_cor$Contagem_NA,nfile="Contagem_NA_ISimples.png",visivel=TRUE)
-
+FigContNA(result_cor$Contagem_NA,
+          nfile="Contagem_NA_ISimples.png",
+          visivel=TRUE)
 
 ## ----eval = TRUE,fig.width=7.2, fig.height=5----------------------------------
- FigCorrelPlot(result_cor$Correl,tipo="Total",save=FALSE,nfile="FIGs/Correlação_Total.png")
+ FigCorrelPlot(result_cor$Correl,
+               tipo="Total",
+               save=FALSE,
+               nfile="FIGs/Correlação_Total.png")
 

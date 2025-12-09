@@ -5,7 +5,7 @@
 \alias{uf_shp}
 \title{Shape de unidades federativas}
 \format{
-Um objeto \code{sf} com X linhas e Y colunas.
+Objeto \code{sf}.
 }
 \source{
 IBGE
@@ -14,6 +14,9 @@ IBGE
 uf_shp
 }
 \description{
-Objeto \code{sf} com limites das UFs.
+Objeto sf com unidades da federação.
+}
+\examples{
+head(uf_shp)
 }
 \keyword{datasets}

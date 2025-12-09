@@ -4,12 +4,20 @@
 \alias{FigCorrelPlot}
 \title{Mapa de Correlacao}
 \usage{
-FigCorrelPlot(Y, tipo = "Total", nfile = "output.png", visivel = TRUE)
+FigCorrelPlot(
+  Y,
+  tipo = "Total",
+  save = FALSE,
+  nfile = "output.png",
+  visivel = FALSE
+)
 }
 \arguments{
 \item{Y}{Matriz de correlacao.}
 
 \item{tipo}{Tipo de correlacao a ser mostrada: "Total" (parte inferior) ou "Parcial" (parte superior).}
+
+\item{save}{logical, se TRUE o grafico sera salvo.}
 
 \item{nfile}{Nome do arquivo de saida (PNG).}
 
@@ -23,6 +31,16 @@ Gera figura de correlacao (com \code{corrplot}) para todas as variaveis.
 }
 \examples{
 res <- correl_ind(mtcars)
-FigCorrelPlot(res$Correl, tipo = "Total", nfile = "Correl.png",visivel=TRUE)
+
+## Exemplo que salva em arquivo (não roda no check):
+\dontrun{
+FigCorrelPlot(
+  res$Correl,
+  tipo   = "Total",
+  save   = TRUE,
+  nfile  = file.path(tempdir(), "Correl.png"),
+  visivel = TRUE
+)
+}
 
 }

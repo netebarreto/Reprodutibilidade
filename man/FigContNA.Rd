@@ -4,10 +4,12 @@
 \alias{FigContNA}
 \title{Figura da Contagem de Valores Ausentes (NA)}
 \usage{
-FigContNA(Y, nfile = "FigContNA.png", visivel = TRUE)
+FigContNA(Y, file = FALSE, nfile = "FigContNA.png", visivel = FALSE)
 }
 \arguments{
 \item{Y}{Vetor nomeado com contagem de NAs por variável.}
+
+\item{file}{NULL.}
 
 \item{nfile}{Nome do arquivo de saída (PNG).}
 
@@ -22,5 +24,4 @@ Gera grafico de barras mostrando a quantidade de valores ausentes por variável.
 \examples{
 cont_na <- apply(mtcars, 2, function(x) sum(is.na(x)))
 FigContNA(cont_na, "ContNA.png",visivel=TRUE)
-
 }

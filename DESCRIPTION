@@ -31,6 +31,10 @@ Imports:
     rsvg,
     Hmisc,
     corrplot,
+    sf,
+    flextable, 
+    tibble,
+    purrr,
     stats
 Suggests:
     knitr,
