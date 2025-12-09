@@ -26,76 +26,85 @@ install.packages("devtools")
 devtools::install_github("AdaptaBrasil/reprodutibilidade")
 ```
 
-🧭 Funcionalidades Principais
-1. Pré-processamento
+## 🧭 Funcionalidades Principais
+### 1. Pré-processamento
 
-Ferramentas voltadas ao ajuste inicial dos dados:
-  ADPwinsorise() — Winsorização e controle de outliers
-  ADPBoxCox() — Transformação Box-Cox
-  ADPNormalise() — Normalização padronizada de variáveis
+Ferramentas voltadas ao ajuste inicial dos dados:  
 
-2. Análise e Validação
+  - ADPwinsorise() — Winsorização e controle de outliers
+    
+  - ADPBoxCox() — Transformação Box-Cox
+    
+  - ADPNormalise() — Normalização padronizada de variáveis
+
+### 2. Análise e Validação
 
 Funções destinadas a examinar estrutura, distribuição e consistência:
 
-criar_resumo() — Resumo estatístico completo
+ - criar_resumo() — Resumo estatístico completo
 
-calc_correlacoes() — Correlação total, parcial e métricas associadas
+ - calc_correlacoes() — Correlação total, parcial e métricas associadas
 
-gerar_diagrama_setor() — Estrutura hierárquica das variáveis com DiagrammeR
+ - gerar_diagrama_setor() — Estrutura hierárquica das variáveis com DiagrammeR
 
-3. Visualização e Produtos
+## 3. Visualização e Produtos
 
 Rotinas capazes de gerar saídas padronizadas:
 
-grafico_final() — Gráficos normalizados
+- grafico_final() — Gráficos normalizados
 
-Map_result() — Mapas temáticos por município ou unidade federativa
+- Map_result() — Mapas temáticos por município ou unidade federativa
 
-monta_excel() — Organização e exportação de resultados em planilhas Excel
+- monta_excel() — Organização e exportação de resultados em planilhas Excel
 
-monta_ppt() — Criação automatizada de apresentações PowerPoint
+- monta_ppt() — Criação automatizada de apresentações PowerPoint
 
-🔗 Dependências
+## 🔗 Dependências
 
 O pacote depende, entre outros, dos seguintes pacotes:
 
-dplyr
+- dplyr
 
-tidyr
+- tidyr
 
-ggplot2
+- ggplot2
 
-DiagrammeR
+- DiagrammeR
 
-DiagrammeRsvg
+- DiagrammeRsvg
 
-rsvg
+- rsvg
 
-psych
+- psych
 
-Hmisc
+- Hmisc
 
-COINr
+- COINr
 
 A lista completa encontra-se no arquivo DESCRIPTION do pacote.
 
-🚀 Fluxo de Uso Sugerido
-1. Pré-processamento
+## 🚀 Fluxo de Uso Sugerido
+### 1. Pré-processamento
+
 w <- ADPwinsorise(dados, meta, ref = dados$CLUSTER)
+
 b <- ADPBoxCox(w, meta)
+
 n <- ADPNormalise(b, meta)
 
-2. Estatísticas e validação
+### 2. Estatísticas e validação
+
 resumo <- criar_resumo(n, meta)
+
 cor    <- calc_correlacoes(n)
+
 diag   <- gerar_diagrama_setor(meta)
 
-3. Produção de visualizações
+### 3. Produção de visualizações
 grafico_final(n, meta)
 Map_result("Indicador", dados_municipios, ano_ref)
 
-4. Exportação de resultados
+### 4. Exportação de resultados
 monta_excel(resumo)
 monta_ppt(resumo)
 
@@ -119,22 +128,27 @@ ref <- dados$CLUSTER
 ADPwinsorise(dados, meta, ref)
 ```
 
-📁 Estrutura do Projeto  
+## 📁 Estrutura do Projeto  
 
 reprodutibilidade/  
  ├── R/                # Funções principais do pacote  
+ 
  ├── man/              # Documentação (arquivos .Rd)  
+ 
  ├── vignettes/        # Tutoriais e demonstrações  
+ 
  ├── inst/             # Arquivos auxiliares  
+ 
  ├── DESCRIPTION       # Metadados do pacote  
+ 
  └── NAMESPACE         # Exportação/importação de funções  
 
-🤝 Contribuindo
+## 🤝 Contribuindo
 
 Contribuições são bem-vindas.
 Pull requests podem abranger melhorias em desempenho, documentação, testes, exemplos ou novas funcionalidades relacionadas ao escopo do pacote.
 
-📄 Licença
+## 📄 Licença
 
 Este projeto está licenciado sob MIT License.
 
