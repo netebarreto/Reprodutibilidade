@@ -2,6 +2,7 @@
 Ferramentas para análise estatística, validação e reprodutibilidade dos indicadores do AdaptaBrasil.
 
 ![Status](https://img.shields.io/badge/status-stable-brightgreen)
+
 ![R >= 4.2](https://img.shields.io/badge/R-%3E%3D4.2-lightgrey)
 ![Dev Version](https://img.shields.io/badge/dev-GitHub-black)
 
@@ -84,40 +85,3 @@ A lista completa encontra-se no arquivo DESCRIPTION do pacote.
 
 ## 🚀 Fluxo de Uso Sugerido
 ### 1. Pré-processamento
-
-
-
-### 2. Estatísticas e validação
-
-
-
-### 3. Produção de visualizações
-
-
-### 4. Exportação de resultados
-
-
-📘 Exemplo Completo 
-```r
-
-```
-
-## 📁 Estrutura do Projeto  
-
-reprodutibilidade/  
- ├── R/                # Funções principais do pacote  
- 
- ├── man/              # Documentação (arquivos .Rd)  
- 
- ├── vignettes/        # Tutoriais e demonstrações  
- 
- ├── inst/             # Arquivos auxiliares  
- 
- ├── DESCRIPTION       # Metadados do pacote  
- 
- └── NAMESPACE         # Exportação/importação de funções  
-
-## 📄 Licença
-
----
-
