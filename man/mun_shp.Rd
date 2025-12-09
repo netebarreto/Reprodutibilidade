@@ -5,7 +5,7 @@
 \alias{mun_shp}
 \title{Shape de municípios}
 \format{
-Um objeto \code{sf} com X linhas e Y colunas.
+Objeto \code{sf} com colunas de atributos.
 }
 \source{
 IBGE
@@ -14,6 +14,9 @@ IBGE
 mun_shp
 }
 \description{
-Objeto \code{sf} com limites municipais.
+Objeto sf com municípios brasileiros, incluindo a coluna \code{CD_MUN}.
+}
+\examples{
+head(mun_shp)
 }
 \keyword{datasets}
