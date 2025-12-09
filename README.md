@@ -2,7 +2,7 @@
 Ferramentas para análise estatística, validação e reprodutibilidade dos indicadores do AdaptaBrasil.
 
 ![Status](https://img.shields.io/badge/status-stable-brightgreen)
-![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)
+
 ![R >= 4.2](https://img.shields.io/badge/R-%3E%3D4.2-lightgrey)
 ![Dev Version](https://img.shields.io/badge/dev-GitHub-black)
 
@@ -85,71 +85,3 @@ A lista completa encontra-se no arquivo DESCRIPTION do pacote.
 
 ## 🚀 Fluxo de Uso Sugerido
 ### 1. Pré-processamento
-
-w <- ADPwinsorise(dados, meta, ref = dados$CLUSTER)
-
-b <- ADPBoxCox(w, meta)
-
-n <- ADPNormalise(b, meta)
-
-### 2. Estatísticas e validação
-
-resumo <- criar_resumo(n, meta)
-
-cor    <- calc_correlacoes(n)
-
-diag   <- gerar_diagrama_setor(meta)
-
-### 3. Produção de visualizações
-grafico_final(n, meta)
-Map_result("Indicador", dados_municipios, ano_ref)
-
-### 4. Exportação de resultados
-monta_excel(resumo)
-monta_ppt(resumo)
-
-📘 Exemplo Completo 
-```r
-library(reprodutibilidade)
-
-dados <- data.frame(
-  var1 = c(1, 2, 3, 100),
-  var2 = c(10, 20, 30, 40),
-  CLUSTER = c(1, 1, 2, 2)
-)
-
-meta <- data.frame(
-  Classe = c("Numerico", "Numerico", "Cluster"),
-  Code   = c("var1", "var2", "CLUSTER") 
-)
-
-ref <- dados$CLUSTER
-
-ADPwinsorise(dados, meta, ref)
-```
-
-## 📁 Estrutura do Projeto  
-
-reprodutibilidade/  
- ├── R/                # Funções principais do pacote  
- 
- ├── man/              # Documentação (arquivos .Rd)  
- 
- ├── vignettes/        # Tutoriais e demonstrações  
- 
- ├── inst/             # Arquivos auxiliares  
- 
- ├── DESCRIPTION       # Metadados do pacote  
- 
- └── NAMESPACE         # Exportação/importação de funções  
-
-## 🤝 Contribuindo
-
-
-## 📄 Licença
-
-
-
-
----
-
