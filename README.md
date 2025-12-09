@@ -30,12 +30,9 @@ devtools::install_github("AdaptaBrasil/reprodutibilidade")
 1. Pré-processamento
 
 Ferramentas voltadas ao ajuste inicial dos dados:
-
-ADPwinsorise() — Winsorização e controle de outliers
-
-ADPBoxCox() — Transformação Box-Cox
-
-ADPNormalise() — Normalização padronizada de variáveis
+  ADPwinsorise() — Winsorização e controle de outliers
+  ADPBoxCox() — Transformação Box-Cox
+  ADPNormalise() — Normalização padronizada de variáveis
 
 2. Análise e Validação
 
@@ -102,7 +99,8 @@ Map_result("Indicador", dados_municipios, ano_ref)
 monta_excel(resumo)
 monta_ppt(resumo)
 
-📘 Exemplo Completo
+📘 Exemplo Completo 
+```r
 library(reprodutibilidade)
 
 dados <- data.frame(
@@ -113,21 +111,23 @@ dados <- data.frame(
 
 meta <- data.frame(
   Classe = c("Numerico", "Numerico", "Cluster"),
-  Code   = c("var1", "var2", "CLUSTER")
+  Code   = c("var1", "var2", "CLUSTER") 
 )
 
 ref <- dados$CLUSTER
 
 ADPwinsorise(dados, meta, ref)
+```
 
-📁 Estrutura do Projeto
-reprodutibilidade/
-├── R/                # Funções principais do pacote
-├── man/              # Documentação (arquivos .Rd)
-├── vignettes/        # Tutoriais e demonstrações
-├── inst/             # Arquivos auxiliares
-├── DESCRIPTION       # Metadados do pacote
-└── NAMESPACE         # Exportação/importação de funções
+📁 Estrutura do Projeto  
+
+reprodutibilidade/  
+ ├── R/                # Funções principais do pacote  
+ ├── man/              # Documentação (arquivos .Rd)  
+ ├── vignettes/        # Tutoriais e demonstrações  
+ ├── inst/             # Arquivos auxiliares  
+ ├── DESCRIPTION       # Metadados do pacote  
+ └── NAMESPACE         # Exportação/importação de funções  
 
 🤝 Contribuindo
 
