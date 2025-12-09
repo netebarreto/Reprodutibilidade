@@ -145,12 +145,10 @@ reprodutibilidade/
 
 ## 🤝 Contribuindo
 
-Contribuições são bem-vindas.
-Pull requests podem abranger melhorias em desempenho, documentação, testes, exemplos ou novas funcionalidades relacionadas ao escopo do pacote.
 
 ## 📄 Licença
 
-Este projeto está licenciado sob MIT License.
+
 
 
 ---
