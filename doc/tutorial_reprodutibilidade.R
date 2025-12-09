@@ -218,12 +218,32 @@ map_result_normal("MMPD", result$Data_Normal$dataset, data_ref,
 #  
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  slides_winsorize(
-#    result$Data_Win$resumo[1,],
-#    titulo          = "Tabela Gerada no R",
-#    caminho_arquivo = paste0("saida_apresentacao_Win_",i,".pptx"),
-#    caminho_map     = "MMPD_result$Data_Win$dataset.png"
-#  )
+#  
+#    map_result(icode,
+#               result$Data_Win$dataset[1,],
+#               result$Ref,
+#               fs = 30,
+#               Titulo = icode,
+#               salvar=TRUE)
+#  
+#    slides_process(
+#      result$Data_Win$resumo[1,],
+#      process         = "winsorize"
+#      titulo          = "Tabela Gerada no R",
+#      caminho_arquivo = "slide_process_winsorize.pptx",
+#      caminho_map     = "arquivo_mapa.png")
+
+## ----eval = FALSE-------------------------------------------------------------
+#    map_result("FPAAPCT", result$Data_Bxc$data, result$Ref,
+#                fs     = 26,
+#                titulo = "FPAAPCT",
+#                salvar = TRUE)
+#  
+#   slides_process(result$Data_Bxc$meta[16,],
+#                  process         = "BoxCox"
+#                  titulo          = "Titulo do slide",
+#                  caminho_arquivo = "saida_apresentacao_bxcx.pptx",
+#                  caminho_map     = "FPAAPCT_result$Data_Bxc$data.png")
 
 ## ----eval = TRUE--------------------------------------------------------------
 total.na(datasetN7$MMPD)
@@ -249,7 +269,8 @@ FigContNA(result_cor$Contagem_NA,
 
 ## ----eval = TRUE,fig.width=7.2, fig.height=5----------------------------------
  FigCorrelPlot(result_cor$Correl,
-               tipo="Total",
-               save=FALSE,
-               nfile="FIGs/Correlação_Total.png")
+               tipo    = "Total",
+               save    = FALSE,
+               visivel = TRUE,
+               nfile   = "Correlação_Total.png")
 
