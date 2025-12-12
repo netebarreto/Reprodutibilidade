@@ -35,6 +35,7 @@ Imports:
     flextable, 
     tibble,
     purrr,
+    nortest,
     stats
 Suggests:
     knitr,

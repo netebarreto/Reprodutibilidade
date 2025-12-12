@@ -158,7 +158,7 @@ print_summary(res1)
 
 criar_grafico(idx_MMPD, plot=TRUE, nome_arquivo = "grafico_combinado.png", 
               largura = 10, altura = 5, dpi = 25, 
-              nvalores="MMPD",fsize=6)
+              icode="MMPD",fsize=6)
 
 ```
 
@@ -363,16 +363,18 @@ library("reprodutibilidade")
 
 map_result("MMPD", datasetN7, data_ref, fs = 10, titulo = "MMPD")
 ```
+
 ### _Mapas Normalizados_
 
-#### map_result<i>(iNome, DADOS, REFERENCE, titulo = "Titulo", shp_mun = NULL, shp_uf  = NULL, salvar = FALSE, nome_arquivo = "map_N7.png", largura = 20, altura = 24, dpi = 300, fsize = 16)</i>
+#### map_result_normal<i>( iNome, DADOS, REFERENCE, titulo = "Titulo", shp_mun = NULL, shp_uf = NULL, salvar = FALSE, dir = NULL, nome_arquivo = NULL, largura = 20, altura = 24, dpi = 300, fsize = 16) </i>
+
 ```{r, eval = TRUE,fig.width=7.2, fig.height=5}
 map_result_normal("MMPD", result$Data_Normal$dataset, data_ref, 
                   fs = 10, 
                   titulo = "MMPD")
 ```
 
-### Apresentação do Resumo 
+### Arquivo PowerPoint com apresentação do Resumo 
 
 #### slides_descricao<i>( result, icode, titulo = NULL, caminho_arquivo = "saida_apresentacao.pptx", caminho_imagem = NULL, caminho_map = NULL)</i>
 ```{r, eval = FALSE}
@@ -392,14 +394,14 @@ map_result_normal("MMPD", result$Data_Normal$dataset, data_ref,
                       subsetor= NULL)
 
 # Determinado o indicador que será apresentado  
-  icode <- tab.descricao$CODE
+  icode <- "MMPD"
 
 # Criando os gráficos de resumo 
   criar_grafico(result$DadosB[[icode]], 
                 plot=FALSE,
                 nome_arquivo = "grafico_combinado.png", 
                 largura = 10, altura = 5, dpi = 100, 
-                nvalores="MMPD", fsize=18)
+                icode="MMPD", fsize=18)
 
 # Gerando a figura do mapa 
  
@@ -426,8 +428,7 @@ map_result_normal("MMPD", result$Data_Normal$dataset, data_ref,
   </figcaption>
 </figure>
 
-
-### Apresentação do Winsorization 
+### Arquivo PowerPoint com apresentação do processo Winsorization 
 
 #### slides_process<i>( tabela1, process = NULL,titulo = "Titulo do Slide", caminho_arquivo = "saida_apresentacao.pptx", caminho_map = NULL)</i>
 ```{r, eval = FALSE}
@@ -455,7 +456,7 @@ map_result_normal("MMPD", result$Data_Normal$dataset, data_ref,
   </figcaption>
 </figure>
 
-### Apresentação do BoxCox 
+### Arquivo PowerPoint com apresentação do processo BoxCox 
 
 #### slides_process<i>( tabela1, process = NULL,titulo = "Titulo do Slide", caminho_arquivo = "saida_apresentacao.pptx", caminho_map = NULL)</i>
 ```{r, eval = FALSE}
@@ -478,6 +479,44 @@ map_result_normal("MMPD", result$Data_Normal$dataset, data_ref,
     Figura 5: Exemplo do slide gerado com a base de dados do boxcox inserido na apresentação diretamente. 
   </figcaption>
 </figure>
+
+### Arquivo PowerPoint com apresentação do processo de Normalizacao 
+
+#### slides_process<i>( tabela1, process = NULL,titulo = "Titulo do Slide", caminho_arquivo = "saida_apresentacao.pptx", caminho_map = NULL)</i>
+```{r, eval = FALSE}
+
+  grafico_final(result$Data_Bxc$data, result$Data_Normal$dataset, 
+            nome_arquivo = "grafico_final.png", 
+            largura = 20, 
+            altura = 10, 
+            dpi = 100,
+            icode = "MMPD",
+            fsize = 32)
+
+
+  map_result_normal("MMPD", result$Data_Normal$dataset, result$Ref, 
+                  fs = 10, 
+                  titulo = "MMPD",
+                  salvar = TRUE,
+                  nome_arquivo = "mapa_normalizado.png")
+
+  slides_normal(datain = result$Data_Bxc$data[[icode]],
+    titulo          = "Titulo Slide",
+    title_tab       = "Testes Estatísticos",
+    caminho_arquivo = paste0("saida_apresentacao_normal.pptx"),
+    caminho_map     = "mapa_normalizado.png" ,
+    caminho_grafico = "grafico_final.png" )
+
+```
+
+<figure style="text-align: justify; width: 100%; margin: auto;">
+
+<img src="figures/saida_normal.png" style="width:100%; height:auto;" />
+<figcaption style="text-align:left; font-size:0.95em; margin-top:6px;">
+    Figura 6: Exemplo do slide gerado com a base de dados normalizados inserido na apresentação diretamente. 
+  </figcaption>
+</figure>
+
 
 ## Aplicando as Funções Análise
 ### _Correlação_ 
@@ -522,5 +561,245 @@ FigContNA(result_cor$Contagem_NA,
                visivel = TRUE,
                nfile   = "Correlação_Total.png")
 ```
-## Scripts Extras Disponibilizados
 
+## Loop dos Indicadores: Montando o PowerPoint Completo
+
+### Resumo 
+
+```{r, eval = FALSE}
+
+CODES = result$metadados$CODE
+
+for(i in CODES) 
+{
+ icode <- i 
+ nome <- result$metadados$NOME[result$metadados$CODE == icode]
+
+# Criando os gráficos de resumo 
+  criar_grafico(result$DadosB[[icode]],
+                plot=FALSE,
+                nome_arquivo = paste0("FIG/grafico_combinado_",icode,".png"), 
+                largura = 10, altura = 5, dpi = 100, 
+                fsize=18)
+  
+# Gerando a figura do mapa 
+  map_result(icode, 
+             result$DadosB,
+             result$Ref,
+             fs = 30,
+             nome_arquivo = paste0("FIG/mapa_bruto_",icode,".png"),
+             salvar=TRUE)
+
+# Gerando o arquivo
+  slides_descricao(result, icode, 
+                   titulo=paste0(icode,"-",nome),
+                   caminho_arquivo = "Apresentacao_Resumo_Total.pptx",
+                   caminho_imagem  = paste0("FIG/grafico_combinado_",icode,".png"),
+                   caminho_map     = paste0("FIG/mapa_bruto_",icode,".png"))
+print(icode)
+}
+
+            
+```
+
+<figure style="text-align: justify; width: 100%; margin: auto;">
+
+<img src="figures/resumo_juntos.png" style="width:100%; height:auto;" />
+<figcaption style="text-align:left; font-size:0.95em; margin-top:6px;">
+    Figura 7: Exemplo do slide resumo gerado inserido na apresentação diretamente. 
+  </figcaption>
+</figure>
+
+### Winsorize 
+
+```{r, eval = FALSE}
+CODES = result$metadados$CODE
+
+for(i in CODES) 
+{
+ icode <- i 
+ nn <- which(result$Data_Bxc$meta$Nome == icode)
+ nome <- result$metadados$NOME[result$metadados$CODE == icode] 
+
+# Gerando a figura do mapa
+  map_result(icode, result$Data_Win$data, result$Ref, 
+              fs = 26, titulo = icode, 
+              nome_arquivo = paste0("FIG/mapa_win_",icode,".png"),
+              salvar=TRUE)
+
+# Gerando arquivo
+  slides_process( result$Data_Win$resumo[nn,],
+          process = "winsorize",
+          titulo = paste0(icode,"-",nome),
+          caminho_arquivo = paste0("Apresentacao_Winzorization_Total.pptx"),
+          caminho_map = paste0("FIG/mapa_win_",icode,".png"))
+
+print(icode)
+}
+       
+```
+
+<figure style="text-align: justify; width: 100%; margin: auto;">
+
+<img src="figures/winsorize_juntos.png" style="width:100%; height:auto;" />
+<figcaption style="text-align:left; font-size:0.95em; margin-top:6px;">
+    Figura 8: Exemplo do slide Wisorize gerado inserido na apresentação diretamente. 
+  </figcaption>
+</figure>
+
+
+### BoxCox 
+
+```{r, eval = FALSE}
+
+CODES = result$metadados$CODE
+
+for(i in CODES) 
+{
+ icode <- i 
+ nn <- which(result$Data_Bxc$meta$Nome == icode)
+ nome <- result$metadados$NOME[result$metadados$CODE == icode] 
+
+  map_result(icode, result$Data_Bxc$data, result$Ref, 
+              fs = 26, titulo = icode, 
+              nome_arquivo = paste0("FIG/mapa_bxcx_",icode,".png"),
+              salvar=TRUE)
+
+
+ slides_process( result$Data_Bxc$meta[nn,],
+                process = "BoxCox",
+                titulo = paste0(icode,"-",nome),
+                caminho_arquivo = "Apresentacao_Boxcox_Total.pptx",
+                caminho_map = paste0("FIG/mapa_bxcx_",icode,".png"))
+
+print(icode)
+}
+       
+```
+
+<figure style="text-align: justify; width: 100%; margin: auto;">
+
+<img src="figures/boxcox_juntos.png" style="width:100%; height:auto;" />
+<figcaption style="text-align:left; font-size:0.95em; margin-top:6px;">
+    Figura 8: Exemplo do slide BoxCox gerado inserido na apresentação diretamente. 
+  </figcaption>
+</figure>
+
+
+
+### Normalizado 
+<div class="textb_bg txtb-offset">
+O indicador <b>PED(CI)</b> (terceira coluna da base de dados) apresentou erro na geração do grafico final, unicamente nessa etapa, por esse motivo foi removida da execução nesta etapa. 
+</div>
+
+```{r, eval = FALSE}
+
+CODES = result$metadados$CODE[-3]
+
+for(i in CODES) 
+{
+ icode <- i 
+ nn <- which(result$Data_Bxc$meta$Nome == icode)
+ nome <- result$metadados$NOME[result$metadados$CODE == icode] 
+
+map_result_normal(icode, result$Data_Normal$dataset, result$Ref, 
+                  fs = 10, 
+                  titulo = icode,
+                  salvar=TRUE,
+                  nome_arquivo=paste0("FIG/mapa_norm_",icode,".png"))
+
+
+grafico_final(dtset_proc = result$DadosB,
+              dtset_norm = result$Data_Normal$dataset, 
+              nome_arquivo = paste0("FIG/grafico_final_",icode,".png"), 
+              largura = 20, 
+              altura = 10, 
+              dpi = 100,
+              icode=icode,
+              fsize=32)
+
+slides_normal(datain=result$DadosB[[icode]],
+  titulo          = paste0(icode,"-",nome),
+  title_tab       = "Testes Estatísticos",
+  caminho_arquivo = "Apresentacao_Norm_Total.pptx",
+  caminho_map     = paste0("FIG/mapa_norm_",icode,".png") ,
+caminho_grafico = paste0("FIG/grafico_final_",icode,".png"))                
+
+print(icode)
+}
+       
+```
+
+<figure style="text-align: justify; width: 100%; margin: auto;">
+
+<img src="figures/normal_juntos.png" style="width:100%; height:auto;" />
+<figcaption style="text-align:left; font-size:0.95em; margin-top:6px;">
+    Figura 8: Exemplo do slide normal gerado inserido na apresentação diretamente. 
+  </figcaption>
+</figure>
+
+## Rotinas Extras Não Implementadas
+
+### Localização
+```{r, eval = FALSE}
+
+caminho_arquivo <- system.file("rotinas_extras", 
+                               "rotinas_extras.r",
+                                package = "reprodutibilidade")
+source(caminho_arquivo)
+```
+
+### VIF 
+O Fator de Inflação da Variância (VIF) foi utilizado para avaliar a presença de multicolinearidade entre as variáveis que compõem o indicador, permitindo identificar redundâncias excessivas que podem distorcer as estimativas e comprometer a interpretação dos resultados. Valores elevados de VIF indicam sobreposição de informação entre variáveis e sinalizam a necessidade de revisão da estrutura do indicador.
+####   ADPvif<i>(X)</i>  
+```{r, eval = FALSE}
+
+vif_df <- ADPvif(result$Data_Normal$dataset)
+
+FigVIF(vif_df,nfile=NULL,visivel=TRUE)
+```
+
+<figure style="text-align: justify; width: 100%; margin: auto;">
+<img src="figures/vif_exemplo.png" style="width:100%; height:auto;" />
+</figure>
+
+### Alpha Cronbach
+O alfa de Cronbach é utilizado para avaliar a consistência interna do conjunto de variáveis, isto é, o grau em que elas medem de forma coerente um mesmo construto. A análise do alfa com a remoção individual dos indicadores permite verificar em que medida o valor permanece próximo ao valor global, o que reforça a estabilidade do indicador composto. Observa-se que a exclusão de alguns indicadores provoca variações no alfa, indicando contribuições diferenciadas para a consistência interna do conjunto.
+
+#### ADPAlphaCron<i>(X)</i> 
+```{r, eval = FALSE}
+
+alpha_df<- ADPAlphaCron(result$Data_Normal$dataset)
+
+plotAlphaCronbach(alpha_df$alpha_df, 
+                  alpha_df$alpha_total,
+                  visivel = TRUE,
+                  nfile=NULL)
+```
+
+<figure style="text-align: justify; width: 100%; margin: auto;">
+<img src="figures/alpha_simples.png" style="width:100%; height:auto;" />
+</figure>
+
+### Metricas em Conjunto
+
+```{r, eval = FALSE}
+result_metricas <- resumo_metricas(result$Data_Normal$dataset)
+
+# FigCorrelPlot(result_metricas$pcorrel,tipo="Parcial",nfile="nome_arquivo.png")
+
+# FigCorrelPlot(result_metricas$pcorrel,tipo="Total",nfile="nome_arquivo.png")
+
+# FigVIF(result_metricas$VIF,nfile="nome_arquivo.png",visivel=FALSE)
+
+# plotAlphaCronbach(result_metricas$AlphaCronbach$alpha_df, 
+                  result_metricas$AlphaCronbach$alpha_total,
+                  visivel=FALSE,
+                  nfile="nome_arquivo.png")
+
+result_metricas$Res_visivel
+
+```
+<figure style="text-align: justify; width: 100%; margin: auto;">
+<img src="figures/resumo_tabela.png" style="width:100%; height:auto;" />
+</figure>

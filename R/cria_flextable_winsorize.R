@@ -19,13 +19,17 @@
 #' @export
 cria_flextable_winsorize <- function(tab_input) 
 { 
-    if (is.null(tab_input)) { return(NULL) } 
+    if (is.null(tab_input)) 
+    { return(NULL) } 
     stopifnot(is.data.frame(tab_input)) 
+    
     tabela1 <- tibble::as_tibble(purrr::map_dfc(tab_input, ~ .x[[1]])) 
     # Cálculo de larguras baseado no conteúdo 
     largura_colunas <- sapply( tabela1, function(col) max(nchar(as.character(col)), na.rm = TRUE) ) 
+    
     aplic_flag <- tabela1$winsorize 
     # Define textos da aplicação em um único lugar 
+    
     aplic_labels <- c( "N" = "Nao foi aplicado winsorization (Sem Mapa)", "A" = "Winsorization aplicado nos limites inferior e superior", 
     "S" = "Winsorization aplicado no limite superior",
      "I" = "Winsorization aplicado no limite inferior" ) 
@@ -33,8 +37,10 @@ cria_flextable_winsorize <- function(tab_input)
     tabela1$winsorize <- aplic_labels[aplic_flag] 
 
     names(tabela1)[names(tabela1) == "winsorize"] <- "Aplicacao"
+    
+    largura_colunas <- sapply( tabela1, function(col) max(nchar(as.character(col)), na.rm = TRUE) ) 
 
-    largura_colunas <- ifelse(largura_colunas <= 10, 1.2, 3.5) 
+    largura_colunas <- ifelse(largura_colunas <= 10, 1, 2) 
 
     ft <- flextable::flextable(tabela1) |> 
     flextable::width(j = 1:ncol(tabela1), width = largura_colunas) |> flextable::bold(i = 1, j = 1:ncol(tabela1), part = "header") |> flextable::height(i = 1:nrow(tabela1), height = 0.5) 

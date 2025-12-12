@@ -28,14 +28,14 @@ monta_ppt_process <- function(
   ppt <- ppt |>
     officer::add_slide(layout = "Title and Content", master = "Office Theme") |>
     officer::ph_with(
-      value    = officer::fpar(officer::ftext(titulo, prop = officer::fp_text(font.size = 22))),
+      value    = officer::fpar(officer::ftext(titulo, prop = officer::fp_text(font.size = 18))),
       location = officer::ph_location_type(type = "title")
     )
 
      if(!is.null(process)) {
      title_tab = paste0("Resumo ",process) }
      else
-     title_tab = "AAAAAAAAAAAAAAAA" 
+     title_tab = "Resumo" 
 
   if (tem_tabela) {
     ppt <- ppt |>

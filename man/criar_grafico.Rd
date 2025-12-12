@@ -10,7 +10,7 @@ criar_grafico(
   largura = 10,
   altura = 5,
   dpi = 25,
-  nvalores = "DD1",
+  icode = "DD1",
   fsize = 16,
   plot = TRUE
 )
@@ -27,7 +27,7 @@ Default: "grafico_combinado.png".}
 
 \item{dpi}{Resolucao (pontos por polegada). Default: 25.}
 
-\item{nvalores}{Nome da variavel (string) a ser usada no grafico
+\item{icode}{Nome da variavel (string) a ser usada no grafico
 e nos rotulos. Default: "DD1".}
 
 \item{fsize}{Tamanho base da fonte nos eixos e titulos. Default: 16.}

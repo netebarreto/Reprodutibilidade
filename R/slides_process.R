@@ -21,19 +21,26 @@ slides_process <- function(
   process         = NULL, 
   titulo          = "Tabela Gerada no R",
   caminho_arquivo = "saida_apresentacao.pptx",
-  caminho_map     = NULL
-) {
+  caminho_map     = NULL) 
+{
  if(process == "winsorize") 
   {
-  ft_list <- cria_flextable_winsorize(tabela1)
-  tem_tabela <- !is.null(ft_list)}
+    ft_list <- cria_flextable_winsorize(tabela1)
+    tem_tabela <- !is.null(ft_list)
+    caminho_map = if(tabela1$winsorize != "N") caminho_map else NULL
+  }
  else if (process == "BoxCox") 
- {ft_list <- cria_flextable_boxcox(tabela1)
-  tem_tabela <- !is.null(ft_list)}
+      {
+       ft_list <- cria_flextable_boxcox(tabela1)
+       tem_tabela <- !is.null(ft_list)
+       caminho_map = if(tabela1$BoxCox != 0 ) caminho_map else NULL
+      }
+  
 
   monta_ppt_process(
     ft              = if (tem_tabela) ft_list$ft else NULL,
     tem_tabela      = tem_tabela,
+    process         = process,
     titulo          = titulo, 
     caminho_arquivo = caminho_arquivo,
     caminho_map     = caminho_map

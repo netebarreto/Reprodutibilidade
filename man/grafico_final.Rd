@@ -5,22 +5,23 @@
 \title{Gerar Grafico Combinado (Dispersao + Histograma)}
 \usage{
 grafico_final(
-  df1 = df1,
-  df = df,
+  dtset_proc,
+  dtset_norm,
   nome_arquivo = "grafico_combinado.png",
   largura = 10,
   altura = 5,
   dpi = 25,
-  nvalores = nvalores,
-  fsize = 16
+  icode = icode,
+  fsize = 16,
+  plot = FALSE
 )
 }
 \arguments{
-\item{df1}{Data frame contendo as colunas \code{Normalizado} e \code{N_Normalizado},
+\item{dtset_proc}{Data frame contendo os dados nao normalizados,
 usadas para o grafico de dispersao.}
 
-\item{df}{Data frame contendo a variavel numerica a ser usada no histograma
-(coluna indicada em \code{nvalores}).}
+\item{dtset_norm}{Data frame contendo os dados normalizados a ser usada no histograma e no grafico de dispersao
+(coluna indicada em \code{icode}).}
 
 \item{nome_arquivo}{Nome do arquivo de saida (\code{.png}). Default: "grafico_combinado.png".}
 
@@ -30,10 +31,12 @@ usadas para o grafico de dispersao.}
 
 \item{dpi}{Resolucao (pontos por polegada). Default: 25.}
 
-\item{nvalores}{String com o nome da variavel em \code{df} que sera utilizada no histograma.
-Default: \code{nvalores}.}
+\item{icode}{String com o nome da variavel em \code{df} que sera utilizada no histograma.
+Default: \code{icode}.}
 
 \item{fsize}{Tamanho da fonte para titulos, legendas e eixos. Default: 16.}
+
+\item{plot}{Logical; se TRUE, plota na tela. Se FALSE, apenas retorna o objeto.}
 }
 \value{
 Nenhum objeto e retornado. Um arquivo PNG contendo o grafico combinado e salvo no diretorio de trabalho.
@@ -56,10 +59,15 @@ um grafico de mensagem de erro no lugar.
 \examples{
 \dontrun{
 # Exemplo com dados simulados
-set.seed(123)
-df1 <- data.frame(Normalizado = runif(100), N_Normalizado = rnorm(100))
-df <- data.frame(DD1 = rnorm(100, mean = 50, sd = 10))
-grafico_final(df1 = df1, df = df, nvalores = "DD1", nome_arquivo = "meu_grafico.png")
+
+grafico_final(dtset_proc = result$Data_Bxc$data,
+          dtset_norm = result$Data_Normal$dataset, 
+            nome_arquivo = "grafico_final_T1.png", 
+            largura = 20, 
+            altura = 10, 
+            dpi = 100,
+            icode="MMPD",
+            fsize=32)
 }
 
 }
