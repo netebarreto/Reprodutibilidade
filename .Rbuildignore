@@ -2,3 +2,6 @@
 ^\.Rproj\.user$
 ^LICENSE\.md$
 ^.*\.Rproj$
+^doc\tutorial_reprodutibilidade.Rmd$
+^Meta$
+^nao_implementado$
